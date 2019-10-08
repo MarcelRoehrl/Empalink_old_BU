@@ -33,37 +33,28 @@ import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
-    private static final int REQUEST_ENABLE_BT = 1;
+    private static final String EMPATICA_API_KEY = "bdc9dcd5c8134b1893b9cd34d8a6b15a";
 
+    private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
 
-    private static final String EMPATICA_API_KEY = "bdc9dcd5c8134b1893b9cd34d8a6b15a"; // TODO insert your API Key here
-
-
     private EmpaDeviceManager deviceManager = null;
-
     private TextView accel_xLabel;
-
     private TextView accel_yLabel;
-
     private TextView accel_zLabel;
-
     private TextView bvpLabel;
-
     private TextView edaLabel;
-
     private TextView ibiLabel;
-
     private TextView temperatureLabel;
-
     private TextView batteryLabel;
-
     private TextView statusLabel;
-
     private TextView deviceNameLabel;
-
     private LinearLayout dataCnt;
+    private Button recordButton;
+
+    private Session session;
+    private boolean recording = false;
 
 
     @Override
@@ -96,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         deviceNameLabel = (TextView) findViewById(R.id.deviceName);
 
+        recordButton = findViewById(R.id.recordButton);
+
 
         final Button disconnectButton = findViewById(R.id.disconnectButton);
 
@@ -112,6 +105,21 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         });
 
         initEmpaticaDeviceManager();
+    }
+
+    public void onRecordClicked(View view)
+    {
+        if(!recording)
+        {
+            session = new Session(System.currentTimeMillis(), this);
+            recordButton.setText("stop/save recording");
+            recording = true;
+        }
+        else {
+            recording = false;
+            recordButton.setText("start recording");
+            session.save();
+        }
     }
 
     @Override
@@ -257,11 +265,16 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         updateLabel(accel_xLabel, "" + x);
         updateLabel(accel_yLabel, "" + y);
         updateLabel(accel_zLabel, "" + z);
+
+        if(recording)
+            session.addAcc(x,y,z,timestamp);
     }
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
         updateLabel(bvpLabel, "" + bvp);
+        if(recording)
+            session.addBVP(bvp,timestamp);
     }
 
     @Override
@@ -272,16 +285,22 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         updateLabel(edaLabel, "" + gsr);
+        if(recording)
+            session.addEDA(gsr,timestamp);
     }
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
         updateLabel(ibiLabel, "" + ibi);
+        if(recording)
+            session.addIBI(ibi,timestamp);
     }
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
         updateLabel(temperatureLabel, "" + temp);
+        if(recording)
+            session.addTemp(temp,timestamp);
     }
 
     // Update a label with some text, making sure this is run in the UI thread

@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/holo_blue_dark">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/status"
@@ -163,7 +162,14 @@
 
         <Button
             android:id="@+id/disconnectButton"
-            android:text="STOP STREAMING"
+            android:text="Disconnect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp" />
+
+        <Button
+            android:id="@+id/recordButton"
+            android:text="start recording"
+            android:onClick="onRecordClicked"
             android:layout_width="match_parent"
             android:layout_height="44dp" />
 
