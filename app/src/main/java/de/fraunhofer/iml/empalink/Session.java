@@ -31,7 +31,7 @@ public class Session
     {
         this.starttime = starttime;
 
-        accData = new ArrayList<Acceleration>();
+        accData = new ArrayList<Acceleration>(); 
         BVPData = new ArrayList<BVP>();
         EDAData = new ArrayList<EDA>();
         IBIData = new ArrayList<IBI>();
