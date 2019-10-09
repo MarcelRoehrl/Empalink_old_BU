@@ -163,6 +163,7 @@
         <Button
             android:id="@+id/disconnectButton"
             android:text="Disconnect"
+            android:onClick="onDisconnectClicked"
             android:layout_width="match_parent"
             android:layout_height="44dp" />
 
@@ -170,6 +171,13 @@
             android:id="@+id/recordButton"
             android:text="start recording"
             android:onClick="onRecordClicked"
+            android:layout_width="match_parent"
+            android:layout_height="44dp" />
+
+        <Button
+            android:id="@+id/stressButton"
+            android:text="stress"
+            android:onClick="onStressClicked"
             android:layout_width="match_parent"
             android:layout_height="44dp" />
 

@@ -66,45 +66,32 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         // Initialize vars that reference UI components
         statusLabel = (TextView) findViewById(R.id.status);
-
         dataCnt = (LinearLayout) findViewById(R.id.dataArea);
-
         accel_xLabel = (TextView) findViewById(R.id.accel_x);
-
         accel_yLabel = (TextView) findViewById(R.id.accel_y);
-
         accel_zLabel = (TextView) findViewById(R.id.accel_z);
-
         bvpLabel = (TextView) findViewById(R.id.bvp);
-
         edaLabel = (TextView) findViewById(R.id.eda);
-
         ibiLabel = (TextView) findViewById(R.id.ibi);
-
         temperatureLabel = (TextView) findViewById(R.id.temperature);
-
         batteryLabel = (TextView) findViewById(R.id.battery);
-
         deviceNameLabel = (TextView) findViewById(R.id.deviceName);
-
         recordButton = findViewById(R.id.recordButton);
-
 
         final Button disconnectButton = findViewById(R.id.disconnectButton);
 
-        disconnectButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (deviceManager != null) {
-
-                    deviceManager.disconnect();
-                }
-            }
-        });
-
         initEmpaticaDeviceManager();
+    }
+
+    public void onDisconnectClicked(View view)
+    {
+        if(recording)
+            stopAndSaveRecordings();
+
+        if (deviceManager != null) {
+
+            deviceManager.disconnect();
+        }
     }
 
     public void onRecordClicked(View view)
@@ -115,11 +102,20 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             recordButton.setText("stop/save recording");
             recording = true;
         }
-        else {
-            recording = false;
-            recordButton.setText("start recording");
-            session.save();
-        }
+        else
+            stopAndSaveRecordings();
+    }
+
+    private void stopAndSaveRecordings()
+    {
+        recording = false;
+        recordButton.setText("start recording");
+        session.save();
+    }
+
+    public void onStressClicked(View view)
+    {
+        session.addStress(1, System.currentTimeMillis()); //TODO Stresswert variabel machen
     }
 
     @Override

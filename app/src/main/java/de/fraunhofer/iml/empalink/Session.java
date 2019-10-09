@@ -3,10 +3,18 @@ package de.fraunhofer.iml.empalink;
 import android.content.Context;
 
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,6 +22,7 @@ import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.SensorObjects.EDA;
 import de.fraunhofer.iml.empalink.SensorObjects.IBI;
+import de.fraunhofer.iml.empalink.SensorObjects.Stress;
 import de.fraunhofer.iml.empalink.SensorObjects.Temperature;
 
 public class Session
@@ -24,6 +33,7 @@ public class Session
     private ArrayList<EDA> EDAData;
     private ArrayList<IBI> IBIData;
     private ArrayList<Temperature> tempData;
+    private ArrayList<Stress> stressData;
 
     private String filePath;
 
@@ -31,11 +41,12 @@ public class Session
     {
         this.starttime = starttime;
 
-        accData = new ArrayList<Acceleration>(); 
+        accData = new ArrayList<Acceleration>();
         BVPData = new ArrayList<BVP>();
         EDAData = new ArrayList<EDA>();
         IBIData = new ArrayList<IBI>();
         tempData = new ArrayList<Temperature>();
+        stressData = new ArrayList<Stress>();
 
         File internal_storage = new File(context.getResources().getString(R.string.path));
         internal_storage.mkdirs();
@@ -47,21 +58,22 @@ public class Session
     {
         File file = new File(filePath);
 
-        CSVWriter writer;
+        CSVWriter csvWriter;
 
         try{
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            Writer writer =  Files.newBufferedWriter(Paths.get(filePath));
 
-            writer = new CSVWriter(new FileWriter(filePath), ',');
-            //String[] entries = "first#second#third".split("#"); // array of your values
-            for(int it = 0; it < BVPData.size(); it++)
-            {
-                String[] data = {""+BVPData.get(it).bvp, ""+BVPData.get(it).timestamp};
-                writer.writeNext(data);
+            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                    .build();
+
+            try {
+                beanToCsv.write(BVPData);
+            } catch (CsvDataTypeMismatchException e) {
+                e.printStackTrace();
+            } catch (CsvRequiredFieldEmptyException e) {
+                e.printStackTrace();
             }
-            writer.close();
         } catch (IOException e) {
         e.printStackTrace();
 }
@@ -90,5 +102,10 @@ public class Session
     public void addTemp(float temp, double timestamp)
     {
         tempData.add(new Temperature(temp, timestamp));
+    }
+
+    public void addStress(int stress, double timestamp)
+    {
+        stressData.add(new Stress(stress, timestamp));
     }
 }
