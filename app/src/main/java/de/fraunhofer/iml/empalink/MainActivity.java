@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         final Button disconnectButton = findViewById(R.id.disconnectButton);
 
         initEmpaticaDeviceManager();
+
+//      test  session = new Session(System.currentTimeMillis(), this);
+//        session.save();
     }
 
     public void onDisconnectClicked(View view)

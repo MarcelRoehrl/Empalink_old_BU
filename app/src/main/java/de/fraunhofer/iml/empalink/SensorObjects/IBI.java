@@ -2,8 +2,8 @@ package de.fraunhofer.iml.empalink.SensorObjects;
 
 public class IBI
 {
-    private float ibi;
-    private double timestamp;
+    public float ibi;
+    public double timestamp;
 
     public IBI(float ibi, double timestamp)
     {

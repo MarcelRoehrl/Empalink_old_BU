@@ -2,8 +2,8 @@ package de.fraunhofer.iml.empalink.SensorObjects;
 
 public class Acceleration
 {
-    private int x,y,z;
-    private double timestamp;
+    public int x,y,z;
+    public double timestamp;
 
     public Acceleration(int x, int y, int z, double timestamp)
     {

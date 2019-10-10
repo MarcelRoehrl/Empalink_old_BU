@@ -2,8 +2,8 @@ package de.fraunhofer.iml.empalink.SensorObjects;
 
 public class Temperature
 {
-    private float temp;
-    private double timestamp;
+    public float temp;
+    public double timestamp;
 
     public Temperature(float temp, double timestamp)
     {

@@ -15,8 +15,10 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
@@ -56,27 +58,155 @@ public class Session
 
     public void save()
     {
-        File file = new File(filePath);
+//        BVPData.add(new BVP(100,10));
+//        BVPData.add(new BVP(1020,11));
+//        BVPData.add(new BVP(1030,12));
+//        BVPData.add(new BVP(1040,13));
+//        BVPData.add(new BVP(1050,14));
+//        BVPData.add(new BVP(1060,15));
+//
+//        EDAData.add(new EDA(20,11));
+//        EDAData.add(new EDA(30,12));
+//        EDAData.add(new EDA(40,13));
+//        EDAData.add(new EDA(50,14));
+//        EDAData.add(new EDA(60,15));
+//
+//        IBIData.add(new IBI(100,9));
+//        IBIData.add(new IBI(200,13));
+//        IBIData.add(new IBI(300,15));
+//
+//        stressData.add(new Stress(4, 13));
 
-        CSVWriter csvWriter;
+        try {
+            File f = new File(filePath);
+            CSVWriter writer;
 
-        try{
-            Writer writer =  Files.newBufferedWriter(Paths.get(filePath));
-
-            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
-                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-                    .build();
-
-            try {
-                beanToCsv.write(BVPData);
-            } catch (CsvDataTypeMismatchException e) {
-                e.printStackTrace();
-            } catch (CsvRequiredFieldEmptyException e) {
-                e.printStackTrace();
+            // File exist
+            if (f.exists() && !f.isDirectory()) {
+                FileWriter mFileWriter = new FileWriter(filePath, true);
+                writer = new CSVWriter(mFileWriter);
+            } else {
+                writer = new CSVWriter(new FileWriter(filePath));
             }
-        } catch (IOException e) {
-        e.printStackTrace();
-}
+
+            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "stress"};
+            writer.writeNext(header);
+
+            String[] data = new String[7];
+            int b = 0, e = 0, i = 0, t = 0, a = 0, s = 0;
+            double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, sTime = Double.MAX_VALUE;
+
+            //Für den Sonderfall das eine Liste leer ist
+            if(BVPData.size() == 0){
+                b = -1;
+            }
+            if(EDAData.size() == 0){
+                e = -1;
+            }
+            if(IBIData.size() == 0){
+                i = -1;
+            }
+            if(tempData.size() == 0){
+                t = -1;
+            }
+            if(accData.size() == 0){
+                a = -1;
+            }
+            if(stressData.size() == 0){
+                s = -1;
+            }
+
+            double curStamp;
+            while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && s == -1))
+            {
+                if(b != -1)
+                    bTime = BVPData.get(b).timestamp;
+                if(e != -1)
+                    eTime = EDAData.get(e).timestamp;
+                if(i != -1)
+                    iTime = IBIData.get(i).timestamp;
+                if(t != -1)
+                    tTime = tempData.get(t).timestamp;
+                if(a != -1)
+                    aTime = accData.get(a).timestamp;
+                if(s != -1)
+                    sTime = stressData.get(s).timestamp;
+                curStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
+                data[0] = ""+curStamp;
+
+                if(b != -1 && bTime == curStamp)
+                {
+                    data[1] = ""+BVPData.get(b).bvp;
+                    b++;
+                    if(b >= BVPData.size())
+                    {
+                        b = -1;
+                        bTime = Double.MAX_VALUE;
+                    }
+                }
+
+                if(e != -1 && eTime == curStamp)
+                {
+                    data[2] = ""+EDAData.get(e).gsr;
+                    e++;
+                    if(e >= EDAData.size())
+                    {
+                        e = -1;
+                        eTime = Double.MAX_VALUE;
+                    }
+                }
+
+                if(i != -1 && iTime == curStamp)
+                {
+                    data[3] = ""+IBIData.get(i).ibi;
+                    i++;
+                    if(i >= IBIData.size())
+                    {
+                        i = -1;
+                        iTime = Double.MAX_VALUE;
+                    }
+                }
+
+                if(t != -1 && tTime == curStamp)
+                {
+                    data[4] = ""+tempData.get(t).temp;
+                    t++;
+                    if(t >= tempData.size())
+                    {
+                        t = -1;
+                        tTime = Double.MAX_VALUE;
+                    }
+                }
+
+                if(a != -1 && aTime == curStamp)
+                {
+                    data[5] = ""+accData.get(a).x+","+accData.get(a).y+","+accData.get(a).z;//TODO evtl. effizienter mit get(a) rausziehen
+                    a++;
+                    if(a >= accData.size())
+                    {
+                        a = -1;
+                        aTime = Double.MAX_VALUE;
+                    }
+                }
+
+                if(s != -1 && sTime == curStamp)
+                {
+                    data[6] = ""+stressData.get(s).stress;
+                    s++;
+                    if(s >= stressData.size())
+                    {
+                        s = -1;
+                        sTime = Double.MAX_VALUE;
+                    }
+                } else {
+                    data[6] = null;
+                }
+
+                writer.writeNext(data);
+            }
+            writer.close();
+        }
+        catch (IOException e){}
     }
 
     public void addAcc(int x, int y, int z, double timestamp)
