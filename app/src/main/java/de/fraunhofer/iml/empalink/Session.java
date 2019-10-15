@@ -3,22 +3,12 @@ package de.fraunhofer.iml.empalink;
 import android.content.Context;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
@@ -237,5 +227,10 @@ public class Session
     public void addStress(int stress, double timestamp)
     {
         stressData.add(new Stress(stress, timestamp));
+    }
+
+    public Double getLatestTimestamp()
+    {
+        return accData.get(accData.size()-1).timestamp; //TODO evtl schöner lösen
     }
 }

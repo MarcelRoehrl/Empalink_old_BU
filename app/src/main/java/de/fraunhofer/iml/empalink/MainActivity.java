@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onStressClicked(View view)
     {
-        session.addStress(1, System.currentTimeMillis()); //TODO Stresswert variabel machen
+        session.addStress(1, session.getLatestTimestamp()); //TODO Stresswert variabel machen
     }
 
     @Override
