@@ -133,7 +133,9 @@ public class Session
                         b = -1;
                         bTime = Double.MAX_VALUE;
                     }
-                }
+                }/* else {
+                    data[1] = "";
+                }*/
 
                 if(e != -1 && eTime == curStamp)
                 {
@@ -144,7 +146,9 @@ public class Session
                         e = -1;
                         eTime = Double.MAX_VALUE;
                     }
-                }
+                } /*else {
+                    data[2] = "";
+                }*/
 
                 if(i != -1 && iTime == curStamp)
                 {
@@ -155,7 +159,9 @@ public class Session
                         i = -1;
                         iTime = Double.MAX_VALUE;
                     }
-                }
+                } /*else {
+                    data[3] = "";
+                }*/
 
                 if(t != -1 && tTime == curStamp)
                 {
@@ -166,7 +172,9 @@ public class Session
                         t = -1;
                         tTime = Double.MAX_VALUE;
                     }
-                }
+                } /*else {
+                    data[4] = "";
+                }*/
 
                 if(a != -1 && aTime == curStamp)
                 {
@@ -177,7 +185,9 @@ public class Session
                         a = -1;
                         aTime = Double.MAX_VALUE;
                     }
-                }
+                } /*else {
+                    data[5] = "";
+                }*/
 
                 if(s != -1 && sTime == curStamp)
                 {
