@@ -89,6 +89,9 @@ public class Session
             int b = 0, e = 0, i = 0, t = 0, a = 0, s = 0;
             double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, sTime = Double.MAX_VALUE;
 
+            double temp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
+            long startStamp = (long)(temp*1000);
+
             //Für den Sonderfall das eine Liste leer ist
             if(BVPData.size() == 0){
                 b = -1;
@@ -109,11 +112,8 @@ public class Session
                 s = -1;
             }
 
-            double startStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime);
-
             Date date;
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("MESZ"));
 
             double curStamp;
             while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && s == -1))
@@ -132,10 +132,10 @@ public class Session
                     sTime = stressData.get(s).timestamp;
                 curStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
 
-                long l = (long)curStamp;
-                date = new Date(l);
-                int n = (int)(curStamp*100000-l*100000);
-                data[0] = sdf.format(date)+"."+n;
+                long l = (long)(curStamp*1000);
+//                date = new Date(l);
+//                int n = (int)(curStamp*10000000-l*10000);
+                data[0] = "";
 
                 if(b != -1 && bTime == curStamp)
                 {

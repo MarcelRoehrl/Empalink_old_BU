@@ -68,15 +68,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         setContentView(R.layout.activity_main);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
-        sdf.setTimeZone(TimeZone.getTimeZone("MESZ"));
-
-        double curStamp = 1571328355.79903;
-        long l = (long)(curStamp*1000);
-        Date date = new Date(l);
-        int n = (int)(curStamp*100000-l*100000);
-        String test  = sdf.format(date);
-
         // Initialize vars that reference UI components
         statusLabel = (TextView) findViewById(R.id.status);
         dataCnt = (LinearLayout) findViewById(R.id.dataArea);
