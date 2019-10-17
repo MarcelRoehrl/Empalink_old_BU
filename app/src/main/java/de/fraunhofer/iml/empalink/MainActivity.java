@@ -31,6 +31,10 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
     private static final String EMPATICA_API_KEY = "bdc9dcd5c8134b1893b9cd34d8a6b15a";
@@ -63,6 +67,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+        sdf.setTimeZone(TimeZone.getTimeZone("MESZ"));
+
+        double curStamp = 1571328355.79903;
+        long l = (long)(curStamp*1000);
+        Date date = new Date(l);
+        int n = (int)(curStamp*100000-l*100000);
+        String test  = sdf.format(date);
 
         // Initialize vars that reference UI components
         statusLabel = (TextView) findViewById(R.id.status);

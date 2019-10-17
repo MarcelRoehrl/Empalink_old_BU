@@ -7,8 +7,11 @@ import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
@@ -106,6 +109,12 @@ public class Session
                 s = -1;
             }
 
+            double startStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime);
+
+            Date date;
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("MESZ"));
+
             double curStamp;
             while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && s == -1))
             {
@@ -122,7 +131,11 @@ public class Session
                 if(s != -1)
                     sTime = stressData.get(s).timestamp;
                 curStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
-                data[0] = ""+curStamp;
+
+                long l = (long)curStamp;
+                date = new Date(l);
+                int n = (int)(curStamp*100000-l*100000);
+                data[0] = sdf.format(date)+"."+n;
 
                 if(b != -1 && bTime == curStamp)
                 {
@@ -133,9 +146,10 @@ public class Session
                         b = -1;
                         bTime = Double.MAX_VALUE;
                     }
-                }/* else {
+                }
+                else {
                     data[1] = "";
-                }*/
+                }
 
                 if(e != -1 && eTime == curStamp)
                 {
@@ -146,9 +160,10 @@ public class Session
                         e = -1;
                         eTime = Double.MAX_VALUE;
                     }
-                } /*else {
+                }
+                else {
                     data[2] = "";
-                }*/
+                }
 
                 if(i != -1 && iTime == curStamp)
                 {
@@ -159,9 +174,10 @@ public class Session
                         i = -1;
                         iTime = Double.MAX_VALUE;
                     }
-                } /*else {
+                }
+                else {
                     data[3] = "";
-                }*/
+                }
 
                 if(t != -1 && tTime == curStamp)
                 {
@@ -172,9 +188,10 @@ public class Session
                         t = -1;
                         tTime = Double.MAX_VALUE;
                     }
-                } /*else {
+                }
+                else {
                     data[4] = "";
-                }*/
+                }
 
                 if(a != -1 && aTime == curStamp)
                 {
@@ -185,9 +202,10 @@ public class Session
                         a = -1;
                         aTime = Double.MAX_VALUE;
                     }
-                } /*else {
+                }
+                else {
                     data[5] = "";
-                }*/
+                }
 
                 if(s != -1 && sTime == curStamp)
                 {
