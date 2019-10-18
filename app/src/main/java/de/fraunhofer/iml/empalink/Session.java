@@ -90,7 +90,7 @@ public class Session
             double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, sTime = Double.MAX_VALUE;
 
             double temp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
-            long startStamp = (long)(temp*1000);
+            long startStamp = (long)(temp*100000);
 
             //Für den Sonderfall das eine Liste leer ist
             if(BVPData.size() == 0){
@@ -112,9 +112,6 @@ public class Session
                 s = -1;
             }
 
-            Date date;
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
             double curStamp;
             while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && s == -1))
             {
@@ -132,10 +129,9 @@ public class Session
                     sTime = stressData.get(s).timestamp;
                 curStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
 
-                long l = (long)(curStamp*1000);
-//                date = new Date(l);
-//                int n = (int)(curStamp*10000000-l*10000);
-                data[0] = "";
+                long curTemp = (long)(curStamp*100000);
+                double entry = (double)(curTemp-startStamp);
+                data[0] = ""+(entry/100000);
 
                 if(b != -1 && bTime == curStamp)
                 {
