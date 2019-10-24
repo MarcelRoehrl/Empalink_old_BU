@@ -7,11 +7,8 @@ import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
 
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
@@ -28,7 +25,8 @@ public class Session
     private ArrayList<EDA> EDAData;
     private ArrayList<IBI> IBIData;
     private ArrayList<Temperature> tempData;
-    private ArrayList<Stress> stressData;
+    private ArrayList<Stress> pStressData;
+    private ArrayList<Stress> mStressData;
 
     private String filePath;
 
@@ -41,7 +39,8 @@ public class Session
         EDAData = new ArrayList<EDA>();
         IBIData = new ArrayList<IBI>();
         tempData = new ArrayList<Temperature>();
-        stressData = new ArrayList<Stress>();
+        pStressData = new ArrayList<Stress>();
+        mStressData = new ArrayList<Stress>();
 
         File internal_storage = new File(context.getResources().getString(R.string.path));
         internal_storage.mkdirs();
@@ -67,8 +66,6 @@ public class Session
 //        IBIData.add(new IBI(100,9));
 //        IBIData.add(new IBI(200,13));
 //        IBIData.add(new IBI(300,15));
-//
-//        stressData.add(new Stress(4, 13));
 
         try {
             File f = new File(filePath);
@@ -82,38 +79,51 @@ public class Session
                 writer = new CSVWriter(new FileWriter(filePath));
             }
 
-            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "stress"};
+            String[] excel = {"sep=,"}; //Excel Befehl um das Trennzeichen festzulegen
+            writer.writeNext(excel);
+
+            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress"};
             writer.writeNext(header);
 
-            String[] data = new String[7];
-            int b = 0, e = 0, i = 0, t = 0, a = 0, s = 0;
-            double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, sTime = Double.MAX_VALUE;
-
-            double temp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
-            long startStamp = (long)(temp*100000);
+            String[] data = new String[8];
+            int b = 0, e = 0, i = 0, t = 0, a = 0, p = 0, m = 0;
+            double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, pTime = Double.MAX_VALUE, mTime = Double.MAX_VALUE;
 
             //Für den Sonderfall das eine Liste leer ist
             if(BVPData.size() == 0){
                 b = -1;
-            }
+            } else
+                bTime = BVPData.get(0).timestamp;
             if(EDAData.size() == 0){
                 e = -1;
-            }
+            } else
+                eTime = EDAData.get(0).timestamp;
             if(IBIData.size() == 0){
                 i = -1;
-            }
+            } else
+                iTime = IBIData.get(0).timestamp;
             if(tempData.size() == 0){
                 t = -1;
-            }
+            } else
+                tTime = tempData.get(0).timestamp;
             if(accData.size() == 0){
                 a = -1;
-            }
-            if(stressData.size() == 0){
-                s = -1;
-            }
+            } else
+                aTime = accData.get(0).timestamp;
+            if(pStressData.size() == 0){
+                p = -1;
+            } else
+                pTime = pStressData.get(0).timestamp;
+            if(mStressData.size() == 0){
+                m = -1;
+            } else
+                mTime = mStressData.get(0).timestamp;
+
+            double temp = Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
+            long startStamp = (long)(temp*100000); //Das ganze hier gemacht damit in der Schleiche eine Abfrage weniger ist
 
             double curStamp;
-            while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && s == -1))
+            while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && p == -1 && m == -1))
             {
                 if(b != -1)
                     bTime = BVPData.get(b).timestamp;
@@ -125,9 +135,12 @@ public class Session
                     tTime = tempData.get(t).timestamp;
                 if(a != -1)
                     aTime = accData.get(a).timestamp;
-                if(s != -1)
-                    sTime = stressData.get(s).timestamp;
-                curStamp = Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), sTime); //TODO evtl effizienter machen
+                if(p != -1)
+                    pTime = pStressData.get(p).timestamp;
+                if(m != -1)
+                    mTime = mStressData.get(m).timestamp;
+
+                curStamp =  Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
 
                 long curTemp = (long)(curStamp*100000);
                 double entry = (double)(curTemp-startStamp);
@@ -203,17 +216,30 @@ public class Session
                     data[5] = "";
                 }
 
-                if(s != -1 && sTime == curStamp)
+                if(p != -1 && pTime == curStamp)
                 {
-                    data[6] = ""+stressData.get(s).stress;
-                    s++;
-                    if(s >= stressData.size())
+                    data[6] = ""+ pStressData.get(p).stress;
+                    p++;
+                    if(p >= pStressData.size())
                     {
-                        s = -1;
-                        sTime = Double.MAX_VALUE;
+                        p = -1;
+                        pTime = Double.MAX_VALUE;
                     }
                 } else {
                     data[6] = null;
+                }
+
+                if(m != -1 && mTime == curStamp)
+                {
+                    data[7] = ""+ mStressData.get(m).stress;
+                    m++;
+                    if(m >= mStressData.size())
+                    {
+                        m = -1;
+                        mTime = Double.MAX_VALUE;
+                    }
+                } else {
+                    data[7] = null;
                 }
 
                 writer.writeNext(data);
@@ -248,9 +274,14 @@ public class Session
         tempData.add(new Temperature(temp, timestamp));
     }
 
-    public void addStress(int stress, double timestamp)
+    public void addPStress(int stress, double timestamp)
     {
-        stressData.add(new Stress(stress, timestamp));
+        pStressData.add(new Stress(stress, timestamp));
+    }
+
+    public void addMStress(int stress, double timestamp)
+    {
+        mStressData.add(new Stress(stress, timestamp));
     }
 
     public Double getLatestTimestamp()

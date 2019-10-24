@@ -14,11 +14,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +35,7 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel;
     private TextView deviceNameLabel;
     private LinearLayout dataCnt;
-    private Button recordButton;
+    private com.google.android.material.button.MaterialButton disconnectButton, recordButton, pStressButton, mStressButton;
 
     private Session session;
     private boolean recording = false;
@@ -80,14 +82,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         temperatureLabel = (TextView) findViewById(R.id.temperature);
         batteryLabel = (TextView) findViewById(R.id.battery);
         deviceNameLabel = (TextView) findViewById(R.id.deviceName);
+
+        disconnectButton = findViewById(R.id.disconnectButton);
         recordButton = findViewById(R.id.recordButton);
+        pStressButton = findViewById(R.id.pStressButton);
+        mStressButton = findViewById(R.id.mStressButton);
 
         final Button disconnectButton = findViewById(R.id.disconnectButton);
 
         initEmpaticaDeviceManager();
-
-//      test  session = new Session(System.currentTimeMillis(), this);
-//        session.save();
     }
 
     public void onDisconnectClicked(View view)
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if(!recording)
         {
             session = new Session(System.currentTimeMillis(), this);
-            recordButton.setText("stop/save recording");
+            recordButton.setText("Aufnahme speichern");
             recording = true;
         }
         else
@@ -116,13 +119,58 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void stopAndSaveRecordings()
     {
         recording = false;
-        recordButton.setText("start recording");
+        recordButton.setText("Aufnahme starten");
         session.save();
     }
 
-    public void onStressClicked(View view)
+    public void onPStressClicked(View view)
     {
-        session.addStress(1, session.getLatestTimestamp()); //TODO Stresswert variabel machen
+        final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        alertBuilder.setTitle("Physischer Stress")
+                .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
+
+        final LayoutInflater inflater = this.getLayoutInflater();
+        final View ratingBar = inflater.inflate(R.layout.rating_bar, null);
+        alertBuilder.setView(ratingBar);
+
+        alertBuilder.setPositiveButton("Eintragen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                session.addPStress((int)((RatingBar)ratingBar.findViewById(R.id.ratingBar)).getRating(), session.getLatestTimestamp());
+            }
+        })
+                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
+    }
+
+    public void onMStressClicked(View view)
+    {
+        final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        alertBuilder.setTitle("Mentaler Stress")
+                .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
+
+        final LayoutInflater inflater = this.getLayoutInflater();
+        final View ratingBar = inflater.inflate(R.layout.rating_bar, null);
+        alertBuilder.setView(ratingBar);
+
+        alertBuilder.setPositiveButton("Eintragen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                session.addMStress((int)((RatingBar)ratingBar.findViewById(R.id.ratingBar)).getRating(), session.getLatestTimestamp());
+            }
+        })
+                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -355,6 +403,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             public void run() {
 
                 dataCnt.setVisibility(View.VISIBLE);
+                disconnectButton.setVisibility(View.VISIBLE);
+                recordButton.setVisibility(View.VISIBLE);
+                pStressButton.setVisibility(View.VISIBLE);
+                mStressButton.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -366,7 +418,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
 
-                dataCnt.setVisibility(View.INVISIBLE);
+                dataCnt.setVisibility(View.GONE);
+                disconnectButton.setVisibility(View.GONE);
+                recordButton.setVisibility(View.GONE);
+                pStressButton.setVisibility(View.GONE);
+                mStressButton.setVisibility(View.GONE);
             }
         });
     }
