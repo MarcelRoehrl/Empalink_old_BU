@@ -62,4 +62,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.empatica.empalink:empalink:2.2@aar'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
 }
