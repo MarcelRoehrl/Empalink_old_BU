@@ -50,7 +50,7 @@ public class Session
 
     public void load()
     {
-        
+
     }
 
     public void save()
