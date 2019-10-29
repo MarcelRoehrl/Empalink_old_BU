@@ -93,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         initEmpaticaDeviceManager();
     }
 
+    public void onShowDataClicked(View view)
+    {
+        startActivity(new Intent(this, DataDisplayActivity.class));
+    }
+
     public void onDisconnectClicked(View view)
     {
         if(recording)

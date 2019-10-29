@@ -173,17 +173,17 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/disconnectButton"
+        android:id="@+id/showDataButton"
         app:layout_constraintTop_toBottomOf="@id/dataDisplay"
         app:layout_constraintLeft_toLeftOf="parent"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_marginLeft="16dp"
-        app:strokeColor="#B71C1C"
-        android:text="Verbindung trennen"
-        android:textColor="#B71C1C"
+        app:strokeColor="#0D47A1"
+        android:text="Aufnahme anzeigen"
+        android:textColor="#0D47A1"
         android:textSize="15sp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onDisconnectClicked"
+        android:onClick="onShowDataClicked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -207,7 +207,7 @@
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_marginLeft="16dp"
         app:strokeColor="#B71C1C"
-        app:layout_constraintTop_toBottomOf="@+id/disconnectButton"
+        app:layout_constraintTop_toBottomOf="@+id/showDataButton"
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="Physischer\nStress"
         android:textSize="30dp"
@@ -227,6 +227,21 @@
         android:textSize="30dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:onClick="onMStressClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/disconnectButton"
+        app:layout_constraintTop_toBottomOf="@id/pStressButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginLeft="16dp"
+        app:strokeColor="#B71C1C"
+        android:text="Verbindung trennen"
+        android:textColor="#B71C1C"
+        android:textSize="15sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onDisconnectClicked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

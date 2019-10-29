@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Demo</string>
+    <string name="app_name">Empalink</string>
     <string name="path">/storage/emulated/0/Android/data/de.fraunhofer.iml.storage</string>
     <string name="accel">Accelerometers</string>
     <string name="accel_x">x:</string>

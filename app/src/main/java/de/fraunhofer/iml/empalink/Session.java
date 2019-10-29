@@ -48,6 +48,11 @@ public class Session
         filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
     }
 
+    public void load()
+    {
+        
+    }
+
     public void save()
     {
 //        BVPData.add(new BVP(100,10));
