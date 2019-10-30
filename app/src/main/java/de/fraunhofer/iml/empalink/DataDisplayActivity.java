@@ -17,6 +17,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import de.fraunhofer.iml.empalink.SensorObjects.BVP;
+
 public class DataDisplayActivity extends AppCompatActivity
 {
     protected final int MAX_X_DATA = 10;
@@ -41,7 +44,7 @@ public class DataDisplayActivity extends AppCompatActivity
 
         bvpChart = findViewById(R.id.BVP);
         edaChart = findViewById(R.id.EDA);
-        //tempChart= findViewById(R.id.Temperature);
+        tempChart= findViewById(R.id.Temperature);
 
         accData = new ArrayList<Entry>();
         BVPData = new ArrayList<Entry>();
@@ -55,7 +58,7 @@ public class DataDisplayActivity extends AppCompatActivity
 
         load();
 
-        LineData lineData = new LineData(createDataSet(tempData, "BVP"));
+        LineData lineData = new LineData(createDataSet(BVPData, "BVP"));
         bvpChart.setData(lineData);
         bvpChart.getDescription().setText("BVP Daten");
         bvpChart.setVisibleXRangeMaximum(MAX_X_DATA);
@@ -71,20 +74,21 @@ public class DataDisplayActivity extends AppCompatActivity
         edaChart.getAxisRight().setEnabled(false);
         edaChart.invalidate();
 
-//        lineData = new LineData(createDataSet(tempData, "Temperature"));
-//        tempChart.setData(lineData);
-//        tempChart.getDescription().setText("Temparatur Daten");
-//        tempChart.setVisibleXRangeMaximum(MAX_X_DATA);
-//        tempChart.getAxisLeft().setEnabled(false);
-//        tempChart.invalidate();
+        lineData = new LineData(createDataSet(tempData, "Temperature"));
+        tempChart.setData(lineData);
+        tempChart.getDescription().setText("Temparatur Daten");
+        tempChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        tempChart.getAxisLeft().setEnabled(false);
+        tempChart.getAxisRight().setEnabled(false);
+        tempChart.invalidate();
 
         //Charts synchronisieren
-        LineChart[] charts = {edaChart};//, tempChart};
-        LineChart[] charts2 = {bvpChart};//, tempChart};
+        LineChart[] charts = {edaChart, tempChart};
+        LineChart[] charts2 = {bvpChart, tempChart};
         LineChart[] charts3 = {bvpChart, edaChart};
         bvpChart.setOnChartGestureListener(new CoupleChartGestureListener(bvpChart, charts));
         edaChart.setOnChartGestureListener(new CoupleChartGestureListener(edaChart, charts2));
-       // tempChart.setOnChartGestureListener(new CoupleChartGestureListener(tempChart, charts3));
+        tempChart.setOnChartGestureListener(new CoupleChartGestureListener(tempChart, charts3));
     }
 
     public void load()
@@ -129,12 +133,12 @@ public class DataDisplayActivity extends AppCompatActivity
         LineDataSet set = new LineDataSet(entries, name);
 
         set.setDrawFilled(true);
-        //set.setDrawCircles(true);
+        set.setDrawCircles(true);
         set.setLineWidth(1.8f);
-        //set.setCircleRadius(2f);
+        set.setCircleRadius(2f);
         set.setHighLightColor(Color.rgb(244, 117, 117));
         set.setFillAlpha(100);
-        //set.setCircleColor(Color.BLACK);
+        set.setCircleColor(Color.BLACK);
 //        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 //        set.setCubicIntensity(0.2f);
 //        set.setColor(Color.WHITE);

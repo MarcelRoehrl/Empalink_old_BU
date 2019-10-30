@@ -23,6 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/Temperature"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
