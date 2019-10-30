@@ -60,6 +60,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.opencsv:opencsv:4.6'
     implementation 'com.empatica.empalink:empalink:2.2@aar'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

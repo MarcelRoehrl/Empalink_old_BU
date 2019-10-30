@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         pStressButton = findViewById(R.id.pStressButton);
         mStressButton = findViewById(R.id.mStressButton);
 
-        final Button disconnectButton = findViewById(R.id.disconnectButton);
-
         initEmpaticaDeviceManager();
     }
 
@@ -116,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session = new Session(System.currentTimeMillis(), this);
             recordButton.setText("Aufnahme speichern");
             recording = true;
+            show();
         }
         else
             stopAndSaveRecordings();
@@ -410,8 +409,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 dataCnt.setVisibility(View.VISIBLE);
                 disconnectButton.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
-                pStressButton.setVisibility(View.VISIBLE);
-                mStressButton.setVisibility(View.VISIBLE);
+                if(recording) {
+                    pStressButton.setVisibility(View.VISIBLE);
+                    mStressButton.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
