@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -19,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
+import de.fraunhofer.iml.empalink.SensorObjects.EDA;
 
 public class DataDisplayActivity extends AppCompatActivity
 {
@@ -62,24 +64,27 @@ public class DataDisplayActivity extends AppCompatActivity
         bvpChart.setData(lineData);
         bvpChart.getDescription().setText("BVP Daten");
         bvpChart.setVisibleXRangeMaximum(MAX_X_DATA);
-        bvpChart.getAxisLeft().setEnabled(false);
+        bvpChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         bvpChart.getAxisRight().setEnabled(false);
+        bvpChart.getLegend().setEnabled(false);
         bvpChart.invalidate();
 
         lineData = new LineData(createDataSet(EDAData, "EDA"));
         edaChart.setData(lineData);
         edaChart.getDescription().setText("EDA Daten");
         edaChart.setVisibleXRangeMaximum(MAX_X_DATA);
-        edaChart.getAxisLeft().setEnabled(false);
+        edaChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         edaChart.getAxisRight().setEnabled(false);
+        edaChart.getLegend().setEnabled(false);
         edaChart.invalidate();
 
         lineData = new LineData(createDataSet(tempData, "Temperature"));
         tempChart.setData(lineData);
         tempChart.getDescription().setText("Temparatur Daten");
         tempChart.setVisibleXRangeMaximum(MAX_X_DATA);
-        tempChart.getAxisLeft().setEnabled(false);
+        tempChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         tempChart.getAxisRight().setEnabled(false);
+        tempChart.getLegend().setEnabled(false);
         tempChart.invalidate();
 
         //Charts synchronisieren
@@ -123,6 +128,22 @@ public class DataDisplayActivity extends AppCompatActivity
                 }
                 it.hasNext();
             }
+
+            //Daten anpassen um alle Graphen bei 0 bis zum höchsten X Wert darzustellen
+            float max = Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX());
+            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
+            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
+            tempData.add(new Entry(max, tempData.get(tempData.size()-1).getY()));
+
+            if( BVPData.get(0).getX() > 0 )
+                BVPData.add(new Entry(0, BVPData.get(0).getY()));
+            if( EDAData.get(0).getX() > 0 )
+                EDAData.add(new Entry(0, EDAData.get(0).getY()));
+            if( IBIData.get(0).getX() > 0 )
+                IBIData.add(new Entry(0, IBIData.get(0).getY()));
+            if( tempData.get(0).getX() > 0 )
+                tempData.add(new Entry(0, tempData.get(0).getY()));
         }
         catch (Exception e)
         {}
@@ -132,6 +153,8 @@ public class DataDisplayActivity extends AppCompatActivity
     {
         LineDataSet set = new LineDataSet(entries, name);
 
+//        set.setColor(Color.rgb(255, 153, 0));
+//        set.setFillColor(Color.rgb(255, 153, 0));
         set.setDrawFilled(true);
         set.setDrawCircles(true);
         set.setLineWidth(1.8f);

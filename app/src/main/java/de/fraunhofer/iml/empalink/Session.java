@@ -85,8 +85,8 @@ public class Session
             String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress"};
             writer.writeNext(header);
 
-            String[] firstline = {"0", ""+BVPData.get(0), ""+EDAData.get(0), ""+IBIData.get(0), ""+tempData.get(0), ""+accData.get(0), "", ""};//um die Anzeige überall bei 0 beginnen zu lassen TODO Sonderfall das eine Liste leer ist
-            writer.writeNext(firstline);
+//            String[] firstline = {"0", ""+BVPData.get(0), ""+EDAData.get(0), ""+IBIData.get(0), ""+tempData.get(0), ""+accData.get(0), "", ""};//um die Anzeige überall bei 0 beginnen zu lassen TODO Sonderfall das eine Liste leer ist
+//            writer.writeNext(firstline);
 
             String[] data = new String[8];
             int b = 0, e = 0, i = 0, t = 0, a = 0, p = 0, m = 0;
