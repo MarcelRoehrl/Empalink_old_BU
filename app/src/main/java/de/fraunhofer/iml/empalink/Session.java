@@ -45,7 +45,7 @@ public class Session
         File internal_storage = new File(context.getResources().getString(R.string.path));
         internal_storage.mkdirs();
 
-        filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
+        filePath = context.getResources().getString(R.string.path)+ File.separator + "test.csv";//new Date(starttime).toString() + ".csv";
     }
 
     public void save()
