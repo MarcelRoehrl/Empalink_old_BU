@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private Session session;
     private boolean recording = false;
-
+    private boolean wasConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,18 +299,19 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             updateLabel(statusLabel, status.name() + " - Turn on your device");
             // Start scanning
             deviceManager.startScanning();
-            // The device manager has established a connection
-
             hide();
-
+            // The device manager has established a connection
         } else if (status == EmpaStatus.CONNECTED) {
-
             show();
+            wasConnected = true;
             // The device manager disconnected from a device
         } else if (status == EmpaStatus.DISCONNECTED) {
-
             updateLabel(deviceNameLabel, "");
-
+            if(wasConnected)
+            {
+                updateLabel(statusLabel, status.name() + " - Turn on your device");
+                deviceManager.startScanning();
+            }
             hide();
         }
     }
