@@ -5,17 +5,35 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+
+import java.util.ArrayList;
 
 public class CoupleChartGestureListener implements OnChartGestureListener
 {
     private Chart srcChart;
-    private Chart[] dstCharts;
+    private ArrayList<LineChart> dstCharts;
 
-    public CoupleChartGestureListener(Chart srcChart, Chart[] dstCharts) {
+    public CoupleChartGestureListener(Chart srcChart, ArrayList<LineChart> dstCharts) {
         this.srcChart = srcChart;
         this.dstCharts = dstCharts;
+    }
+
+    public CoupleChartGestureListener(Chart srcChart) {
+        this.srcChart = srcChart;
+        this.dstCharts = new ArrayList<LineChart>();
+    }
+
+    public void removeDstChart(LineChart chart)
+    {
+        dstCharts.remove(chart);
+    }
+
+    public void addDstChart(LineChart chart)
+    {
+        dstCharts.add(chart);
     }
 
     @Override

@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.android.material.chip.Chip;
 import com.opencsv.CSVReader;
 
 import java.io.File;
@@ -19,15 +21,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import de.fraunhofer.iml.empalink.SensorObjects.BVP;
-import de.fraunhofer.iml.empalink.SensorObjects.EDA;
-
 public class DataDisplayActivity extends AppCompatActivity
 {
     protected final int MAX_X_DATA = 10;
-    protected LineChart bvpChart;
-    protected LineChart edaChart;
-    protected LineChart tempChart;
+    protected LineChart bvpChart, edaChart, tempChart, ibiChart;
+    protected Chip bvpChip, edaChip, ibiChip, tempChip;
     private String filePath;
 
     private ArrayList<Entry> accData;
@@ -37,6 +35,7 @@ public class DataDisplayActivity extends AppCompatActivity
     private ArrayList<Entry> tempData;
     private ArrayList<Entry> pStressData;
     private ArrayList<Entry> mStressData;
+    private CoupleChartGestureListener bvpListener, edaListener, tempListener, ibiListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,6 +46,11 @@ public class DataDisplayActivity extends AppCompatActivity
         bvpChart = findViewById(R.id.BVP);
         edaChart = findViewById(R.id.EDA);
         tempChart= findViewById(R.id.Temperature);
+        ibiChart = findViewById(R.id.IBI);
+        bvpChip = findViewById(R.id.BVP_chip);
+        edaChip = findViewById(R.id.EDA_chip);
+        ibiChip = findViewById(R.id.IBI_chip);
+        tempChip = findViewById(R.id.Temp_chip);
 
         accData = new ArrayList<Entry>();
         BVPData = new ArrayList<Entry>();
@@ -56,7 +60,7 @@ public class DataDisplayActivity extends AppCompatActivity
         pStressData = new ArrayList<Entry>();
         mStressData = new ArrayList<Entry>();
 
-        filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + "test.csv";
+        filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 
@@ -87,13 +91,172 @@ public class DataDisplayActivity extends AppCompatActivity
         tempChart.getLegend().setEnabled(false);
         tempChart.invalidate();
 
+        lineData = new LineData(createDataSet(IBIData, "IBI"));
+        ibiChart.setData(lineData);
+        ibiChart.getDescription().setText("IBI Daten");
+        ibiChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        ibiChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        ibiChart.getAxisRight().setEnabled(false);
+        ibiChart.getLegend().setEnabled(false);
+        ibiChart.invalidate();
+
         //Charts synchronisieren
-        LineChart[] charts = {edaChart, tempChart};
-        LineChart[] charts2 = {bvpChart, tempChart};
-        LineChart[] charts3 = {bvpChart, edaChart};
-        bvpChart.setOnChartGestureListener(new CoupleChartGestureListener(bvpChart, charts));
-        edaChart.setOnChartGestureListener(new CoupleChartGestureListener(edaChart, charts2));
-        tempChart.setOnChartGestureListener(new CoupleChartGestureListener(tempChart, charts3));
+        bvpListener = new CoupleChartGestureListener(bvpChart);
+        bvpListener.addDstChart(edaChart); bvpListener.addDstChart(tempChart);
+
+        edaListener = new CoupleChartGestureListener(edaChart);
+        edaListener.addDstChart(bvpChart); edaListener.addDstChart(tempChart);
+
+        tempListener = new CoupleChartGestureListener(tempChart);
+        tempListener.addDstChart(bvpChart); tempListener.addDstChart(edaChart);
+
+        bvpChart.setOnChartGestureListener(bvpListener);
+        edaChart.setOnChartGestureListener(edaListener);
+        tempChart.setOnChartGestureListener(tempListener);
+
+        ibiListener = new CoupleChartGestureListener(ibiChart);
+        ibiListener.addDstChart(bvpChart); ibiListener.addDstChart(edaChart); ibiListener.addDstChart(tempChart);
+        ibiChart.setOnChartGestureListener(ibiListener);
+
+        bvpChip.setChecked(true);
+        edaChip.setChecked(true);
+        tempChip.setChecked(true);
+        setChipListener();
+    }
+
+
+    private void setChipListener()
+    {
+        bvpChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bvpChip.isChecked())
+                {
+                    if(checkedChips() <= 3)
+                    {
+                        bvpChart.setVisibility(View.VISIBLE);
+//                        if(edaChip.isChecked())
+                            edaListener.addDstChart(bvpChart);
+//                        if(tempChip.isChecked())
+                            tempListener.addDstChart(bvpChart);
+//                        if(ibiChip.isChecked())
+                            ibiListener.addDstChart(bvpChart);
+                    } else {
+                        bvpChip.setChecked(false);
+                    }
+                } else {
+                    bvpChart.setVisibility(View.GONE);
+//                    if(edaChip.isChecked())
+                        edaListener.removeDstChart(bvpChart);
+//                    if(tempChip.isChecked())
+                        tempListener.removeDstChart(bvpChart);
+//                    if(ibiChip.isChecked())
+                        ibiListener.removeDstChart(bvpChart);
+                }
+            }
+        });
+
+        edaChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(edaChip.isChecked())
+                {
+                    if(checkedChips() <= 3)
+                    {
+                        edaChart.setVisibility(View.VISIBLE);
+//                        if(bvpChip.isChecked())
+                            bvpListener.addDstChart(edaChart);
+//                        if(tempChip.isChecked())
+                            tempListener.addDstChart(edaChart);
+//                        if(ibiChip.isChecked())
+                            ibiListener.addDstChart(edaChart);
+                    } else {
+                        edaChip.setChecked(false);
+                    }
+                } else {
+                    edaChart.setVisibility(View.GONE);
+//                    if(bvpChip.isChecked())
+                        bvpListener.removeDstChart(edaChart);
+//                    if(tempChip.isChecked())
+                        tempListener.removeDstChart(edaChart);
+//                    if(ibiChip.isChecked())
+                        ibiListener.removeDstChart(edaChart);
+                }
+            }
+        });
+
+        tempChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tempChip.isChecked())
+                {
+                    if(checkedChips() <= 3)
+                    {
+                        tempChart.setVisibility(View.VISIBLE);
+//                        if(edaChip.isChecked())
+                            edaListener.addDstChart(tempChart);
+//                        if(bvpChip.isChecked())
+                            bvpListener.addDstChart(tempChart);
+//                        if(ibiChip.isChecked())
+                            ibiListener.addDstChart(tempChart);
+                    } else {
+                        tempChip.setChecked(false);
+                    }
+                } else {
+                    tempChart.setVisibility(View.GONE);
+//                    if(edaChip.isChecked())
+                        edaListener.removeDstChart(tempChart);
+//                    if(bvpChip.isChecked())
+                        bvpListener.removeDstChart(tempChart);
+//                    if(ibiChip.isChecked())
+                        ibiListener.removeDstChart(tempChart);
+                }
+            }
+        });
+
+        ibiChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ibiChip.isChecked())
+                {
+                    if(checkedChips() <= 3)
+                    {
+                        ibiChart.setVisibility(View.VISIBLE);
+//                        if(edaChip.isChecked())
+                            edaListener.addDstChart(ibiChart);
+//                        if(tempChip.isChecked())
+                            tempListener.addDstChart(ibiChart);
+//                        if(bvpChip.isChecked())
+                            bvpListener.addDstChart(ibiChart);
+                    } else {
+                        ibiChip.setChecked(false);
+                    }
+                } else {
+                    ibiChart.setVisibility(View.GONE);
+//                    if(edaChip.isChecked())
+                        edaListener.removeDstChart(ibiChart);
+//                    if(tempChip.isChecked())
+                        tempListener.removeDstChart(ibiChart);
+//                    if(bvpChip.isChecked())
+                        bvpListener.removeDstChart(ibiChart);
+                }
+            }
+        });
+    }
+
+    private int checkedChips()
+    {
+        int res = 0;
+        if(bvpChip.isChecked())
+            res++;
+        if(edaChip.isChecked())
+            res++;
+        if(tempChip.isChecked())
+            res++;
+        if(ibiChip.isChecked())
+            res++;
+
+        return res;
     }
 
     public void load()

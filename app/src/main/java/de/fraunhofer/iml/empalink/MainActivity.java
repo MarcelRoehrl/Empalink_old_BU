@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        startActivity(new Intent(this, DataDisplayActivity.class));
+        startActivityForResult(new Intent(this, FilechooserActivity.class),V.REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)
@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         recording = false;
         recordButton.setText("Aufnahme starten");
+        hide();
+        show();
         session.save();
     }
 
@@ -279,6 +281,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
             // You should deal with this
             return;
+        }
+        else if(requestCode == V.REQUEST_FILENAME)
+        {
+            Intent intent = new Intent(this, DataDisplayActivity.class);
+            intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
+            startActivity(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
