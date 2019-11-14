@@ -14,24 +14,24 @@ import java.util.ArrayList;
 public class CoupleChartGestureListener implements OnChartGestureListener
 {
     private Chart srcChart;
-    private ArrayList<LineChart> dstCharts;
+    private ArrayList<Chart> dstCharts;
 
-    public CoupleChartGestureListener(Chart srcChart, ArrayList<LineChart> dstCharts) {
+    public CoupleChartGestureListener(Chart srcChart, ArrayList<Chart> dstCharts) {
         this.srcChart = srcChart;
         this.dstCharts = dstCharts;
     }
 
     public CoupleChartGestureListener(Chart srcChart) {
         this.srcChart = srcChart;
-        this.dstCharts = new ArrayList<LineChart>();
+        this.dstCharts = new ArrayList<Chart>();
     }
 
-    public void removeDstChart(LineChart chart)
+    public void removeDstChart(Chart chart)
     {
         dstCharts.remove(chart);
     }
 
-    public void addDstChart(LineChart chart)
+    public void addDstChart(Chart chart)
     {
         dstCharts.add(chart);
     }

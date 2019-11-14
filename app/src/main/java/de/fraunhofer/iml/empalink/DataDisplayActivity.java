@@ -6,11 +6,17 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.chip.Chip;
 import com.opencsv.CSVReader;
 
@@ -24,17 +30,12 @@ import java.util.List;
 public class DataDisplayActivity extends AppCompatActivity
 {
     protected final int MAX_X_DATA = 10;
-    protected LineChart bvpChart, edaChart, tempChart, ibiChart;
+    protected CombinedChart edaChart, tempChart, ibiChart, bvpChart;
     protected Chip bvpChip, edaChip, ibiChip, tempChip;
     private String filePath;
 
-    private ArrayList<Entry> accData;
-    private ArrayList<Entry> BVPData;
-    private ArrayList<Entry> EDAData;
-    private ArrayList<Entry> IBIData;
-    private ArrayList<Entry> tempData;
-    private ArrayList<Entry> pStressData;
-    private ArrayList<Entry> mStressData;
+    private ArrayList<Entry> accData, tempData, BVPData, EDAData, IBIData;
+    private ArrayList<BarEntry> pStressData, mStressData;
     private CoupleChartGestureListener bvpListener, edaListener, tempListener, ibiListener;
 
     @Override
@@ -57,15 +58,19 @@ public class DataDisplayActivity extends AppCompatActivity
         EDAData = new ArrayList<Entry>();
         IBIData = new ArrayList<Entry>();
         tempData = new ArrayList<Entry>();
-        pStressData = new ArrayList<Entry>();
-        mStressData = new ArrayList<Entry>();
+        pStressData = new ArrayList<BarEntry>();
+        mStressData = new ArrayList<BarEntry>();
 
         filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 
-        LineData lineData = new LineData(createDataSet(BVPData, "BVP"));
-        bvpChart.setData(lineData);
+        CombinedData combinedData = new CombinedData();
+        combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
+        float maxY = maxYEntry(BVPData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "mentaler Stress")));
+        bvpChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
+        bvpChart.setData(combinedData);
         bvpChart.getDescription().setText("BVP Daten");
         bvpChart.setVisibleXRangeMaximum(MAX_X_DATA);
         bvpChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -73,8 +78,12 @@ public class DataDisplayActivity extends AppCompatActivity
         bvpChart.getLegend().setEnabled(false);
         bvpChart.invalidate();
 
-        lineData = new LineData(createDataSet(EDAData, "EDA"));
-        edaChart.setData(lineData);
+        combinedData = new CombinedData();
+        combinedData.setData(new LineData(createLineDataSet(EDAData, "EDA")));
+        maxY = maxYEntry(EDAData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "EDA Daten")));
+        edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
+        edaChart.setData(combinedData);
         edaChart.getDescription().setText("EDA Daten");
         edaChart.setVisibleXRangeMaximum(MAX_X_DATA);
         edaChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -82,8 +91,12 @@ public class DataDisplayActivity extends AppCompatActivity
         edaChart.getLegend().setEnabled(false);
         edaChart.invalidate();
 
-        lineData = new LineData(createDataSet(tempData, "Temperature"));
-        tempChart.setData(lineData);
+        combinedData = new CombinedData();
+        combinedData.setData(new LineData(createLineDataSet(tempData, "Temperature")));
+        maxY = maxYEntry(tempData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "Temperatur Daten")));
+        tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
+        tempChart.setData(combinedData);
         tempChart.getDescription().setText("Temparatur Daten");
         tempChart.setVisibleXRangeMaximum(MAX_X_DATA);
         tempChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -91,8 +104,12 @@ public class DataDisplayActivity extends AppCompatActivity
         tempChart.getLegend().setEnabled(false);
         tempChart.invalidate();
 
-        lineData = new LineData(createDataSet(IBIData, "IBI"));
-        ibiChart.setData(lineData);
+        combinedData = new CombinedData();
+        combinedData.setData(new LineData(createLineDataSet(IBIData, "IBI")));
+        maxY = maxYEntry(IBIData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "IBI Daten")));
+        ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
+        ibiChart.setData(combinedData);
         ibiChart.getDescription().setText("IBI Daten");
         ibiChart.setVisibleXRangeMaximum(MAX_X_DATA);
         ibiChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -123,7 +140,6 @@ public class DataDisplayActivity extends AppCompatActivity
         tempChip.setChecked(true);
         setChipListener();
     }
-
 
     private void setChipListener()
     {
@@ -244,6 +260,48 @@ public class DataDisplayActivity extends AppCompatActivity
         });
     }
 
+    private ArrayList<BarEntry> adjustEntries(ArrayList<BarEntry> pin, ArrayList<BarEntry> min, float max)
+    {
+        ArrayList<BarEntry> adj = new ArrayList<BarEntry>();
+        float mult = max/5; //Stressangabe von 1-5
+        for(int it = 0; it < pin.size(); it++)
+        {
+            BarEntry ine = new BarEntry(pin.get(it).getX(), pin.get(it).getY());
+            ine.setIcon(new TextDrawable("P"+(int)ine.getY()));
+            ine.setY(ine.getY()*mult);
+            adj.add(ine);
+        }
+
+        int j = 0;
+        int pos = 0;
+        for(int it = 0; it < min.size(); it++)
+        {
+            BarEntry ine = new BarEntry(min.get(it).getX(), min.get(it).getY());
+            ine.setIcon(new TextDrawable("M"+(int)ine.getY()));
+            ine.setY(ine.getY()*mult);
+            while(pin.get(j).getX() <= ine.getX())
+            {
+                if(j < pin.size()-1)
+                    j++;
+                pos++;
+            }
+            adj.add(pos,ine);
+            pos++;
+        }
+        return adj;
+    }
+
+    private float maxYEntry(ArrayList<Entry> in)
+    {
+        float max = 0;
+        for(int it = 0; it < in.size(); it++)
+        {
+            if (in.get(it).getY() > max)
+                max = in.get(it).getY();
+        }
+        return max;
+    }
+
     private int checkedChips()
     {
         int res = 0;
@@ -284,8 +342,8 @@ public class DataDisplayActivity extends AppCompatActivity
                                 //accData.add(new Entry(Integer.valueOf(temp[0]),Integer.valueOf(temp[1]),Integer.valueOf(temp[2]),stamp)); TODO G wert ausrechnen
                                 accData.add(new Entry(stamp, (float)Integer.valueOf(temp[0])));
                             } break;
-                            case 6: pStressData.add(new Entry(stamp, (float)Integer.valueOf(line[i]))); break;
-                            case 7: mStressData.add(new Entry(stamp, (float)Integer.valueOf(line[i]))); break;
+                            case 6: pStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
+                            case 7: mStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
                         }
                     }
                 }
@@ -312,7 +370,7 @@ public class DataDisplayActivity extends AppCompatActivity
         {}
     }
 
-    private LineDataSet createDataSet(List<Entry> entries, String name)
+    private LineDataSet createLineDataSet(List<Entry> entries, String name)
     {
         LineDataSet set = new LineDataSet(entries, name);
 
@@ -332,4 +390,13 @@ public class DataDisplayActivity extends AppCompatActivity
         return set;
     }
 
+    private BarDataSet createBarDataSet(List<BarEntry> entries, String name)
+    {
+        BarDataSet set = new BarDataSet(entries, name);
+        set.setColor(Color.rgb(183,28,28));
+        set.setDrawValues(false);
+        set.setDrawIcons(true);
+        set.setBarBorderWidth(0.75f);
+        return set;
+    }
 }

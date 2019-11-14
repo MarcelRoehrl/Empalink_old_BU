@@ -15,25 +15,25 @@
         app:layout_constraintBottom_toTopOf="@id/chip_bar"
         android:orientation="vertical">
 
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/BVP"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/EDA"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/Temperature"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/IBI"
             android:visibility="gone"
             android:layout_width="match_parent"
