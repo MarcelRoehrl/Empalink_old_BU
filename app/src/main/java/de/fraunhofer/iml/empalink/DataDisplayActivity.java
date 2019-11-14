@@ -3,6 +3,7 @@ package de.fraunhofer.iml.empalink;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
 
@@ -67,8 +68,8 @@ public class DataDisplayActivity extends AppCompatActivity
 
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
-        float maxY = maxYEntry(BVPData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "mentaler Stress")));
+        PointF extremes = maxYEntry(BVPData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "mentaler Stress")));
         bvpChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         bvpChart.setData(combinedData);
         bvpChart.getDescription().setText("BVP Daten");
@@ -80,8 +81,8 @@ public class DataDisplayActivity extends AppCompatActivity
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(EDAData, "EDA")));
-        maxY = maxYEntry(EDAData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "EDA Daten")));
+        extremes = maxYEntry(EDAData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
         edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         edaChart.setData(combinedData);
         edaChart.getDescription().setText("EDA Daten");
@@ -93,8 +94,8 @@ public class DataDisplayActivity extends AppCompatActivity
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(tempData, "Temperature")));
-        maxY = maxYEntry(tempData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "Temperatur Daten")));
+        extremes = maxYEntry(tempData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
         tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         tempChart.setData(combinedData);
         tempChart.getDescription().setText("Temparatur Daten");
@@ -106,8 +107,8 @@ public class DataDisplayActivity extends AppCompatActivity
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(IBIData, "IBI")));
-        maxY = maxYEntry(IBIData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, maxY), "IBI Daten")));
+        extremes = maxYEntry(IBIData);
+        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
         ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         ibiChart.setData(combinedData);
         ibiChart.getDescription().setText("IBI Daten");
@@ -260,28 +261,28 @@ public class DataDisplayActivity extends AppCompatActivity
         });
     }
 
-    private ArrayList<BarEntry> adjustEntries(ArrayList<BarEntry> pin, ArrayList<BarEntry> min, float max)
+    private ArrayList<BarEntry> adjustEntries(ArrayList<BarEntry> pe, ArrayList<BarEntry> me, float max, float min)
     {
         ArrayList<BarEntry> adj = new ArrayList<BarEntry>();
-        float mult = max/5; //Stressangabe von 1-5
-        for(int it = 0; it < pin.size(); it++)
+        float mult = (max-min)/5; //Stressangabe von 1-5
+        for(int it = 0; it < pe.size(); it++)
         {
-            BarEntry ine = new BarEntry(pin.get(it).getX(), pin.get(it).getY());
+            BarEntry ine = new BarEntry(pe.get(it).getX(), pe.get(it).getY());
             ine.setIcon(new TextDrawable("P"+(int)ine.getY()));
-            ine.setY(ine.getY()*mult);
+            ine.setY(ine.getY()*mult+min);
             adj.add(ine);
         }
 
         int j = 0;
         int pos = 0;
-        for(int it = 0; it < min.size(); it++)
+        for(int it = 0; it < me.size(); it++)
         {
-            BarEntry ine = new BarEntry(min.get(it).getX(), min.get(it).getY());
+            BarEntry ine = new BarEntry(me.get(it).getX(), me.get(it).getY());
             ine.setIcon(new TextDrawable("M"+(int)ine.getY()));
-            ine.setY(ine.getY()*mult);
-            while(pin.get(j).getX() <= ine.getX())
+            ine.setY(ine.getY()*mult+min);
+            while(pe.get(j).getX() <= ine.getX())
             {
-                if(j < pin.size()-1)
+                if(j < pe.size()-1)
                     j++;
                 pos++;
             }
@@ -291,15 +292,21 @@ public class DataDisplayActivity extends AppCompatActivity
         return adj;
     }
 
-    private float maxYEntry(ArrayList<Entry> in)
+    private PointF maxYEntry(ArrayList<Entry> in)
     {
         float max = 0;
+        float min = Float.MAX_VALUE;
         for(int it = 0; it < in.size(); it++)
         {
-            if (in.get(it).getY() > max)
-                max = in.get(it).getY();
+            float y = in.get(it).getY();
+            if (y > max)
+                max = y;
+            if (y < min)
+                min = y;
         }
-        return max;
+        if(min < 0)
+            min = 0;
+        return new PointF(max, min);
     }
 
     private int checkedChips()
