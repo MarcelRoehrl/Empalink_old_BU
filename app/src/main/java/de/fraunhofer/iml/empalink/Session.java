@@ -123,7 +123,7 @@ public class Session
                 mTime = mStressData.get(0).timestamp;
 
             double temp = Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
-            long startStamp = (long)(temp*100000); //Das ganze hier gemacht damit in der Schleiche eine Abfrage weniger ist
+            long startStamp = (long)(temp*100000); //Das ganze hier gemacht damit in der Schleife eine Abfrage weniger ist
 
             double curStamp;
             while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && p == -1 && m == -1))
