@@ -83,7 +83,7 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(EDAData, "EDA")));
         extremes = getExtremes(EDAData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
+        //combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
         edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         edaChart.setData(combinedData);
         edaChart.getDescription().setText("EDA Daten - μS");
@@ -96,7 +96,7 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(tempData, "Temperature")));
         extremes = getExtremes(tempData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
+        //combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
         tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         tempChart.setData(combinedData);
         tempChart.getDescription().setText("Temparatur Daten - °C");
@@ -109,7 +109,7 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(IBIData, "IBI")));
         extremes = getExtremes(IBIData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
+        //combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
         ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         ibiChart.setData(combinedData);
         ibiChart.getDescription().setText("IBI Daten");
@@ -122,7 +122,7 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(accData, "Acceleration")));
         extremes = getExtremes(accData);
-        combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Beschleunigung in G")));
+        //combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Beschleunigung in G")));
         accChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         accChart.setData(combinedData);
         accChart.getDescription().setText("Beschleunigung - g");

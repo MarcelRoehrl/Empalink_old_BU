@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private Session session;
     private boolean recording = false;
     private boolean wasConnected = false;
+    private boolean wasReady = false;
+    private boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
 
             deviceManager.disconnect();
+            connected = false;
         }
     }
 
@@ -250,6 +253,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (deviceManager != null && wasReady && !connected) {
+            deviceManager.startScanning();
+        }
+    }
+
+    @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         // Check if the discovered device can be used with your API key. If allowed is always false,
         // the device is not linked with your API key. Please check your developer area at
@@ -308,15 +320,18 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             // Start scanning
             deviceManager.startScanning();
             hide();
+            wasReady = true;
             // The device manager has established a connection
         } else if (status == EmpaStatus.CONNECTED) {
             show();
             wasConnected = true;
+            connected = true;
             // The device manager disconnected from a device
         } else if (status == EmpaStatus.DISCONNECTED) {
             updateLabel(deviceNameLabel, "");
             if(wasConnected)
             {
+                connected = false;
                 updateLabel(statusLabel, status.name() + " - Turn on your device");
                 deviceManager.startScanning();
             }
