@@ -3,10 +3,12 @@ package de.fraunhofer.iml.empalink;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -28,7 +30,6 @@ import java.util.List;
 
 public class DataDisplayActivity extends AppCompatActivity
 {
-    protected final int MAX_X_DATA = 10;
     protected CombinedChart edaChart, tempChart, ibiChart, bvpChart, accChart;
     protected Chip bvpChip, edaChip, ibiChip, tempChip, accChip;
     private String filePath;
@@ -74,10 +75,11 @@ public class DataDisplayActivity extends AppCompatActivity
         bvpChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         bvpChart.setData(combinedData);
         bvpChart.getDescription().setText("BVP Daten");
-        bvpChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        bvpChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         bvpChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         bvpChart.getAxisRight().setEnabled(false);
         bvpChart.getLegend().setEnabled(false);
+        bvpChart.setKeepPositionOnRotation(true);
         bvpChart.invalidate();
 
         combinedData = new CombinedData();
@@ -87,10 +89,11 @@ public class DataDisplayActivity extends AppCompatActivity
         edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         edaChart.setData(combinedData);
         edaChart.getDescription().setText("EDA Daten - μS");
-        edaChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        edaChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         edaChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         edaChart.getAxisRight().setEnabled(false);
         edaChart.getLegend().setEnabled(false);
+        edaChart.setKeepPositionOnRotation(true);
         edaChart.invalidate();
 
         combinedData = new CombinedData();
@@ -100,10 +103,11 @@ public class DataDisplayActivity extends AppCompatActivity
         tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         tempChart.setData(combinedData);
         tempChart.getDescription().setText("Temparatur Daten - °C");
-        tempChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        tempChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         tempChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         tempChart.getAxisRight().setEnabled(false);
         tempChart.getLegend().setEnabled(false);
+        tempChart.setKeepPositionOnRotation(true);
         tempChart.invalidate();
 
         combinedData = new CombinedData();
@@ -113,10 +117,11 @@ public class DataDisplayActivity extends AppCompatActivity
         ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         ibiChart.setData(combinedData);
         ibiChart.getDescription().setText("IBI Daten");
-        ibiChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        ibiChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         ibiChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         ibiChart.getAxisRight().setEnabled(false);
         ibiChart.getLegend().setEnabled(false);
+        ibiChart.setKeepPositionOnRotation(true);
         ibiChart.invalidate();
 
         combinedData = new CombinedData();
@@ -126,10 +131,11 @@ public class DataDisplayActivity extends AppCompatActivity
         accChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         accChart.setData(combinedData);
         accChart.getDescription().setText("Beschleunigung - g");
-        accChart.setVisibleXRangeMaximum(MAX_X_DATA);
+        accChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         accChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         accChart.getAxisRight().setEnabled(false);
         accChart.getLegend().setEnabled(false);
+        accChart.setKeepPositionOnRotation(true);
         accChart.invalidate();
 
         //Charts synchronisieren
@@ -167,6 +173,8 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(bvpChip.isChecked())
                 {
+
+                    float x = bvpChart.getX();
                     if(checkedChips() <= 3)
                     {
                         bvpChart.setVisibility(View.VISIBLE);
@@ -175,6 +183,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         tempListener.addDstChart(bvpChart);
                         ibiListener.addDstChart(bvpChart);
                         accListener.addDstChart(bvpChart);
+
+                        syncCharts(bvpChip);
                     } else {
                         bvpChip.setChecked(false);
                     }
@@ -202,6 +212,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         tempListener.addDstChart(edaChart);
                         ibiListener.addDstChart(edaChart);
                         accListener.addDstChart(edaChart);
+
+                        syncCharts(edaChip);
                     } else {
                         edaChip.setChecked(false);
                     }
@@ -229,6 +241,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         bvpListener.addDstChart(tempChart);
                         ibiListener.addDstChart(tempChart);
                         accListener.addDstChart(tempChart);
+
+                        syncCharts(tempChip);
                     } else {
                         tempChip.setChecked(false);
                     }
@@ -256,6 +270,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         tempListener.addDstChart(ibiChart);
                         bvpListener.addDstChart(ibiChart);
                         accListener.addDstChart(ibiChart);
+
+                        syncCharts(ibiChip);
                     } else {
                         ibiChip.setChecked(false);
                     }
@@ -283,6 +299,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         tempListener.addDstChart(accChart);
                         bvpListener.addDstChart(accChart);
                         ibiListener.addDstChart(accChart);
+
+                        syncCharts(accChip);
                     } else {
                         accChip.setChecked(false);
                     }
@@ -296,6 +314,20 @@ public class DataDisplayActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    private void syncCharts(Chip exclude)
+    {
+        if(bvpChip.isChecked() && bvpChip != exclude)
+            bvpListener.syncCharts();
+        else if(edaChip.isChecked() && edaChip != exclude)
+            edaListener.syncCharts();
+        else if(tempChip.isChecked() && tempChip != exclude)
+            tempListener.syncCharts();
+        else if(ibiChip.isChecked() && ibiChip != exclude)
+            ibiListener.syncCharts();
+        else if(accChip.isChecked() && accChip != exclude)
+            accListener.syncCharts();
     }
 
     private ArrayList<BarEntry> adjustEntries(ArrayList<BarEntry> pe, ArrayList<BarEntry> me, float max, float min)
@@ -319,9 +351,11 @@ public class DataDisplayActivity extends AppCompatActivity
             ine.setY(ine.getY()*mult+min);
             while(pe.get(j).getX() <= ine.getX())
             {
+                pos++;
                 if(j < pe.size()-1)
                     j++;
-                pos++;
+                else
+                    break;
             }
             adj.add(pos,ine);
             pos++;
@@ -450,5 +484,67 @@ public class DataDisplayActivity extends AppCompatActivity
         set.setDrawIcons(true);
         set.setBarBorderWidth(0.75f);
         return set;
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save the state of item position
+        outState.putBoolean("bvpC", bvpChip.isChecked());
+        outState.putBoolean("edaC", edaChip.isChecked());
+        outState.putBoolean("tempC", tempChip.isChecked());
+        outState.putBoolean("ibiC", ibiChip.isChecked());
+        outState.putBoolean("accC", accChip.isChecked());
+
+        CombinedChart chart;
+        if(edaChip.isChecked())
+            chart = edaChart;
+        else if(tempChip.isChecked())
+            chart = tempChart;
+        else if(ibiChip.isChecked())
+            chart = ibiChart;
+        else if(accChip.isChecked())
+            chart = accChart;
+        else
+            chart = bvpChart;
+
+        chart.zoomOut();
+        outState.putFloat("x", Math.abs(chart.getViewPortHandler().getTransX()/chart.getViewPortHandler().contentWidth()*V.MAX_X_DATA));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Read the state of item position
+        boolean bvpC = savedInstanceState.getBoolean("bvpC");
+        boolean edaC = savedInstanceState.getBoolean("edaC");
+        boolean tempC = savedInstanceState.getBoolean("tempC");
+        boolean ibiC = savedInstanceState.getBoolean("ibiC");
+        boolean accC = savedInstanceState.getBoolean("accC");
+
+        float x = savedInstanceState.getFloat("x");
+
+        if(!bvpC)
+            bvpChip.callOnClick();
+        else
+            bvpChart.moveViewToX(x);
+        if(!edaC)
+            edaChip.callOnClick();
+        else
+            edaChart.moveViewToX(x);
+        if(!tempC)
+            tempChip.callOnClick();
+        else
+            tempChart.moveViewToX(x);
+        if(ibiC) {
+            ibiChip.callOnClick();
+            ibiChart.moveViewToX(x);
+        }
+        if(accC) {
+            accChip.callOnClick();
+            accChart.moveViewToX(x);
+        }
     }
 }

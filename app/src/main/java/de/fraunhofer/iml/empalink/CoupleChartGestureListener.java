@@ -97,4 +97,30 @@ public class CoupleChartGestureListener implements OnChartGestureListener
             }
         }
     }
+
+    public void syncCharts(float[] srcVals)
+    {
+        Matrix dstMatrix;
+        float[] dstVals = new float[9];
+
+        // apply X axis scaling and position to dst charts:
+        for (Chart dstChart : dstCharts) {
+            if (dstChart.getVisibility() == View.VISIBLE) {
+                dstMatrix = dstChart.getViewPortHandler().getMatrixTouch();
+                dstMatrix.getValues(dstVals);
+                dstVals[Matrix.MSCALE_X] = srcVals[Matrix.MSCALE_X];
+                dstVals[Matrix.MTRANS_X] = srcVals[Matrix.MTRANS_X];
+                dstMatrix.setValues(dstVals);
+                dstChart.getViewPortHandler().refresh(dstMatrix, dstChart, true);
+            }
+        }
+    }
+
+    public float[] getSrcValues()
+    {
+        float[] srcVals = new float[9];
+        srcChart.getViewPortHandler().getMatrixTouch().getValues(srcVals);
+
+        return srcVals;
+    }
 }
