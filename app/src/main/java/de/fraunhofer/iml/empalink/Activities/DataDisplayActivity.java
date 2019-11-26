@@ -1,14 +1,12 @@
 package de.fraunhofer.iml.empalink.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.View;
 
-import com.github.mikephil.charting.charts.Chart;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -38,6 +36,7 @@ public class DataDisplayActivity extends AppCompatActivity
     protected CombinedChart edaChart, tempChart, ibiChart, bvpChart, accChart;
     protected Chip bvpChip, edaChip, ibiChip, tempChip, accChip;
     private String filePath;
+    private float highest_x_value = 0;
 
     private ArrayList<Entry> accData, tempData, BVPData, EDAData, IBIData;
     private ArrayList<BarEntry> pStressData, mStressData;
@@ -79,6 +78,9 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "mentaler Stress")));
         bvpChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         bvpChart.setData(combinedData);
+        bvpChart.getXAxis().setAxisMaximum(highest_x_value);
+        bvpChart.getXAxis().setAxisMinimum(0);
+        bvpChart.moveViewToX(0);
         bvpChart.getDescription().setText("BVP Daten");
         bvpChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         bvpChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -93,6 +95,9 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
         edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         edaChart.setData(combinedData);
+        edaChart.getXAxis().setAxisMaximum(highest_x_value);
+        edaChart.getXAxis().setAxisMinimum(0);
+        edaChart.moveViewToX(0);
         edaChart.getDescription().setText("EDA Daten - μS");
         edaChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         edaChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -107,6 +112,9 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
         tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         tempChart.setData(combinedData);
+        tempChart.getXAxis().setAxisMaximum(highest_x_value);
+        tempChart.getXAxis().setAxisMinimum(0);
+        tempChart.moveViewToX(0);
         tempChart.getDescription().setText("Temparatur Daten - °C");
         tempChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         tempChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -121,6 +129,9 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
         ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         ibiChart.setData(combinedData);
+        ibiChart.getXAxis().setAxisMaximum(highest_x_value);
+        ibiChart.getXAxis().setAxisMinimum(0);
+        ibiChart.moveViewToX(0);
         ibiChart.getDescription().setText("IBI Daten");
         ibiChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         ibiChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -135,6 +146,9 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Beschleunigung in G")));
         accChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         accChart.setData(combinedData);
+        accChart.getXAxis().setAxisMaximum(highest_x_value);
+        accChart.getXAxis().setAxisMinimum(0);
+        accChart.moveViewToX(0);
         accChart.getDescription().setText("Beschleunigung - g");
         accChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
         accChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -180,7 +194,7 @@ public class DataDisplayActivity extends AppCompatActivity
                 {
 
                     float x = bvpChart.getX();
-                    if(checkedChips() <= 3)
+                    if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         bvpChart.setVisibility(View.VISIBLE);
 
@@ -209,7 +223,7 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(edaChip.isChecked())
                 {
-                    if(checkedChips() <= 3)
+                    if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         edaChart.setVisibility(View.VISIBLE);
 
@@ -238,7 +252,7 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(tempChip.isChecked())
                 {
-                    if(checkedChips() <= 3)
+                    if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         tempChart.setVisibility(View.VISIBLE);
 
@@ -267,7 +281,7 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(ibiChip.isChecked())
                 {
-                    if(checkedChips() <= 3)
+                    if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         ibiChart.setVisibility(View.VISIBLE);
 
@@ -296,7 +310,7 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(accChip.isChecked())
                 {
-                    if(checkedChips() <= 3)
+                    if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         accChart.setVisibility(View.VISIBLE);
 
@@ -439,23 +453,23 @@ public class DataDisplayActivity extends AppCompatActivity
             }
 
             //Daten anpassen um alle Graphen bei 0 bis zum höchsten X Wert darzustellen
-            float max = Math.max(Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX()), accData.get(accData.size()-1).getX());
-            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
-            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
-            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
-            tempData.add(new Entry(max, tempData.get(tempData.size()-1).getY()));
-            accData.add(new Entry(max, accData.get(accData.size()-1).getY()));
-
-            if( BVPData.get(0).getX() > 0 )
-                BVPData.add(new Entry(0, BVPData.get(0).getY()));
-            if( EDAData.get(0).getX() > 0 )
-                EDAData.add(new Entry(0, EDAData.get(0).getY()));
-            if( IBIData.get(0).getX() > 0 )
-                IBIData.add(new Entry(0, IBIData.get(0).getY()));
-            if( tempData.get(0).getX() > 0 )
-                tempData.add(new Entry(0, tempData.get(0).getY()));
-            if( accData.get(0).getX() > 0 )
-                accData.add(new Entry(0, accData.get(0).getY()));
+            highest_x_value = Math.max(Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX()), accData.get(accData.size()-1).getX());
+//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+//            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
+//            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
+//            tempData.add(new Entry(max, tempData.get(tempData.size()-1).getY()));
+//            accData.add(new Entry(max, accData.get(accData.size()-1).getY()));
+//
+//            if( BVPData.get(0).getX() > 0 )
+//                BVPData.add(new Entry(0, BVPData.get(0).getY()));
+//            if( EDAData.get(0).getX() > 0 )
+//                EDAData.add(new Entry(0, EDAData.get(0).getY()));
+//            if( IBIData.get(0).getX() > 0 )
+//                IBIData.add(new Entry(0, IBIData.get(0).getY()));
+//            if( tempData.get(0).getX() > 0 )
+//                tempData.add(new Entry(0, tempData.get(0).getY()));
+//            if( accData.get(0).getX() > 0 )
+//                accData.add(new Entry(0, accData.get(0).getY()));
         }
         catch (Exception e)
         {}
