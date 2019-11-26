@@ -452,9 +452,9 @@ public class DataDisplayActivity extends AppCompatActivity
                 it.hasNext();
             }
 
-            //Daten anpassen um alle Graphen bei 0 bis zum höchsten X Wert darzustellen
-            highest_x_value = Math.max(Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX()), accData.get(accData.size()-1).getX());
-//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+            //Um Daten anpassen zu können, alle Graphen bei 0 bis zum höchsten X Wert darstellen
+            highest_x_value = Math.max(Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX()), accData.get(accData.size()-1).getX());//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+//  Alternativ to setMin/Max auf der X Achse Punkte hinzufügen um alle Graphen im Gleichen Bereich darzustellen
 //            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
 //            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
 //            tempData.add(new Entry(max, tempData.get(tempData.size()-1).getY()));
