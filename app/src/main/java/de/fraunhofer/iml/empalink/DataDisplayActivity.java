@@ -351,7 +351,8 @@ public class DataDisplayActivity extends AppCompatActivity
             ine.setY(ine.getY()*mult+min);
             while(pe.get(j).getX() <= ine.getX())
             {
-                pos++;
+                if(pos < adj.size())
+                    pos++;
                 if(j < pe.size()-1)
                     j++;
                 else
