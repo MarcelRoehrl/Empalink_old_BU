@@ -1,4 +1,4 @@
-package de.fraunhofer.iml.empalink;
+package de.fraunhofer.iml.empalink.Activities;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.V;
 
 public class FilechooserActivity extends ListActivity
 {

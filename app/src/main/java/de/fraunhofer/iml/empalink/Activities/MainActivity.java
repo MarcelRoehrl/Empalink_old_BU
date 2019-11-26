@@ -1,4 +1,4 @@
-package de.fraunhofer.iml.empalink;
+package de.fraunhofer.iml.empalink.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +14,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -35,7 +31,9 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
-import java.io.File;
+import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.Session;
+import de.fraunhofer.iml.empalink.V;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        startActivityForResult(new Intent(this, FilechooserActivity.class),V.REQUEST_FILENAME);
+        startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)
