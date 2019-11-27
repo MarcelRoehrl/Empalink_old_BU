@@ -516,9 +516,6 @@ public class DataDisplayActivity extends AppCompatActivity
         boolean accC = savedInstanceState.getBoolean("accC");
 
         float x = savedInstanceState.getFloat("x");
-        float xs = savedInstanceState.getFloat("xs");
-        float y = savedInstanceState.getFloat("y");
-        float ys = savedInstanceState.getFloat("ys");
 
         if(!bvpC)
             bvpChip.callOnClick();
