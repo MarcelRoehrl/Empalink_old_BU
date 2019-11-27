@@ -368,14 +368,17 @@ public class DataDisplayActivity extends AppCompatActivity
             BarEntry ine = new BarEntry(me.get(it).getX(), me.get(it).getY());
             ine.setIcon(new TextDrawable("M"+(int)ine.getY()));
             ine.setY(ine.getY()*mult+min);
-            while(pe.get(j).getX() <= ine.getX())
+            if(pe.size() > 0)
             {
-                if(pos < adj.size())
-                    pos++;
-                if(j < pe.size()-1)
-                    j++;
-                else
-                    break;
+                while(pe.get(j).getX() <= ine.getX())
+                {
+                    if(pos < adj.size())
+                        pos++;
+                    if(j < pe.size()-1)
+                        j++;
+                    else
+                        break;
+                }
             }
             adj.add(pos,ine);
             pos++;
@@ -453,7 +456,7 @@ public class DataDisplayActivity extends AppCompatActivity
             }
 
             //Um Daten anpassen zu können, alle Graphen bei 0 bis zum höchsten X Wert darstellen
-            highest_x_value = Math.max(Math.max(Math.max(Math.max(BVPData.get(BVPData.size()-1).getX(), EDAData.get(EDAData.size()-1).getX()), IBIData.get(IBIData.size()-1).getX()), tempData.get(tempData.size()-1).getX()), accData.get(accData.size()-1).getX());//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+            highest_x_value = Math.max(Math.max(Math.max(Math.max((BVPData.size() > 0 ? BVPData.get(BVPData.size()-1).getX() : 0), (EDAData.size() > 0 ? EDAData.get(EDAData.size()-1).getX() : 0)), (IBIData.size() > 0 ? IBIData.get(IBIData.size()-1).getX() : 0)), (tempData.size() > 0 ? tempData.get(tempData.size()-1).getX() : 0)), (accData.size() > 0 ? accData.get(accData.size()-1).getX() : 0));//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
 //  Alternativ to setMin/Max auf der X Achse Punkte hinzufügen um alle Graphen im Gleichen Bereich darzustellen
 //            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
 //            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
