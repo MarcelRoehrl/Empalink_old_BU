@@ -127,11 +127,11 @@ public class DataDisplayActivity extends AppCompatActivity
         tempChart.setOnChartGestureListener(tempListener);
 
         ibiListener = new CoupleChartGestureListener(ibiChart);
-        ibiListener.addDstChart(bvpChart); ibiListener.addDstChart(edaChart); ibiListener.addDstChart(tempChart); //die drei beim start angezeigt werden
+        ibiListener.addDstChart(bvpChart); ibiListener.addDstChart(edaChart); ibiListener.addDstChart(tempChart); //die drei die beim start angezeigt werden
         ibiChart.setOnChartGestureListener(ibiListener);
 
         accListener = new CoupleChartGestureListener(accChart);
-        accListener.addDstChart(bvpChart); accListener.addDstChart(edaChart); accListener.addDstChart(tempChart); //die drei beim start angezeigt werden
+        accListener.addDstChart(bvpChart); accListener.addDstChart(edaChart); accListener.addDstChart(tempChart); //die drei die beim start angezeigt werden
         accChart.setOnChartGestureListener(accListener);
 
         bvpChip.setChecked(true);
@@ -161,8 +161,6 @@ public class DataDisplayActivity extends AppCompatActivity
             public void onClick(View view) {
                 if(bvpChip.isChecked())
                 {
-
-                    float x = bvpChart.getX();
                     if(checkedChips() <= V.MAX_GRAPHS)
                     {
                         bvpChart.setVisibility(View.VISIBLE);
