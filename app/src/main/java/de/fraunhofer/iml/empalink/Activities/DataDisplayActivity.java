@@ -76,86 +76,41 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
         PointF extremes = getExtremes(BVPData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "mentaler Stress")));
-        bvpChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         bvpChart.setData(combinedData);
-        bvpChart.getXAxis().setAxisMaximum(highest_x_value);
-        bvpChart.getXAxis().setAxisMinimum(0);
-        bvpChart.moveViewToX(0);
         bvpChart.getDescription().setText("BVP Daten");
-        bvpChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
-        bvpChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        bvpChart.getAxisRight().setEnabled(false);
-        bvpChart.getLegend().setEnabled(false);
-        bvpChart.setKeepPositionOnRotation(true);
-        bvpChart.invalidate();
+        initChart(bvpChart);
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(EDAData, "EDA")));
         extremes = getExtremes(EDAData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
-        edaChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         edaChart.setData(combinedData);
-        edaChart.getXAxis().setAxisMaximum(highest_x_value);
-        edaChart.getXAxis().setAxisMinimum(0);
-        edaChart.moveViewToX(0);
         edaChart.getDescription().setText("EDA Daten - μS");
-        edaChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
-        edaChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        edaChart.getAxisRight().setEnabled(false);
-        edaChart.getLegend().setEnabled(false);
-        edaChart.setKeepPositionOnRotation(true);
-        edaChart.invalidate();
+        initChart(edaChart);
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(tempData, "Temperature")));
         extremes = getExtremes(tempData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
-        tempChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         tempChart.setData(combinedData);
-        tempChart.getXAxis().setAxisMaximum(highest_x_value);
-        tempChart.getXAxis().setAxisMinimum(0);
-        tempChart.moveViewToX(0);
         tempChart.getDescription().setText("Temparatur Daten - °C");
-        tempChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
-        tempChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        tempChart.getAxisRight().setEnabled(false);
-        tempChart.getLegend().setEnabled(false);
-        tempChart.setKeepPositionOnRotation(true);
-        tempChart.invalidate();
+        initChart(tempChart);
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(IBIData, "IBI")));
         extremes = getExtremes(IBIData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
-        ibiChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         ibiChart.setData(combinedData);
-        ibiChart.getXAxis().setAxisMaximum(highest_x_value);
-        ibiChart.getXAxis().setAxisMinimum(0);
-        ibiChart.moveViewToX(0);
         ibiChart.getDescription().setText("IBI Daten");
-        ibiChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
-        ibiChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        ibiChart.getAxisRight().setEnabled(false);
-        ibiChart.getLegend().setEnabled(false);
-        ibiChart.setKeepPositionOnRotation(true);
-        ibiChart.invalidate();
+        initChart(ibiChart);
 
         combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(accData, "Acceleration")));
         extremes = getExtremes(accData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Beschleunigung in G")));
-        accChart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
         accChart.setData(combinedData);
-        accChart.getXAxis().setAxisMaximum(highest_x_value);
-        accChart.getXAxis().setAxisMinimum(0);
-        accChart.moveViewToX(0);
         accChart.getDescription().setText("Beschleunigung - g");
-        accChart.setVisibleXRangeMaximum(V.MAX_X_DATA);
-        accChart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        accChart.getAxisRight().setEnabled(false);
-        accChart.getLegend().setEnabled(false);
-        accChart.setKeepPositionOnRotation(true);
-        accChart.invalidate();
+        initChart(accChart);
 
         //Charts synchronisieren
         bvpListener = new CoupleChartGestureListener(bvpChart);
@@ -183,6 +138,20 @@ public class DataDisplayActivity extends AppCompatActivity
         edaChip.setChecked(true);
         tempChip.setChecked(true);
         setChipListener();
+    }
+
+    private void initChart(CombinedChart chart)
+    {
+        chart.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE});
+        chart.getXAxis().setAxisMaximum(highest_x_value);
+        chart.getXAxis().setAxisMinimum(0);
+        chart.moveViewToX(0);
+        chart.setVisibleXRangeMaximum(V.MAX_X_DATA);
+        chart.getAxisLeft().setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        chart.getAxisRight().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setKeepPositionOnRotation(true);
+        chart.invalidate();
     }
 
     private void setChipListener()
