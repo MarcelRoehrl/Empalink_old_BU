@@ -15,6 +15,7 @@ import de.fraunhofer.iml.empalink.V;
 
 public class FilechooserActivity extends ListActivity
 {
+    private final String no_recordings = "Es wurde noch keine Aufzeichnung gefunden";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +30,9 @@ public class FilechooserActivity extends ListActivity
             stringlist.add(files[i].getName());
         }
 
+        if(files.length == 0)
+            stringlist.add(no_recordings);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,stringlist);
         setListAdapter(adapter);
     }
@@ -36,9 +40,15 @@ public class FilechooserActivity extends ListActivity
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id)
     {
-        Intent intent = new Intent();
-        intent.putExtra(V.FILENAME_EXTRA, (String)l.getItemAtPosition(position));
-        setResult(RESULT_OK, intent);
-        finish();
+        String selection = (String)l.getItemAtPosition(position);
+        if(!selection.equals(no_recordings))
+        {
+            Intent intent = new Intent();
+            intent.putExtra(V.FILENAME_EXTRA, selection);
+            setResult(RESULT_OK, intent);
+            finish();
+         }
+        else
+            onBackPressed();
     }
 }

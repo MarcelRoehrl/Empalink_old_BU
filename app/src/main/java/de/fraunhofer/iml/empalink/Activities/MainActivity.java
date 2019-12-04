@@ -292,10 +292,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             // You should deal with this
             return;
         }
-        else if(requestCode == V.REQUEST_FILENAME)
+        else if(requestCode == V.REQUEST_FILENAME && resultCode == RESULT_OK)
         {
             Intent intent = new Intent(this, DataDisplayActivity.class);
             intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
+            String test = data.getStringExtra(V.FILENAME_EXTRA);
             startActivity(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -316,10 +317,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (status == EmpaStatus.READY) {
             updateLabel(statusLabel, status.name() + " - Turn on your device");
             // Start scanning
-            deviceManager.startScanning();
-            hide();
-            wasReady = true;
-            // The device manager has established a connection
+            try {
+                deviceManager.startScanning();
+                hide();
+                wasReady = true;
+                // The device manager has established a connection
+            } catch (Exception e)
+            {
+                updateLabel(statusLabel, "No internet connection");
+                //Keine Verbindung, versuche es erneut
+                initEmpaticaDeviceManager();
+            }
         } else if (status == EmpaStatus.CONNECTED) {
             show();
             wasConnected = true;
