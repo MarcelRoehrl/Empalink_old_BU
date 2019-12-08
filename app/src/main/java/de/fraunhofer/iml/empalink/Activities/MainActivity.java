@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         // Initialize vars that reference UI components
@@ -88,7 +87,18 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         pStressButton = findViewById(R.id.pStressButton);
         mStressButton = findViewById(R.id.mStressButton);
 
-        initEmpaticaDeviceManager();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+        }
+        else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        else
+        {
+            initEmpaticaDeviceManager();
+        }
     }
 
     public void onShowDataClicked(View view)
@@ -181,43 +191,26 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PERMISSION_ACCESS_COARSE_LOCATION:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission was granted, yay!
-                    initEmpaticaDeviceManager();
-                } else {
-                    // Permission denied, boo!
-                    final boolean needRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-                    new AlertDialog.Builder(this)
-                            .setTitle("Permission required")
-                            .setMessage("Without this permission bluetooth low energy devices cannot be found, allow it in order to connect to the device.")
-                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // try again
-                                    if (needRationale) {
-                                        // the "never ask again" flash is not set, try again with permission request
-                                        initEmpaticaDeviceManager();
-                                    } else {
-                                        // the "never ask again" flag is set so the permission requests is disabled, try open app settings to enable the permission
-                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                        intent.setData(uri);
-                                        startActivity(intent);
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Exit application", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // without permission exit is the only way
-                                    finish();
-                                }
-                            })
-                            .show();
-                }
-                break;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if(requestCode == 0)
+        {
+            if ( (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) ) {
+                // all permissions granted
+                initEmpaticaDeviceManager();
+            } else {
+                finish();
+            }
+        }
+        if(requestCode == 1)
+        {
+            if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
+            {
+                // all permissions granted
+                initEmpaticaDeviceManager();
+            } else {
+                finish();
+            }
         }
     }
 
