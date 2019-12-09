@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.empatica.empalink.ConfigurationProfileException;
 import com.empatica.empalink.ConnectionNotAllowedException;
 import com.empatica.empalink.EmpaDeviceManager;
 import com.empatica.empalink.EmpaticaDevice;
@@ -34,6 +37,7 @@ import com.empatica.empalink.delegate.EmpaStatusDelegate;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
 import de.fraunhofer.iml.empalink.V;
+import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel;
     private TextView deviceNameLabel;
     private LinearLayout dataCnt;
-    private com.google.android.material.button.MaterialButton disconnectButton, recordButton, pStressButton, mStressButton;
+    private com.google.android.material.button.MaterialButton disconnectButton, recordButton, pStressButton, mStressButton, showDataButton;
 
     private Session session;
     private boolean recording = false;
@@ -86,7 +90,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         recordButton = findViewById(R.id.recordButton);
         pStressButton = findViewById(R.id.pStressButton);
         mStressButton = findViewById(R.id.mStressButton);
+        showDataButton = findViewById(R.id.showDataButton);
 
+        Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
+
+        checkPermissions();
+    }
+
+    private void checkPermissions()
+    {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
@@ -95,10 +107,66 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
-        else
-        {
+        else {
             initEmpaticaDeviceManager();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if(requestCode == 0)
+        {
+            if ( (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) )
+            {   // all permissions granted
+                show();
+                initEmpaticaDeviceManager();
+            } else {
+                informAndFinish();
+            }
+        }
+        if(requestCode == 1)
+        {
+            if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
+            {   // all permissions granted
+                show();
+                initEmpaticaDeviceManager();
+            } else {
+                informAndFinish();
+            }
+        }
+    }
+
+    public void informAndFinish()
+    {
+        hide();
+        showDataButton.setVisibility(View.INVISIBLE);
+//        final Toast toast = Toast.makeText(this, "Bitte Berechtigungen erteilen, da eine Verbindung zu der E4 und die Aufzeichnung der Daten sonst nicht möglich ist", Toast.LENGTH_LONG);
+//        toast.setGravity(Gravity.CENTER, 0, 0);
+//        toast.show();
+//
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                finish();
+//            }
+//        }, 3500);
+
+        final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        alertBuilder.setTitle("Keine Berechtigung")
+                .setMessage("Bitte Berechtigungen erteilen, da sonst eine Verbindung zu der E4 und die Aufzeichnung der Daten nicht möglich ist");
+
+        alertBuilder.setNegativeButton("App beenden", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { finish(); } })
+        .setPositiveButton("Berechtigungen erteilen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                checkPermissions();
+            }
+        }).show();
     }
 
     public void onShowDataClicked(View view)
@@ -190,30 +258,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 .show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        if(requestCode == 0)
-        {
-            if ( (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) ) {
-                // all permissions granted
-                initEmpaticaDeviceManager();
-            } else {
-                finish();
-            }
-        }
-        if(requestCode == 1)
-        {
-            if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
-            {
-                // all permissions granted
-                initEmpaticaDeviceManager();
-            } else {
-                finish();
-            }
-        }
-    }
-
     private void initEmpaticaDeviceManager() {
         // Android 6 (API level 23) now require ACCESS_COARSE_LOCATION permission to use BLE
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -282,7 +326,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // The user chose not to enable Bluetooth
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            // You should deal with this
+            updateLabel(statusLabel, "Bitte bluetooth aktivieren und die App neu starten um sich mit einer E4 verbinden zu können");
+            //TODO Listener auf bluetooth setzen um beim aktivieren weiter zu suchen
             return;
         }
         else if(requestCode == V.REQUEST_FILENAME && resultCode == RESULT_OK)
@@ -429,6 +474,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
 
+                showDataButton.setVisibility(View.VISIBLE);
                 dataCnt.setVisibility(View.VISIBLE);
                 disconnectButton.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
