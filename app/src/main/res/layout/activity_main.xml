@@ -7,8 +7,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/status"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"/>
+
+    <TextView
+        android:id="@+id/deviceName"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/status"
+        android:layout_height="36dp"/>
+
+    <TextView
+        android:id="@+id/battery"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/deviceName"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/showDataButton"
+        app:layout_constraintTop_toBottomOf="@id/dataDisplay"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginRight="16dp"
+        app:strokeColor="#0D47A1"
+        android:text="Aufnahme anzeigen"
+        android:textColor="#0D47A1"
+        android:textSize="15sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onShowDataClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <ImageButton
+        android:id="@+id/recordButton"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:background="@drawable/play"
+        android:onClick="onRecordClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pStressButton"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/status"
+        app:strokeColor="#B71C1C"
+        android:text="P"
+        android:textSize="30dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onPStressClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mStressButton"
+        app:layout_constraintTop_toBottomOf="@+id/status"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:strokeColor="#B71C1C"
+        android:text="M"
+        android:textSize="30dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onMStressClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!--Erstmal unnütze Elemente-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/disconnectButton"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/pStressButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginLeft="16dp"
+        app:strokeColor="#B71C1C"
+        android:text="Verbindung trennen"
+        android:textColor="#B71C1C"
+        android:textSize="15sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onDisconnectClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/dataDisplay"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,23 +112,11 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"/>
-
-        <TextView
-            android:id="@+id/deviceName"
-            android:layout_below="@id/status"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"/>
-
         <LinearLayout
             android:visibility="gone"
             android:id="@+id/dataArea"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/deviceName"
             android:orientation="vertical">
 
             <TextView
@@ -156,13 +240,6 @@
                 android:text="@string/battery_label" />
 
             <TextView
-                android:layout_below="@id/battery_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/battery"
-                android:text="@string/emptyText"/>
-
-            <TextView
                 android:layout_below="@id/wrist_status_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,78 +248,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/showDataButton"
-        app:layout_constraintTop_toBottomOf="@id/dataDisplay"
-        app:layout_constraintLeft_toLeftOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginLeft="16dp"
-        app:strokeColor="#0D47A1"
-        android:text="Aufnahme anzeigen"
-        android:textColor="#0D47A1"
-        android:textSize="15sp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onShowDataClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/recordButton"
-        app:layout_constraintTop_toBottomOf="@id/dataDisplay"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginRight="16dp"
-        app:strokeColor="#0D47A1"
-        android:text="Aufnahme starten"
-        android:textColor="#0D47A1"
-        android:textSize="15sp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onRecordClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/pStressButton"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-        android:layout_marginLeft="16dp"
-        app:strokeColor="#B71C1C"
-        app:layout_constraintTop_toBottomOf="@+id/showDataButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Physischer\nStress"
-        android:textSize="30dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onPStressClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/mStressButton"
-        app:layout_constraintTop_toBottomOf="@+id/recordButton"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-        android:layout_marginRight="16dp"
-        app:strokeColor="#B71C1C"
-        android:text="Mentaler\nStress"
-        android:textSize="30dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onMStressClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/disconnectButton"
-        app:layout_constraintTop_toBottomOf="@id/pStressButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_marginLeft="16dp"
-        app:strokeColor="#B71C1C"
-        android:text="Verbindung trennen"
-        android:textColor="#B71C1C"
-        android:textSize="15sp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        android:onClick="onDisconnectClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel;
     private TextView deviceNameLabel;
     private LinearLayout dataCnt;
-    private com.google.android.material.button.MaterialButton disconnectButton, recordButton, pStressButton, mStressButton, showDataButton;
+    private com.google.android.material.button.MaterialButton disconnectButton, pStressButton, mStressButton, showDataButton;
+    private ImageButton recordButton;
 
     private Session session;
     private boolean recording = false;
@@ -141,17 +143,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         hide();
         showDataButton.setVisibility(View.INVISIBLE);
-//        final Toast toast = Toast.makeText(this, "Bitte Berechtigungen erteilen, da eine Verbindung zu der E4 und die Aufzeichnung der Daten sonst nicht möglich ist", Toast.LENGTH_LONG);
-//        toast.setGravity(Gravity.CENTER, 0, 0);
-//        toast.show();
-//
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                finish();
-//            }
-//        }, 3500);
 
         final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Keine Berechtigung")
@@ -191,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if(!recording)
         {
             session = new Session(System.currentTimeMillis(), this);
-            recordButton.setText("Aufnahme speichern");
+            recordButton.setBackground(getDrawable(R.drawable.pause));
             recording = true;
             show();
         }
@@ -202,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void stopAndSaveRecordings()
     {
         recording = false;
-        recordButton.setText("Aufnahme starten");
+        recordButton.setBackground(getDrawable(R.drawable.play));
         hide();
         show();
         session.save();

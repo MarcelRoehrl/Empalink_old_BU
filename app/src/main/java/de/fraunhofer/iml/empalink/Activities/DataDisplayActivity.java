@@ -93,7 +93,7 @@ public class DataDisplayActivity extends AppCompatActivity
         extremes = getExtremes(tempData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
         tempChart.setData(combinedData);
-        tempChart.getDescription().setText("Temparatur Daten - °C");
+        tempChart.getDescription().setText("Temperatur Daten - °C");
         initChart(tempChart);
 
         combinedData = new CombinedData();
@@ -412,7 +412,7 @@ public class DataDisplayActivity extends AppCompatActivity
                                 float x = Float.valueOf(temp[0]);
                                 float y = Float.valueOf(temp[1]);
                                 float z = Float.valueOf(temp[2]);
-                                accData.add(new Entry(stamp, (float)(Math.sqrt(x * x + y * y + z * z)/64)));
+                                accData.add(new Entry(stamp, normAcc((float)(Math.sqrt(x * x + y * y + z * z)/64))));
                             } break;
                             case 6: pStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
                             case 7: mStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
@@ -443,6 +443,14 @@ public class DataDisplayActivity extends AppCompatActivity
         }
         catch (Exception e)
         {}
+    }
+
+    private float normAcc(float input_with_1g)
+    {
+        if(input_with_1g >= 1)
+            return input_with_1g-1;
+        else
+            return 1-input_with_1g;
     }
 
     private LineDataSet createLineDataSet(List<Entry> entries, String name)
