@@ -50,23 +50,6 @@ public class Session
 
     public void save()
     {
-//        BVPData.add(new BVP(100,10));
-//        BVPData.add(new BVP(1020,11));
-//        BVPData.add(new BVP(1030,12));
-//        BVPData.add(new BVP(1040,13));
-//        BVPData.add(new BVP(1050,14));
-//        BVPData.add(new BVP(1060,15));
-//
-//        EDAData.add(new EDA(20,11));
-//        EDAData.add(new EDA(30,12));
-//        EDAData.add(new EDA(40,13));
-//        EDAData.add(new EDA(50,14));
-//        EDAData.add(new EDA(60,15));
-//
-//        IBIData.add(new IBI(100,9));
-//        IBIData.add(new IBI(200,13));
-//        IBIData.add(new IBI(300,15));
-
         try {
             File f = new File(filePath);
             CSVWriter writer;

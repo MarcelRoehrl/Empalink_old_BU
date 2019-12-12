@@ -1,2 +1,2 @@
-include ':app', ':opencsv-4.6'
+include ':app'
 rootProject.name='Empalink'

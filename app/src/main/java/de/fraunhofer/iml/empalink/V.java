@@ -7,4 +7,13 @@ public final class V
 
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;
+
+    static public float calcNormedAcc(float x, float y, float z)
+    {
+        float inG = (float)(Math.sqrt(x * x + y * y + z * z)/64);
+        if(inG >= 1)
+            return inG-1;
+        else
+            return 1-inG;
+    }
 }

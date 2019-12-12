@@ -25,13 +25,14 @@ public class FilechooserActivity extends ListActivity
 
         File directory = new File(getApplicationContext().getResources().getString(R.string.path));
         File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++)
-        {
-            stringlist.add(files[i].getName());
-        }
 
-        if(files.length == 0)
+        if(files == null  || files.length == 0)
             stringlist.add(no_recordings);
+        else {
+            for (int i = 0; i < files.length; i++) {
+                stringlist.add(files[i].getName());
+            }
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,stringlist);
         setListAdapter(adapter);

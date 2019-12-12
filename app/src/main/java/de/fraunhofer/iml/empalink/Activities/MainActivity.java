@@ -2,19 +2,15 @@ package de.fraunhofer.iml.empalink.Activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -25,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.empatica.empalink.ConfigurationProfileException;
 import com.empatica.empalink.ConnectionNotAllowedException;
 import com.empatica.empalink.EmpaDeviceManager;
 import com.empatica.empalink.EmpaticaDevice;
@@ -47,22 +42,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
-
     private EmpaDeviceManager deviceManager = null;
-    private TextView accel_xLabel;
-    private TextView accel_yLabel;
-    private TextView accel_zLabel;
-    private TextView bvpLabel;
-    private TextView edaLabel;
-    private TextView ibiLabel;
-    private TextView temperatureLabel;
-    private TextView batteryLabel;
-    private TextView statusLabel;
-    private TextView deviceNameLabel;
-    private LinearLayout dataCnt;
-    private com.google.android.material.button.MaterialButton disconnectButton, pStressButton, mStressButton, showDataButton;
-    private ImageButton recordButton;
 
+    private TextView statusLabel, deviceNameLabel, batteryLabel;
+    private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
+    private com.google.android.material.button.MaterialButton pStressButton, mStressButton, showDataButton;
+    private ImageButton recordButton;
+    private ImageView connection_icon;
+    private com.google.android.material.card.MaterialCardView livedata_card;
     private Session session;
     private boolean recording = false;
     private boolean wasConnected = false;
@@ -75,20 +62,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize vars that reference UI components
-        statusLabel = (TextView) findViewById(R.id.status);
-        dataCnt = (LinearLayout) findViewById(R.id.dataArea);
-        accel_xLabel = (TextView) findViewById(R.id.accel_x);
-        accel_yLabel = (TextView) findViewById(R.id.accel_y);
-        accel_zLabel = (TextView) findViewById(R.id.accel_z);
-        bvpLabel = (TextView) findViewById(R.id.bvp);
-        edaLabel = (TextView) findViewById(R.id.eda);
-        ibiLabel = (TextView) findViewById(R.id.ibi);
-        temperatureLabel = (TextView) findViewById(R.id.temperature);
-        batteryLabel = (TextView) findViewById(R.id.battery);
-        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
+        statusLabel = findViewById(R.id.status);
+        eda_value = findViewById(R.id.eda_value);
+        ibi_value = findViewById(R.id.ibi_value);
+        bpm_value = findViewById(R.id.bpm_value);
+        acc_value = findViewById(R.id.acc_value);
+        temp_value = findViewById(R.id.temp_value);
+        batteryLabel = findViewById(R.id.battery);
+        deviceNameLabel = findViewById(R.id.deviceName);
+        livedata_card = findViewById(R.id.livedata_card);
+        connection_icon = findViewById(R.id.connection_icon);
 
-        disconnectButton = findViewById(R.id.disconnectButton);
         recordButton = findViewById(R.id.recordButton);
         pStressButton = findViewById(R.id.pStressButton);
         mStressButton = findViewById(R.id.mStressButton);
@@ -96,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        checkPermissions();
+        //checkPermissions();
+        show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -342,28 +327,32 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         // Update the UI
         updateLabel(statusLabel, status.name());
 
-        // The device manager is ready for use
-        if (status == EmpaStatus.READY) {
+
+        if (status == EmpaStatus.READY)
+        {// The device manager is ready for use
             updateLabel(statusLabel, status.name() + " - Turn on your device");
-            // Start scanning
-            try {
+            try {// Start scanning
                 deviceManager.startScanning();
                 hide();
                 wasReady = true;
                 // The device manager has established a connection
             } catch (Exception e)
-            {
+            {//Keine Verbindung, versuche es erneut
                 updateLabel(statusLabel, "No internet connection");
-                //Keine Verbindung, versuche es erneut
                 initEmpaticaDeviceManager();
             }
-        } else if (status == EmpaStatus.CONNECTED) {
+        }
+        else if (status == EmpaStatus.CONNECTED)
+        {
             show();
             wasConnected = true;
             connected = true;
-            // The device manager disconnected from a device
-        } else if (status == EmpaStatus.DISCONNECTED) {
+            connection_icon.setBackground(getDrawable(R.drawable.connected));
+        }
+        else if (status == EmpaStatus.DISCONNECTED)
+        {// The device manager disconnected from a device
             updateLabel(deviceNameLabel, "");
+            connection_icon.setBackground(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
                 connected = false;
@@ -376,9 +365,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-        updateLabel(accel_xLabel, "" + x);
-        updateLabel(accel_yLabel, "" + y);
-        updateLabel(accel_zLabel, "" + z);
+        updateLabel(acc_value, "" + V.calcNormedAcc(x,y,z));
 
         if(recording)
             session.addAcc(x,y,z,timestamp);
@@ -386,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        updateLabel(bvpLabel, "" + bvp);
+        updateLabel(bpm_value, "" + bvp);
         if(recording)
             session.addBVP(bvp,timestamp);
     }
@@ -398,21 +385,21 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
-        updateLabel(edaLabel, "" + gsr);
+        updateLabel(eda_value, "" + gsr);
         if(recording)
             session.addEDA(gsr,timestamp);
     }
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
-        updateLabel(ibiLabel, "" + ibi);
+        updateLabel(ibi_value, "" + ibi);
         if(recording)
             session.addIBI(ibi,timestamp);
     }
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
-        updateLabel(temperatureLabel, "" + temp);
+        updateLabel(temp_value, "" + temp);
         if(recording)
             session.addTemp(temp,timestamp);
     }
@@ -441,21 +428,21 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didUpdateOnWristStatus(@EmpaSensorStatus final int status) {
 
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                if (status == EmpaSensorStatus.ON_WRIST) {
-
-                    ((TextView) findViewById(R.id.wrist_status_label)).setText("ON WRIST");
-                }
-                else {
-
-                    ((TextView) findViewById(R.id.wrist_status_label)).setText("NOT ON WRIST");
-                }
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                if (status == EmpaSensorStatus.ON_WRIST) {
+//
+//                    ((TextView) findViewById(R.id.wrist_status_label)).setText("ON WRIST");
+//                }
+//                else {
+//
+//                    ((TextView) findViewById(R.id.wrist_status_label)).setText("NOT ON WRIST");
+//                }
+//            }
+//        });
     }
 
     void show() {
@@ -466,8 +453,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             public void run() {
 
                 showDataButton.setVisibility(View.VISIBLE);
-                dataCnt.setVisibility(View.VISIBLE);
-                disconnectButton.setVisibility(View.VISIBLE);
+                livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
                 if(recording) {
                     pStressButton.setVisibility(View.VISIBLE);
@@ -484,8 +470,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
 
-                dataCnt.setVisibility(View.GONE);
-                disconnectButton.setVisibility(View.GONE);
+                livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
                 pStressButton.setVisibility(View.GONE);
                 mStressButton.setVisibility(View.GONE);
