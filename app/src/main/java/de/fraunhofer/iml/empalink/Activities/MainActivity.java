@@ -396,7 +396,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBatteryLevel(float battery, double timestamp) {
-        batteryLabel.setVisibility(View.VISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                batteryLabel.setVisibility(View.VISIBLE);
+            }
+        });
         updateLabel(batteryLabel, "Akku: " + String.format("%.0f %%", battery * 100) + "%");
     }
 
