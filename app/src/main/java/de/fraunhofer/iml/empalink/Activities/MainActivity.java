@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private EmpaDeviceManager deviceManager = null;
 
-    private TextView statusLabel, deviceNameLabel, batteryLabel;
+    private TextView statusLabel, captionLabel, batteryLabel;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
     private com.google.android.material.button.MaterialButton pStressButton, mStressButton, showDataButton;
     private ImageButton recordButton;
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         acc_value = findViewById(R.id.acc_value);
         temp_value = findViewById(R.id.temp_value);
         batteryLabel = findViewById(R.id.battery);
-        deviceNameLabel = findViewById(R.id.deviceName);
+        captionLabel = findViewById(R.id.caption);
         livedata_card = findViewById(R.id.livedata_card);
         connection_icon = findViewById(R.id.connection_icon);
 
@@ -80,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen die drüber auch
+        checkPermissions();
+        //show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -283,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             try {
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
-                updateLabel(deviceNameLabel, "To: " + deviceName);
+                updateLabel(captionLabel, "mit " + deviceName);
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 Toast.makeText(MainActivity.this, "Sorry, you can't connect to this device", Toast.LENGTH_SHORT).show();
@@ -324,13 +323,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didUpdateStatus(EmpaStatus status) {
-        // Update the UI
-        updateLabel(statusLabel, status.name());
-
 
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
-            updateLabel(statusLabel, status.name() + " - Turn on your device");
+            updateLabel(statusLabel, "Bereit");
+            updateLabel(captionLabel, "bitte E4 anschalten");
             try {// Start scanning
                 deviceManager.startScanning();
                 hide();
@@ -338,61 +335,81 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 // The device manager has established a connection
             } catch (Exception e)
             {//Keine Verbindung, versuche es erneut
-                updateLabel(statusLabel, "No internet connection");
+                updateLabel(statusLabel, "Keine Internetverbindung");
                 initEmpaticaDeviceManager();
             }
         }
         else if (status == EmpaStatus.CONNECTED)
         {
+            updateLabel(statusLabel, "Verbunden");
             show();
             wasConnected = true;
             connected = true;
-            connection_icon.setBackground(getDrawable(R.drawable.connected));
+            connection_icon.setImageDrawable(getDrawable(R.drawable.connected));
         }
         else if (status == EmpaStatus.DISCONNECTED)
         {// The device manager disconnected from a device
-            updateLabel(deviceNameLabel, "");
-            connection_icon.setBackground(getDrawable(R.drawable.disconnected));
+            connection_icon.setImageDrawable(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
                 connected = false;
-                updateLabel(statusLabel, status.name() + " - Turn on your device");
+                updateLabel(statusLabel, "Verbindung getrennt");
+                updateLabel(captionLabel, "bitte E4 erneut anschalten");
                 deviceManager.startScanning();
             }
             hide();
+        }
+        else if (status == EmpaStatus.CONNECTING)
+        {
+            updateLabel(statusLabel, "Verbinde");
         }
     }
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-        updateLabel(acc_value, "" + V.calcNormedAcc(x,y,z));
+        float val = V.calcNormedAcc(x,y,z);
+        String vals = ""+Math.round(val*100f)/100f;
+        updateLabel(acc_value, vals);
 
         if(recording)
             session.addAcc(x,y,z,timestamp);
     }
 
+    private String padRight(String inputString, int length) {
+        if (inputString.length() >= length) {
+            return inputString;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(inputString);
+        while (sb.length() < length) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        updateLabel(bpm_value, "" + bvp);
+        updateLabel(bpm_value, "" + Math.round(bvp*100f)/100f);
         if(recording)
             session.addBVP(bvp,timestamp);
     }
 
     @Override
     public void didReceiveBatteryLevel(float battery, double timestamp) {
-        updateLabel(batteryLabel, String.format("%.0f %%", battery * 100));
+        batteryLabel.setVisibility(View.VISIBLE);
+        updateLabel(batteryLabel, "Akku: " + String.format("%.0f %%", battery * 100) + "%");
     }
 
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
-        updateLabel(eda_value, "" + gsr);
+        updateLabel(eda_value, "" + Math.round(gsr*1000f)/1000f);
         if(recording)
             session.addEDA(gsr,timestamp);
     }
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
-        updateLabel(ibi_value, "" + ibi);
+        updateLabel(ibi_value, "" + Math.round(ibi*1000f)/1000f);
         if(recording)
             session.addIBI(ibi,timestamp);
     }
@@ -421,8 +438,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didEstablishConnection() {
-
-        show();
     }
 
     @Override
@@ -451,7 +466,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
-
                 showDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
@@ -469,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
-
+                batteryLabel.setVisibility(View.GONE);
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
                 pStressButton.setVisibility(View.GONE);

@@ -40,31 +40,27 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/connection_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Status"/>
+                android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/deviceName"
+                android:id="@+id/caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="2dp"
-                android:layout_marginLeft="2dp"
-                app:layout_constraintBottom_toBottomOf="@+id/status"
-                app:layout_constraintLeft_toRightOf="@id/status"
+                android:layout_marginTop="2dp"
+                app:layout_constraintTop_toBottomOf="@+id/status"
+                app:layout_constraintLeft_toLeftOf="@id/status"
                 style="@style/TextAppearance.MaterialComponents.Caption"
-                android:textSize="16sp"
-                android:text="Gerätename"/>
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/battery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:visibility="gone"
                 android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/status"
-                app:layout_constraintLeft_toLeftOf="@id/status"
-                android:text="Batteriestand"/>
+                app:layout_constraintBottom_toBottomOf="@+id/status"
+                app:layout_constraintLeft_toRightOf="@id/status"
+                style="@style/TextAppearance.MaterialComponents.Caption"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -227,13 +223,14 @@
                 app:layout_constraintTop_toTopOf="@+id/acc_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
-                android:text="-">
+                android:text="   -">
             </TextView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/acc_value"
+                android:layout_marginLeft="33sp"
+                app:layout_constraintLeft_toRightOf="@id/acc_label"
                 app:layout_constraintTop_toTopOf="@+id/acc_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
@@ -245,9 +242,9 @@
                 android:id="@+id/eda_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/eda_unit"
                 app:layout_constraintTop_toTopOf="@+id/bpm_label"
-                android:layout_marginRight="50dp"
+                android:layout_marginRight="42sp"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -262,13 +259,15 @@
                 app:layout_constraintTop_toTopOf="@+id/eda_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
-                android:text="-">
+                android:text="    -">
             </TextView>
 
             <TextView
+                android:id="@+id/eda_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/eda_value"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/eda_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
@@ -296,13 +295,14 @@
                 app:layout_constraintTop_toTopOf="@+id/ibi_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
-                android:text="-">
+                android:text="    -">
             </TextView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/ibi_value"
+                android:layout_marginLeft="42dp"
+                app:layout_constraintLeft_toRightOf="@id/ibi_label"
                 app:layout_constraintTop_toTopOf="@+id/ibi_label"
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textSize="16sp"
