@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private TextView statusLabel, captionLabel, batteryLabel;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
-    private com.google.android.material.button.MaterialButton pStressButton, mStressButton, showDataButton;
+    private com.google.android.material.button.MaterialButton pStressButton, mStressButton, showDataButton, backgroundShowDataButton;
     private ImageButton recordButton;
     private ImageView connection_icon;
     private com.google.android.material.card.MaterialCardView livedata_card;
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         pStressButton = findViewById(R.id.pStressButton);
         mStressButton = findViewById(R.id.mStressButton);
         showDataButton = findViewById(R.id.showDataButton);
+        backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
             updateLabel(statusLabel, "Bereit");
-            updateLabel(captionLabel, "bitte E4 anschalten");
+            updateLabel(captionLabel, "E4 bitte einschalten");
             try {// Start scanning
                 deviceManager.startScanning();
                 hide();
@@ -354,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             {
                 connected = false;
                 updateLabel(statusLabel, "Verbindung getrennt");
-                updateLabel(captionLabel, "bitte E4 erneut anschalten");
+                updateLabel(captionLabel, "E4 bitte erneut einschalten");
                 deviceManager.startScanning();
             }
             hide();
@@ -471,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
+                backgroundShowDataButton.setVisibility(View.GONE);
                 showDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
@@ -488,6 +490,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
+                backgroundShowDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
                 pStressButton.setVisibility(View.GONE);

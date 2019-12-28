@@ -109,6 +109,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/livedata_card"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -318,7 +319,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="2dp"
                 app:strokeColor="#0D47A1"
-                android:text="Aufnahme anzeigen"
+                android:text="Aufnahmen anzeigen"
                 android:textColor="#0D47A1"
                 android:textSize="16sp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
@@ -330,6 +331,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backgroundShowDataButton"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_margin="8dp"
+        app:strokeColor="#0D47A1"
+        android:text="Aufnahmen anzeigen"
+        android:textColor="#0D47A1"
+        android:textSize="16sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:onClick="onShowDataClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <!--Erstmal unnütze Elemente-->
     <com.google.android.material.button.MaterialButton
