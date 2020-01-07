@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private TextView statusLabel, captionLabel, batteryLabel;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
-    private com.google.android.material.button.MaterialButton pStressButton, mStressButton, showDataButton, backgroundShowDataButton;
+    private com.google.android.material.button.MaterialButton showDataButton, backgroundShowDataButton;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton pStressFAB, mStressFAB;
     private ImageButton recordButton;
     private ImageView connection_icon;
     private com.google.android.material.card.MaterialCardView livedata_card;
@@ -73,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         connection_icon = findViewById(R.id.connection_icon);
 
         recordButton = findViewById(R.id.recordButton);
-        pStressButton = findViewById(R.id.pStressButton);
-        mStressButton = findViewById(R.id.mStressButton);
+        pStressFAB = findViewById(R.id.pStressFAB);
+        mStressFAB = findViewById(R.id.mStressFAB);
         showDataButton = findViewById(R.id.showDataButton);
         backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
@@ -477,8 +478,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
                 if(recording) {
-                    pStressButton.setVisibility(View.VISIBLE);
-                    mStressButton.setVisibility(View.VISIBLE);
+                    pStressFAB.show();
+                    mStressFAB.show();
                 }
             }
         });
@@ -493,8 +494,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 backgroundShowDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
-                pStressButton.setVisibility(View.GONE);
-                mStressButton.setVisibility(View.GONE);
+                pStressFAB.hide();
+                mStressFAB.hide();
             }
         });
     }
