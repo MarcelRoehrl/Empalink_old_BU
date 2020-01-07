@@ -83,62 +83,56 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/pStressFAB"
-        app:borderWidth="10dp"
+        app:borderWidth="-1dp"
+        android:backgroundTint="#B71C1C"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabCustomSize="70dp"
+        app:fabCustomSize="80dp"
         app:layout_constraintBottom_toTopOf="@+id/recordButton"
         app:layout_constraintTop_toTopOf="@+id/recordButton"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp"
         android:onClick="onPStressClicked"
         android:backgroundTintMode="multiply"
-        android:elevation="5dp"
-        app:backgroundTint="@color/colorPrimary"/>
+        android:elevation="5dp"/>
 
-    <TextView
+    <ImageView
         android:layout_height="0dp"
         android:layout_width="0dp"
+        android:layout_margin="10dp"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="@+id/pStressFAB"
         app:layout_constraintRight_toRightOf="@+id/pStressFAB"
         app:layout_constraintTop_toTopOf="@+id/pStressFAB"
         app:layout_constraintBottom_toBottomOf="@+id/pStressFAB"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:textStyle="bold"
-        android:text="P"
-        android:elevation="15dp"
-        android:textSize="36dp"
-        android:textColor="#fff"/>
+        android:src="@drawable/physical"
+        android:elevation="15dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/mStressFAB"
-        app:borderWidth="10dp"
+        app:borderWidth="-1dp"
+        android:backgroundTint="#0D47A1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabCustomSize="70dp"
+        app:fabCustomSize="80dp"
         app:layout_constraintBottom_toTopOf="@+id/recordButton"
         app:layout_constraintTop_toTopOf="@+id/recordButton"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
         android:onClick="onMStressClicked"
-        android:elevation="5dp"
-        app:backgroundTint="@color/colorPrimary"/>
+        android:elevation="5dp"/>
 
-    <TextView
+    <ImageView
         android:layout_height="0dp"
         android:layout_width="0dp"
+        android:layout_margin="10dp"
         android:gravity="center"
+        android:src="@drawable/mental"
         app:layout_constraintLeft_toLeftOf="@+id/mStressFAB"
         app:layout_constraintRight_toRightOf="@+id/mStressFAB"
         app:layout_constraintTop_toTopOf="@+id/mStressFAB"
         app:layout_constraintBottom_toBottomOf="@+id/mStressFAB"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:textStyle="bold"
-        android:text="M"
-        android:elevation="15dp"
-        android:textSize="36dp"
-        android:textColor="#fff"/>
+        android:elevation="15dp"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/livedata_card"
