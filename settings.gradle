@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':Jama-1.0.3'
 rootProject.name='Empalink'
