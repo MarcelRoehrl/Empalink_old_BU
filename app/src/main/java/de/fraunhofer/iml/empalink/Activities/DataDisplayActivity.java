@@ -80,7 +80,13 @@ public class DataDisplayActivity extends AppCompatActivity
         }
         AMPDAlgo test = new AMPDAlgo(bvp);
         try {
-            Integer[] test2 = test.ampdPeaks();
+            ArrayList<Integer> peaks = test.ampdPeaks();
+            float[] peaks_times = new float[peaks.size()];
+            for(int j = 0; j < peaks.size(); j++)
+            {
+                peaks_times[j] = BVPData.get(peaks.get(j)).getX();
+            }
+            float pulse = V.calcMedPulse(V.calcPulse(peaks_times));
             System.out.println();
         } catch (Exception e) {
             e.printStackTrace();

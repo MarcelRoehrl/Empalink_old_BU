@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
+    private double updated_pulse = 0;
+
     private EmpaDeviceManager deviceManager = null;
 
     private TextView statusLabel, captionLabel, batteryLabel;
@@ -391,9 +393,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        updateLabel(bpm_value, "" + Math.round(bvp*100f)/100f);
         if(recording)
-            session.addBVP(bvp,timestamp);
+        {
+            session.addBVP(bvp, timestamp);
+            if(updated_pulse == 0)
+                updated_pulse = timestamp+V.MED_PULSE_RANGE;
+            else if(timestamp >= updated_pulse)
+            {
+                updated_pulse = timestamp+V.MED_PULSE_RANGE;
+                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(timestamp)*100f)/100f);
+            }
+        }
     }
 
     @Override

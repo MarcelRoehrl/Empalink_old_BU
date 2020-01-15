@@ -1,9 +1,12 @@
 package de.fraunhofer.iml.empalink;
 
+import java.util.ArrayList;
+
 public final class V
 {
     public static final int MAX_X_DATA = 10; //Wieviele Sekunden sollen auf den Graphen maximal auf einmal anzeigbar sein
     public static final int MAX_GRAPHS = 5; //Wieviele Graphen sollen gleichzeitig maximal anzeigbar sein
+    public static final int MED_PULSE_RANGE = 5000; //aus den letzten x msec soll der durchschnittliche Puls ermittelt werden
 
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;
@@ -15,5 +18,25 @@ public final class V
             return inG-1;
         else
             return 1-inG;
+    }
+
+    static public float[] calcPulse(float[] peak_times)
+    {
+        float[] pulse_values = new float[peak_times.length-1];
+        for(int it = 0; it < peak_times.length-1; it++)
+        {
+            pulse_values[it] = peak_times[it+1]-peak_times[it];
+        }
+        return pulse_values;
+    }
+
+    static public float calcMedPulse(float[] pulse_values)
+    {
+        float sum = 0;
+        for(int it = 0; it < pulse_values.length; it++)
+        {
+            sum += pulse_values[it];
+        }
+        return 60/(sum / pulse_values.length);
     }
 }
