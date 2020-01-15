@@ -29,6 +29,7 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import de.fraunhofer.iml.empalink.Activities.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
 import de.fraunhofer.iml.empalink.V;
@@ -81,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen die drüber auch
+        checkPermissions();
+        //show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -496,6 +497,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 recordButton.setVisibility(View.GONE);
                 pStressFAB.hide();
                 mStressFAB.hide();
+                updateLabel(batteryLabel,null);
             }
         });
     }

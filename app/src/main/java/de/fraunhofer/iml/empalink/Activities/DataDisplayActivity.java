@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import de.fraunhofer.iml.empalink.Activities.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.CoupleChartGestureListener;
 import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.TextDrawable;
 import de.fraunhofer.iml.empalink.V;
 
@@ -71,6 +73,19 @@ public class DataDisplayActivity extends AppCompatActivity
         filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
+
+        double[] bvp = new double[BVPData.size()];
+        for(int it = 0; it < BVPData.size(); it++)
+        {
+            bvp[it] = BVPData.get(it).getY();
+        }
+        AMPDAlgo test = new AMPDAlgo(bvp);
+        try {
+            Integer[] test2 = test.ampdPeaks();
+            System.out.println();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
