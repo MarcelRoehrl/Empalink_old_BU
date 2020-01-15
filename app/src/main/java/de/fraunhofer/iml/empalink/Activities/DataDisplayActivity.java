@@ -26,10 +26,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import de.fraunhofer.iml.empalink.Activities.AMPDAlgorithm.AMPDAlgo;
+import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.CoupleChartGestureListener;
 import de.fraunhofer.iml.empalink.R;
-import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.TextDrawable;
 import de.fraunhofer.iml.empalink.V;
 

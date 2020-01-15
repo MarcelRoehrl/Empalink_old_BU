@@ -1,4 +1,4 @@
-package de.fraunhofer.iml.empalink.Activities.AMPDAlgorithm;
+package de.fraunhofer.iml.empalink.AMPDAlgorithm;
 
 
 import java.util.ArrayList;
