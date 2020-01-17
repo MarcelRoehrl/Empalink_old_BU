@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_max="6"
+        app:bsb_min="1"
+        app:bsb_progress="1"
+        app:bsb_track_size="4dp"
+        app:bsb_thumb_radius="8dp"
+        app:bsb_thumb_radius_on_dragging="16dp"
+        app:bsb_section_count="5"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+<!--    <io.github.stack07142.discreteseekbar.DiscreteSeekBar-->
+<!--        android:id="@+id/slider_1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:discrete_seekbar_maxValue="6"-->
+<!--        app:discrete_seekbar_minValue="1"-->
+<!--        app:discrete_seekbar_sectionCount="5"-->
+<!--        app:discrete_seekbar_thumbColor="@color/colorPrimaryDark"-->
+<!--        app:discrete_seekbar_thumbDefaultSize="16dp"-->
+<!--        app:discrete_seekbar_thumbPressedSize="24dp"-->
+<!--        app:discrete_seekbar_tickMarkDrawable="@drawable/tickmark"-->
+<!--        app:discrete_seekbar_tickMarkTextColor="@color/colorBlack"-->
+<!--        app:discrete_seekbar_tickMarkTextSize="12sp"-->
+<!--        app:discrete_seekbar_tickMarkTopMargin="18dp"-->
+<!--        app:discrete_seekbar_trackColor="@color/colorBlueGrey900"-->
+<!--        app:discrete_seekbar_trackTouchEnable="true"-->
+<!--        app:discrete_seekbar_trackWidth="1dp"-->
+<!--        app:discrete_seekbar_value="1" />-->
+
+</LinearLayout>

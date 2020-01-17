@@ -7,11 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +28,7 @@ import com.empatica.empalink.config.EmpaSensorType;
 import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
+import com.xw.repo.BubbleSeekBar;
 
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
@@ -81,9 +82,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         showDataButton = findViewById(R.id.showDataButton);
         backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
+
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
+        checkPermissions();
         //show(); //TODO nur zum testen die drüber auch
     }
 
@@ -189,44 +191,75 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onPStressClicked(View view)
     {
-        final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Physischer Stress")
                 .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
 
         final LayoutInflater inflater = this.getLayoutInflater();
-        final View ratingBar = inflater.inflate(R.layout.rating_bar, null);
-        alertBuilder.setView(ratingBar);
+        final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
+        alertBuilder.setView(ratingSlider);
+
+        final BubbleSeekBar slider = ratingSlider.findViewById(R.id.slider);
+        slider.setThumbColor(ContextCompat.getColor(this, R.color.fill_bar_red));
+        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.fill_bar_red));
+        slider.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "kaum");
+                array.put(5, "stark");
+
+                return array;
+            }
+        });
+
 
         alertBuilder.setPositiveButton("Eintragen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                session.addPStress((int)((RatingBar)ratingBar.findViewById(R.id.ratingBar)).getRating(), session.getLatestTimestamp());
-            }
-        })
-                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
+                   session.addPStress(slider.getProgress(), session.getLatestTimestamp());
+                }
+            })
+            .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            })
+            .show();
     }
 
     public void onMStressClicked(View view)
     {
-        final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Mentaler Stress")
                 .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
 
         final LayoutInflater inflater = this.getLayoutInflater();
-        final View ratingBar = inflater.inflate(R.layout.rating_bar, null);
-        alertBuilder.setView(ratingBar);
+        final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
+        alertBuilder.setView(ratingSlider);
+
+        final BubbleSeekBar slider = ratingSlider.findViewById(R.id.slider);
+        slider.setThumbColor(ContextCompat.getColor(this, R.color.fill_bar_blue));
+        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.fill_bar_blue));
+        slider.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "kaum");
+                array.put(5, "stark");
+
+                return array;
+            }
+        });
 
         alertBuilder.setPositiveButton("Eintragen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                session.addMStress((int)((RatingBar)ratingBar.findViewById(R.id.ratingBar)).getRating(), session.getLatestTimestamp());
+                session.addMStress(slider.getProgress(), session.getLatestTimestamp());
             }
         })
                 .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {

@@ -52,7 +52,9 @@ android {
 }
 
 dependencies {
-    api 'com.google.android.material:material:1.0.0'
+    api 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'com.xw.repo:bubbleseekbar:3.20'
+    //implementation 'com.github.stack07142:DiscreteSeekBar:1.0.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
