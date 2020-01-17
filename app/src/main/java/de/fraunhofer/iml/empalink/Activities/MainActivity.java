@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        checkPermissions();
-        //show(); //TODO nur zum testen die drüber auch
+        //checkPermissions();
+        show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -200,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         alertBuilder.setView(ratingSlider);
 
         final BubbleSeekBar slider = ratingSlider.findViewById(R.id.slider);
-        slider.setThumbColor(ContextCompat.getColor(this, R.color.fill_bar_red));
-        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.fill_bar_red));
+        slider.setThumbColor(ContextCompat.getColor(this, R.color.physical_red));
+        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.physical_red));
         slider.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @NonNull
             @Override
@@ -241,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         alertBuilder.setView(ratingSlider);
 
         final BubbleSeekBar slider = ratingSlider.findViewById(R.id.slider);
-        slider.setThumbColor(ContextCompat.getColor(this, R.color.fill_bar_blue));
-        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.fill_bar_blue));
+        slider.setThumbColor(ContextCompat.getColor(this, R.color.mental_blue));
+        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.mental_blue));
         slider.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @NonNull
             @Override

@@ -84,7 +84,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/pStressFAB"
         app:borderWidth="-1dp"
-        android:backgroundTint="#B71C1C"
+        android:backgroundTint="@color/physical_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabCustomSize="80dp"
@@ -110,7 +110,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/mStressFAB"
         app:borderWidth="-1dp"
-        android:backgroundTint="#0D47A1"
+        android:backgroundTint="@color/mental_blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabCustomSize="80dp"

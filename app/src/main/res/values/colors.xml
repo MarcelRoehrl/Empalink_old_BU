@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="background_bar">#757575</color>
-    <color name="fill_bar_red">#B71C1C</color>
-    <color name="fill_bar_blue">#0D47A1</color>
+    <color name="physical_red">#B71C1C</color>
+    <color name="mental_blue">#0D47A1</color>
 </resources>
