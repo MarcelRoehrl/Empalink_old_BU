@@ -9,7 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
+import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.SensorObjects.EDA;
@@ -48,9 +50,38 @@ public class Session
         filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
     }
 
-    public double getLatestPulse(double timestamp)
+    public double getLatestPulse(double updated_pulse)
     {
+        double pulse = 0;
 
+        LinkedList<BVP> data = new LinkedList<BVP>();
+        int it = BVPData.size()-1;
+        for(; it >= 0; it--)
+        {
+            BVP temp = BVPData.get(it);
+            data.addFirst(temp);
+            if(temp.timestamp <= updated_pulse)
+                break;
+        }
+        double[] bvp = new double[data.size()];
+        for(int j = 0; j < data.size(); j++)
+        {
+            bvp[j] = data.get(j).bvp;
+        }
+
+        AMPDAlgo test = new AMPDAlgo(bvp);
+        try {
+            ArrayList<Integer> peaks = test.ampdPeaks();
+            double[] peaks_times = new double[peaks.size()];
+            for(int j = 0; j < peaks.size(); j++)
+            {
+                peaks_times[j] = data.get(peaks.get(j)).timestamp;
+            }
+            pulse = V.calcMedPulse(V.calcPulse(peaks_times));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pulse;
     }
 
     public void save()

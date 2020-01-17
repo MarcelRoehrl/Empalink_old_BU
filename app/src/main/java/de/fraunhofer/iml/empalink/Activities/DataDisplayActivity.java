@@ -24,11 +24,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.CoupleChartGestureListener;
 import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.TextDrawable;
 import de.fraunhofer.iml.empalink.V;
 
@@ -72,25 +74,6 @@ public class DataDisplayActivity extends AppCompatActivity
         filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
-
-        double[] bvp = new double[BVPData.size()];
-        for(int it = 0; it < BVPData.size(); it++)
-        {
-            bvp[it] = BVPData.get(it).getY();
-        }
-        AMPDAlgo test = new AMPDAlgo(bvp);
-        try {
-            ArrayList<Integer> peaks = test.ampdPeaks();
-            float[] peaks_times = new float[peaks.size()];
-            for(int j = 0; j < peaks.size(); j++)
-            {
-                peaks_times[j] = BVPData.get(peaks.get(j)).getX();
-            }
-            float pulse = V.calcMedPulse(V.calcPulse(peaks_times));
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
@@ -158,6 +141,40 @@ public class DataDisplayActivity extends AppCompatActivity
         edaChip.setChecked(true);
         tempChip.setChecked(true);
         setChipListener();
+    }
+
+    private void calcPulse()
+    {
+        float updated_pulse = BVPData.get(BVPData.size()-1).getX()-V.MED_PULSE_RANGE;
+        double pulse = 0;
+        LinkedList<Entry> data = new LinkedList<Entry>();
+        int it = BVPData.size()-1;
+        for(; it >= 0; it--)
+        {
+            Entry temp = BVPData.get(it);
+            data.addFirst(temp);
+            if(temp.getX() <= updated_pulse)
+                break;
+        }
+        double[] bvp = new double[data.size()];
+        for(int j = 0; j < data.size(); j++)
+        {
+            bvp[j] = data.get(j).getY();
+        }
+
+        AMPDAlgo algo = new AMPDAlgo(bvp);
+        try {
+            ArrayList<Integer> peaks = algo.ampdPeaks();
+            double[] peaks_times = new double[peaks.size()];
+            for(int j = 0; j < peaks.size(); j++)
+            {
+                peaks_times[j] = data.get(peaks.get(j)).getX();
+            }
+            pulse = V.calcMedPulse(V.calcPulse(peaks_times));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(""+pulse);
     }
 
     private void initChart(CombinedChart chart)
