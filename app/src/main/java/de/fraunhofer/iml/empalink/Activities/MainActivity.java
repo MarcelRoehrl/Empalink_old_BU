@@ -6,7 +6,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
     private double updated_pulse = 0;
+
+    private Vibrator vibrator;
 
     private EmpaDeviceManager deviceManager = null;
 
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         showDataButton = findViewById(R.id.showDataButton);
         backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
+        vibrator = (Vibrator)getSystemService(this.VIBRATOR_SERVICE);
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
@@ -169,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onRecordClicked(View view)
     {
+        vibrate();
         if(!recording)
         {
             session = new Session(System.currentTimeMillis(), this);
@@ -268,6 +275,16 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                     }
                 })
                 .show();
+    }
+
+    private void vibrate()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            vibrator.vibrate(200);
+        }
     }
 
     private void initEmpaticaDeviceManager() {
