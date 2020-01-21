@@ -465,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 batteryLabel.setVisibility(View.VISIBLE);
             }
         });
-        updateLabel(batteryLabel, " Akku: " + String.format("%.0f %%", battery * 100));
+        updateLabel(batteryLabel, "  Akku: " + String.format("%.0f %%", battery * 100));
     }
 
     @Override
