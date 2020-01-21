@@ -145,7 +145,7 @@ public class DataDisplayActivity extends AppCompatActivity
 
     private void calcPulse()
     {
-        float updated_pulse = BVPData.get(BVPData.size()-1).getX()-V.MED_PULSE_RANGE;
+        double updated_pulse = BVPData.get(BVPData.size()-1).getX()-V.MED_PULSE_RANGE;
         double pulse = 0;
         LinkedList<Entry> data = new LinkedList<Entry>();
         int it = BVPData.size()-1;

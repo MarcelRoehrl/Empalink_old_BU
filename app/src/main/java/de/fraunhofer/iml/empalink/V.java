@@ -6,7 +6,8 @@ public final class V
 {
     public static final int MAX_X_DATA = 10; //Wieviele Sekunden sollen auf den Graphen maximal auf einmal anzeigbar sein
     public static final int MAX_GRAPHS = 5; //Wieviele Graphen sollen gleichzeitig maximal anzeigbar sein
-    public static final int MED_PULSE_RANGE = 5; //aus den letzten x sec soll der durchschnittliche Puls ermittelt werden
+    public static final double MED_PULSE_RANGE = 10; //aus den letzten x sec soll der durchschnittliche Puls ermittelt werden
+    public static final double MED_PULSE_OVERLAP = 0; //wieviele sec soll man nach vorne überlappen
 
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;

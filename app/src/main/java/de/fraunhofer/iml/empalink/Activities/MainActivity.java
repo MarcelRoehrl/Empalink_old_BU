@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen die drüber auch
+        checkPermissions();
+        //show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -433,8 +433,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
             else if(timestamp >= updated_pulse)
             {
-                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(updated_pulse)*100f)/100f);
+                double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
+                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp)*100f)/100f);
             }
         }
     }
