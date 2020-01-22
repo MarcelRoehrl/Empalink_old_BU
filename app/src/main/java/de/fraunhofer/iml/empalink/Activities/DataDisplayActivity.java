@@ -19,9 +19,9 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.chip.Chip;
 import com.opencsv.CSVReader;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,7 +30,6 @@ import java.util.List;
 import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.CoupleChartGestureListener;
 import de.fraunhofer.iml.empalink.R;
-import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.TextDrawable;
 import de.fraunhofer.iml.empalink.V;
 
@@ -143,6 +142,9 @@ public class DataDisplayActivity extends AppCompatActivity
         setChipListener();
     }
 
+    /**
+     * Berechnet den Puls aus alles BVP Werten
+     */
     private void calcPulse()
     {
         double updated_pulse = BVPData.get(BVPData.size()-1).getX()-V.MED_PULSE_RANGE;
@@ -163,8 +165,13 @@ public class DataDisplayActivity extends AppCompatActivity
         }
 
         AMPDAlgo algo = new AMPDAlgo(bvp);
+
         try {
+            long startime = System.currentTimeMillis();
             ArrayList<Integer> peaks = algo.ampdPeaks();
+            long endtime = System.currentTimeMillis();
+            edaChip.setText((endtime-startime)+" msec");
+
             double[] peaks_times = new double[peaks.size()];
             for(int j = 0; j < peaks.size(); j++)
             {
@@ -174,7 +181,8 @@ public class DataDisplayActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(""+pulse);
+
+        bvpChip.setText(""+Math.round(pulse));
     }
 
     private void initChart(CombinedChart chart)
@@ -188,6 +196,7 @@ public class DataDisplayActivity extends AppCompatActivity
         chart.getAxisRight().setEnabled(false);
         chart.getLegend().setEnabled(false);
         chart.setKeepPositionOnRotation(true);
+        chart.zoom(V.INIT_ZOOM, 1f, 0, 0);
         chart.invalidate();
     }
 
@@ -427,7 +436,7 @@ public class DataDisplayActivity extends AppCompatActivity
     public void load()
     {
         try {
-            CSVReader reader = new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
+            CSVReader reader = new CSVReader(new BufferedReader(new FileReader(filePath))); //MIN SDK 26 -> new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
             reader.skip(2);
 
             Iterator<String[]> it = reader.iterator();

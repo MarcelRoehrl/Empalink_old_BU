@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public final class V
 {
-    public static final int MAX_X_DATA = 10; //Wieviele Sekunden sollen auf den Graphen maximal auf einmal anzeigbar sein
+    public static final int MAX_X_DATA = 100; //Wieviele Sekunden sollen auf den Graphen maximal auf einmal anzeigbar sein
+    public static final float INIT_ZOOM = 10f; //Um wieviel soll zu beginn hineingezoomt werden (siehe MAX_X_DATA / x)
     public static final int MAX_GRAPHS = 5; //Wieviele Graphen sollen gleichzeitig maximal anzeigbar sein
     public static final double MED_PULSE_RANGE = 10; //aus den letzten x sec soll der durchschnittliche Puls ermittelt werden
     public static final double MED_PULSE_OVERLAP = 0; //wieviele sec soll man nach vorne überlappen
