@@ -41,7 +41,7 @@ public final class V
      */
     static public void improvePeaks(ArrayList<Integer> peaks, ArrayList<Integer> vallies, double[] bvp)
     {
-        for (int it = 0; it < peaks.size(); it++)
+        for (int it = 0; it < peaks.size(); it++) 
         {
             for(int j = 0; j < vallies.size(); j++)
             {
