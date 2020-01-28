@@ -32,6 +32,58 @@ public final class V
         return pulse_values;
     }
 
+    /**
+     * Verbessert die Auswahl der Peaktimes und nimmt Objekte aus der peaks Liste die keine echten peaks sind.
+     * Guckt ob der peak direkt hinter einem vallie ohne Steigungsänderung zwischen den Punkten kommmt
+     * @param peaks
+     * @param vallies
+     * @param bvp
+     */
+    static public void improvePeaks(ArrayList<Integer> peaks, ArrayList<Integer> vallies, double[] bvp)
+    {
+        for (int it = 0; it < peaks.size(); it++)
+        {
+            for(int j = 0; j < vallies.size(); j++)
+            {
+                if(vallies.get(j) < peaks.get(it))
+                {
+                    for( int k = j+1; k < vallies.size(); k++)
+                    {
+                        if(vallies.get(k) >= peaks.get(it))
+                        {
+                            j = k-1;
+                            break;
+                        }
+                    }
+
+                    if(EPbetween(vallies.get(j), peaks.get(it), bvp))
+                    {
+                        peaks.remove(it);
+                    }
+                    else if(it+1 < peaks.size())
+                        it++;
+                    else
+                        break;
+                }
+                else
+                {
+                    peaks.remove(it);
+                    j--;
+                }
+            }
+        }
+    }
+
+    static private boolean EPbetween(int from, int to, double[] bvp)
+    {
+        for(int it = from+1; it < to && it < bvp.length-1; it++)
+        {
+            if(bvp[it]-0.1 >= bvp[it+1]) //Fehlertoleranz in der Messung
+                return true;
+        }
+        return false;
+    }
+
     static public double calcMedPulse(double[] pulse_values)
     {
         double sum = 0;

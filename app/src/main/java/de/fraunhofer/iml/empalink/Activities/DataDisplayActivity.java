@@ -74,6 +74,8 @@ public class DataDisplayActivity extends AppCompatActivity
 
         load();
 
+        calcPulse(); //TODO zum testen
+
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
         PointF extremes = getExtremes(BVPData);
@@ -168,17 +170,30 @@ public class DataDisplayActivity extends AppCompatActivity
 
         try {
             long startime = System.currentTimeMillis();
+
+            ArrayList<Integer> vallies = algo.ampdVallies();
+
+            double[] vallies_times = new double[vallies.size()];
+            for(int j = 0; j < vallies.size(); j++)
+            {
+                vallies_times[j] = data.get(vallies.get(j)).getX();
+            }
+
             ArrayList<Integer> peaks = algo.ampdPeaks();
-            long endtime = System.currentTimeMillis();
-            edaChip.setText((endtime-startime)+" msec");
+            V.improvePeaks(peaks, vallies, bvp);
 
             double[] peaks_times = new double[peaks.size()];
             for(int j = 0; j < peaks.size(); j++)
             {
                 peaks_times[j] = data.get(peaks.get(j)).getX();
             }
+
+            long endtime = System.currentTimeMillis();
+            edaChip.setText((endtime-startime)+" msec");
+
             pulse = V.calcMedPulse(V.calcPulse(peaks_times));
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
 
