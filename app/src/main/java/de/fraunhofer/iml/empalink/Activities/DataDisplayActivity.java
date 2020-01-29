@@ -74,7 +74,7 @@ public class DataDisplayActivity extends AppCompatActivity
 
         load();
 
-        calcPulse(); //TODO zum testen
+        //calcPulse(); //TODO zum testen
 
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));

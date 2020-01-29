@@ -8,7 +8,8 @@ public final class V
     public static final float INIT_ZOOM = 10f; //Um wieviel soll zu beginn hineingezoomt werden (siehe MAX_X_DATA / x)
     public static final int MAX_GRAPHS = 5; //Wieviele Graphen sollen gleichzeitig maximal anzeigbar sein
     public static final double MED_PULSE_RANGE = 10; //aus den letzten x sec soll der durchschnittliche Puls ermittelt werden
-    public static final double MED_PULSE_OVERLAP = 0; //wieviele sec soll man nach vorne überlappen
+    public static final double MED_PULSE_OVERLAP = 2; //wieviele sec soll man nach vorne überlappen
+    public static final double TOLERANCE_ADD_PEAK = 0.07; //Toleranzbereich (+-) um die peak timestamps in die Liste einzufügen (um keinen doppelt einzufügen)
 
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;
@@ -56,7 +57,7 @@ public final class V
                         }
                     }
 
-                    if(EPbetween(vallies.get(j), peaks.get(it), bvp))
+                    if(!inTimeFrame(vallies.get(j), peaks.get(it)))
                     {
                         peaks.remove(it);
                     }
@@ -82,6 +83,16 @@ public final class V
                 return true;
         }
         return false;
+    }
+
+    static private boolean inTimeFrame(int from, int to)
+    {
+        int range = to - from;
+        double inHZ = range/64;
+        if(inHZ > 0.25)
+            return false;
+        else
+            return true;
     }
 
     static public double calcMedPulse(double[] pulse_values)

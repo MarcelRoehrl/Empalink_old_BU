@@ -29,6 +29,7 @@ public class Session
     private ArrayList<Temperature> tempData;
     private ArrayList<Stress> pStressData;
     private ArrayList<Stress> mStressData;
+    private ArrayList<Double> BVP_peaks;
 
     private String filePath;
 
@@ -43,6 +44,7 @@ public class Session
         tempData = new ArrayList<Temperature>();
         pStressData = new ArrayList<Stress>();
         mStressData = new ArrayList<Stress>();
+        BVP_peaks = new ArrayList<Double>();
 
         File internal_storage = new File(context.getResources().getString(R.string.path));
         internal_storage.mkdirs();
@@ -69,19 +71,49 @@ public class Session
             bvp[j] = data.get(j).bvp;
         }
 
-        AMPDAlgo test = new AMPDAlgo(bvp);
+        AMPDAlgo algo = new AMPDAlgo(bvp);
         try {
-            ArrayList<Integer> peaks = test.ampdPeaks();
+//  Code um peaks zu verbessern
+//            ArrayList<Integer> vallies = algo.ampdVallies();
+//            double[] vallies_times = new double[vallies.size()];
+//            for(int j = 0; j < vallies.size(); j++)
+//            {
+//                vallies_times[j] = data.get(vallies.get(j)).timestamp;
+//            }
+
+            ArrayList<Integer> peaks = algo.ampdPeaks();
+//            V.improvePeaks(peaks, vallies, bvp);
             double[] peaks_times = new double[peaks.size()];
             for(int j = 0; j < peaks.size(); j++)
             {
                 peaks_times[j] = data.get(peaks.get(j)).timestamp;
             }
+            addPeaks(peaks_times);
             pulse = V.calcMedPulse(V.calcPulse(peaks_times));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return pulse;
+    }
+
+    private void addPeaks(double[] peak_times)
+    {
+        for(int it = 0; it < peak_times.length; it++)
+        {
+            int k = BVP_peaks.size()-1-(int)Math.ceil(V.MED_PULSE_OVERLAP/0.4);
+            if(k < 0)
+                k = 0;
+            boolean add = true;
+            for(; k < BVP_peaks.size(); k++)
+            {
+                if(peak_times[it] >= BVP_peaks.get(k)-V.TOLERANCE_ADD_PEAK && peak_times[it] <= BVP_peaks.get(k)+V.TOLERANCE_ADD_PEAK) {
+                    add = false;
+                    break;
+                }
+            }
+            if(add)
+                BVP_peaks.add(peak_times[it]);
+        }
     }
 
     public void save()
@@ -101,13 +133,13 @@ public class Session
             String[] excel = {"sep=,"}; //Excel Befehl um das Trennzeichen festzulegen
             writer.writeNext(excel);
 
-            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress"};
+            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress", "peak times"};
             writer.writeNext(header);
 
 //            String[] firstline = {"0", ""+BVPData.get(0), ""+EDAData.get(0), ""+IBIData.get(0), ""+tempData.get(0), ""+accData.get(0), "", ""};//um die Anzeige überall bei 0 beginnen zu lassen TODO Sonderfall das eine Liste leer ist
 //            writer.writeNext(firstline);
 
-            String[] data = new String[8];
+            String[] data = new String[9];
             int b = 0, e = 0, i = 0, t = 0, a = 0, p = 0, m = 0;
             double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, pTime = Double.MAX_VALUE, mTime = Double.MAX_VALUE;
 
@@ -144,6 +176,7 @@ public class Session
             double temp = Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
             long startStamp = (long)(temp*100000); //Das ganze hier gemacht damit in der Schleife eine Abfrage weniger ist
 
+            int peak_counter = 0;
             double curStamp;
             while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && p == -1 && m == -1))
             {
@@ -263,6 +296,16 @@ public class Session
                 } else {
                     data[7] = null;
                 }
+
+                if(peak_counter < BVP_peaks.size())
+                {
+                    long curPeak = (long)(BVP_peaks.get(peak_counter)*100000);
+                    double entryPeak = (double)(curPeak-startStamp);
+                    data[8] = ""+(entryPeak/100000);
+                    peak_counter++;
+                }
+                else
+                    data[8] = null;
 
                 writer.writeNext(data);
             }
