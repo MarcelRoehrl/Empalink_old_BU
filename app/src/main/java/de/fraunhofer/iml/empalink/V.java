@@ -11,6 +11,9 @@ public final class V
     public static final double MED_PULSE_OVERLAP = 2; //wieviele sec soll man nach vorne überlappen
     public static final double TOLERANCE_ADD_PEAK = 0.07; //Toleranzbereich (+-) um die peak timestamps in die Liste einzufügen (um keinen doppelt einzufügen)
 
+    public static final double RISE_TOLERANCE = 0.1; //Toleranz im BVP Wertebereich um zwischen vallie und peak einen Extrempunkt zu entdecken
+    public static final double TIMEFRAME_TOLERANCE = 0.25; //Zeit (in sek) die vallie und peak auseinanderliegen dürfen
+
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;
 
@@ -79,7 +82,7 @@ public final class V
     {
         for(int it = from+1; it < to && it < bvp.length-1; it++)
         {
-            if(bvp[it]-0.1 >= bvp[it+1]) //Fehlertoleranz in der Messung
+            if(bvp[it]-RISE_TOLERANCE >= bvp[it+1]) //Fehlertoleranz in der Messung
                 return true;
         }
         return false;
@@ -89,7 +92,7 @@ public final class V
     {
         int range = to - from;
         double inHZ = range/64;
-        if(inHZ > 0.25)
+        if(inHZ > TIMEFRAME_TOLERANCE)
             return false;
         else
             return true;
