@@ -407,6 +407,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             connection_icon.setImageDrawable(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
+                if(recording)
+                    stopAndSaveRecordings();
                 connected = false;
                 updateLabel(statusLabel, "Verbindung getrennt");
                 updateLabel(captionLabel, "E4 bitte erneut einschalten");
