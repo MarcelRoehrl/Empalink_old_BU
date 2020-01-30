@@ -52,7 +52,7 @@ public class Session
         filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
     }
 
-    public double getLatestPulse(double updated_pulse)
+    public double getLatestPulse(double updated_pulse, boolean save)
     {
         double pulse = 0;
 
@@ -88,7 +88,9 @@ public class Session
             {
                 peaks_times[j] = data.get(peaks.get(j)).timestamp;
             }
-            addPeaks(peaks_times);
+            if(save)
+                addPeaks(peaks_times);
+
             pulse = V.calcMedPulse(V.calcPulse(peaks_times));
         } catch (Exception e) {
             e.printStackTrace();

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private boolean wasConnected = false;
     private boolean wasReady = false;
     private boolean connected = false;
+    private boolean between_updated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -448,11 +449,18 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session.addBVP(bvp, timestamp);
             if(updated_pulse == 0)
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
+            else if(!between_updated && timestamp >= updated_pulse-(V.MED_PULSE_RANGE/2))
+            {
+                between_updated = true;
+                double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
+                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp, false)*100f)/100f);
+            }
             else if(timestamp >= updated_pulse)
             {
+                between_updated = false;
                 double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
-                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp)*100f)/100f);
+                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp, true)*100f)/100f);
             }
         }
     }

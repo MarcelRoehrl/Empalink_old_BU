@@ -60,7 +60,7 @@ public final class V
                         }
                     }
 
-                    if(!inTimeFrame(vallies.get(j), peaks.get(it)))
+                    if(EPbetween(vallies.get(j), peaks.get(it), bvp) && !inTimeFrame(vallies.get(j), peaks.get(it)))
                     {
                         peaks.remove(it);
                     }
