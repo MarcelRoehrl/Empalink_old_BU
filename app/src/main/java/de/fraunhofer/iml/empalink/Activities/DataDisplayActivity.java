@@ -469,7 +469,7 @@ public class DataDisplayActivity extends AppCompatActivity
                             case 3: IBIData.add(new Entry(stamp, Float.valueOf(line[i]))); break;
                             case 4: tempData.add(new Entry(stamp, Float.valueOf(line[i]))); break;
                             case 5: {
-                                String[] temp = line[i].split(",");
+                                String[] temp = line[i].split(";");
                                 float x = Float.valueOf(temp[0]);
                                 float y = Float.valueOf(temp[1]);
                                 float z = Float.valueOf(temp[2]);

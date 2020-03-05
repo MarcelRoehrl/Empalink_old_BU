@@ -261,7 +261,7 @@ public class Session
 
                 if(a != -1 && aTime == curStamp)
                 {
-                    data[5] = ""+accData.get(a).x+","+accData.get(a).y+","+accData.get(a).z;//TODO evtl. effizienter mit get(a) rausziehen
+                    data[5] = ""+accData.get(a).x+";"+accData.get(a).y+";"+accData.get(a).z;//TODO evtl. effizienter mit get(a) rausziehen
                     a++;
                     if(a >= accData.size())
                     {
