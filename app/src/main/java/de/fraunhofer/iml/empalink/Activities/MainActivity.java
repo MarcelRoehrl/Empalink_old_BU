@@ -200,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onPStressClicked(View view)
     {
         androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        alertBuilder.setTitle("Physischer Stress")
-                .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
+        alertBuilder.setTitle("Körperliche Anforderungen")
+                .setMessage("Wie hoch waren die geistigen Anforderungen der Aufgabe?");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
-                array.put(0, "kaum");
-                array.put(5, "stark");
+                array.put(0, "gering");
+                array.put(10, "hoch");
 
                 return array;
             }
@@ -241,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onMStressClicked(View view)
     {
         androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        alertBuilder.setTitle("Mentaler Stress")
-                .setMessage("Geben Sie bitte an wie sehr Sie gestresst sind.");
+        alertBuilder.setTitle("Geistige Anforderungen")
+                .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
@@ -256,8 +256,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
-                array.put(0, "kaum");
-                array.put(5, "stark");
+                array.put(0, "gering");
+                array.put(10, "hoch");
 
                 return array;
             }

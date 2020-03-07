@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public final class V
 {
+    public static final int STRESS_RANGE = 100;
     public static final int MAX_X_DATA = 100; //Wieviele Sekunden sollen auf den Graphen maximal auf einmal anzeigbar sein
     public static final float INIT_ZOOM = 10f; //Um wieviel soll zu beginn hineingezoomt werden (siehe MAX_X_DATA / x)
     public static final int MAX_GRAPHS = 5; //Wieviele Graphen sollen gleichzeitig maximal anzeigbar sein
@@ -45,7 +46,7 @@ public final class V
      */
     static public void improvePeaks(ArrayList<Integer> peaks, ArrayList<Integer> vallies, double[] bvp)
     {
-        for (int it = 0; it < peaks.size(); it++) 
+        for (int it = 0; it < peaks.size(); it++)
         {
             for(int j = 0; j < vallies.size(); j++)
             {

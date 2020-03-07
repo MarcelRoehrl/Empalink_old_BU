@@ -380,7 +380,7 @@ public class DataDisplayActivity extends AppCompatActivity
     private ArrayList<BarEntry> adjustEntries(ArrayList<BarEntry> pe, ArrayList<BarEntry> me, float max, float min)
     {
         ArrayList<BarEntry> adj = new ArrayList<BarEntry>();
-        float mult = (max-min)/6; //Stressangabe von 1-6
+        float mult = (max-min)/V.STRESS_RANGE; //Stressangabe von 0 - x
         for(int it = 0; it < pe.size(); it++)
         {
             BarEntry ine = new BarEntry(pe.get(it).getX(), pe.get(it).getY());
