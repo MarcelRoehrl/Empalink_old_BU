@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel, captionLabel, batteryLabel;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
     private com.google.android.material.button.MaterialButton showDataButton, backgroundShowDataButton;
-    private com.google.android.material.floatingactionbutton.FloatingActionButton pStressFAB, mStressFAB;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton pStressFAB, mStressFAB, markerFAB;
     private ImageButton recordButton;
     private ImageView connection_icon;
     private com.google.android.material.card.MaterialCardView livedata_card;
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         recordButton = findViewById(R.id.recordButton);
         pStressFAB = findViewById(R.id.pStressFAB);
         mStressFAB = findViewById(R.id.mStressFAB);
+        markerFAB  = findViewById(R.id.markerFAB);
         showDataButton = findViewById(R.id.showDataButton);
         backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
@@ -179,13 +180,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         vibrate();
         if(!recording)
         {
+            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
             session = new Session(System.currentTimeMillis(), this);
             recordButton.setBackground(getDrawable(R.drawable.pause));
             recording = true;
             show();
         }
         else
+        {
             stopAndSaveRecordings();
+            Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void stopAndSaveRecordings()
@@ -195,6 +200,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         hide();
         show();
         session.save();
+    }
+
+    public void onMarkerClicked(View view)
+    {
+        vibrate();
+        session.addMarker();
+        Toast.makeText(MainActivity.this, "Markierung wurde gesetzt", Toast.LENGTH_LONG).show();
     }
 
     public void onPStressClicked(View view)
@@ -551,6 +563,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 if(recording) {
                     pStressFAB.show();
                     mStressFAB.show();
+                    markerFAB.show();
                 }
             }
         });
@@ -567,6 +580,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 recordButton.setVisibility(View.GONE);
                 pStressFAB.hide();
                 mStressFAB.hide();
+                markerFAB.hide();
                 updateLabel(batteryLabel,null);
             }
         });
