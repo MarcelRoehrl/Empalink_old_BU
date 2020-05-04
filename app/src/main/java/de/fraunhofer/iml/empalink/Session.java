@@ -137,15 +137,15 @@ public class Session
             String[] excel = {"sep=,"}; //Excel Befehl um das Trennzeichen festzulegen
             writer.writeNext(excel);
 
-            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress", "peak times", "markers"};
+            String[] header = {"timestamp", "BVP", "EDA", "IBI", "temperature", "acceleration", "physical stress", "mental stress", "markers", "peak times"};
             writer.writeNext(header);
 
 //            String[] firstline = {"0", ""+BVPData.get(0), ""+EDAData.get(0), ""+IBIData.get(0), ""+tempData.get(0), ""+accData.get(0), "", ""};//um die Anzeige überall bei 0 beginnen zu lassen TODO Sonderfall das eine Liste leer ist
 //            writer.writeNext(firstline);
 
             String[] data = new String[10];
-            int b = 0, e = 0, i = 0, t = 0, a = 0, p = 0, m = 0;
-            double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, pTime = Double.MAX_VALUE, mTime = Double.MAX_VALUE;
+            int b = 0, e = 0, i = 0, t = 0, a = 0, p = 0, m = 0, mp = 0;
+            double bTime = Double.MAX_VALUE, eTime = Double.MAX_VALUE, iTime = Double.MAX_VALUE, tTime = Double.MAX_VALUE, aTime = Double.MAX_VALUE, pTime = Double.MAX_VALUE, mTime = Double.MAX_VALUE, mpTime = Double.MAX_VALUE; //mp ^= markerPoint
 
             //Für den Sonderfall das eine Liste leer ist
             if(BVPData.size() == 0){
@@ -176,14 +176,17 @@ public class Session
                 m = -1;
             } else
                 mTime = mStressData.get(0).timestamp;
+            if(markers.size() == 0){
+                mp = -1;
+            } else
+                mpTime = markers.get(0);
 
-            double temp = Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
+            double temp = Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime), mpTime); //TODO evtl effizienter machen
             long startStamp = (long)(temp*100000); //Das ganze hier gemacht damit in der Schleife eine Abfrage weniger ist
 
             int peak_counter = 0;
-            int marker_counter = 0;
             double curStamp;
-            while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && p == -1 && m == -1))
+            while(!(b == -1 && e == -1 && i == -1 && t == -1 && a == -1 && p == -1 && m == -1 && mp == -1))
             {
                 if(b != -1)
                     bTime = BVPData.get(b).timestamp;
@@ -199,8 +202,10 @@ public class Session
                     pTime = pStressData.get(p).timestamp;
                 if(m != -1)
                     mTime = mStressData.get(m).timestamp;
+                if(mp != -1)
+                    mpTime = markers.get(mp);
 
-                curStamp =  Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime); //TODO evtl effizienter machen
+                curStamp =  Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(Math.min(bTime, eTime), iTime), tTime),aTime), pTime), mTime), mpTime); //TODO evtl effizienter machen
 
                 long curTemp = (long)(curStamp*100000);
                 double entry = (double)(curTemp-startStamp);
@@ -302,17 +307,30 @@ public class Session
                     data[7] = null;
                 }
 
+                if(mp != -1 && mpTime == curStamp)
+                {
+                    data[8] = "X";
+                    mp++;
+                    if(mp >= markers.size())
+                    {
+                        mp = -1;
+                        mpTime = Double.MAX_VALUE;
+                    }
+                } else {
+                    data[8] = null;
+                }
+
                 if(peak_counter < BVP_peaks.size())
                 {
                     long curPeak = (long)(BVP_peaks.get(peak_counter)*100000);
                     double entryPeak = (double)(curPeak-startStamp);
-                    data[8] = ""+(entryPeak/100000);
+                    data[9] = ""+(entryPeak/100000);
                     peak_counter++;
                 }
                 else
-                    data[8] = null;
+                    data[9] = null;
 
-                if(marker_counter < markers.size())
+                /*if(marker_counter < markers.size())
                 {
                     long curMark = (long)(markers.get(marker_counter)*100000);
                     double entryMark = (double)(curMark-startStamp);
@@ -320,7 +338,7 @@ public class Session
                     marker_counter++;
                 }
                 else
-                    data[9] = null;
+                    data[9] = null;*/
 
                 writer.writeNext(data);
             }
@@ -374,6 +392,6 @@ public class Session
         if(accData.size() > 0)
          return accData.get(accData.size()-1).timestamp; //TODO evtl schöner lösen
         else
-            return (double)System.currentTimeMillis();
+            return (double)(System.currentTimeMillis()-starttime)/1000; //TODO passt glaube ich nicht 
     }
 }

@@ -12,6 +12,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -42,6 +45,7 @@ public class DataDisplayActivity extends AppCompatActivity
 
     private ArrayList<Entry> accData, tempData, BVPData, EDAData, IBIData;
     private ArrayList<BarEntry> pStressData, mStressData;
+    private ArrayList<Float> markerData;
     private CoupleChartGestureListener bvpListener, edaListener, tempListener, ibiListener, accListener;
 
     @Override
@@ -69,6 +73,7 @@ public class DataDisplayActivity extends AppCompatActivity
         accData = new ArrayList<Entry>();
         pStressData = new ArrayList<BarEntry>();
         mStressData = new ArrayList<BarEntry>();
+        markerData = new ArrayList<Float>();
 
         filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
@@ -80,6 +85,8 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
         PointF extremes = getExtremes(BVPData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "mentaler Stress")));
+        if(markerData.size() > 0)
+            combinedData.setData(generateCandleDataSet(extremes.x,extremes.y));
         bvpChart.setData(combinedData);
         bvpChart.getDescription().setText("BVP Daten");
         initChart(bvpChart);
@@ -88,6 +95,8 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(EDAData, "EDA")));
         extremes = getExtremes(EDAData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "EDA Daten")));
+        if(markerData.size() > 0)
+            combinedData.setData(generateCandleDataSet(extremes.x, extremes.y));
         edaChart.setData(combinedData);
         edaChart.getDescription().setText("EDA Daten - μS");
         initChart(edaChart);
@@ -96,6 +105,8 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(tempData, "Temperature")));
         extremes = getExtremes(tempData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Temperatur Daten")));
+        if(markerData.size() > 0)
+            combinedData.setData(generateCandleDataSet(extremes.x, extremes.y));
         tempChart.setData(combinedData);
         tempChart.getDescription().setText("Temperatur Daten - °C");
         initChart(tempChart);
@@ -104,6 +115,8 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(IBIData, "IBI")));
         extremes = getExtremes(IBIData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "IBI Daten")));
+        if(markerData.size() > 0)
+            combinedData.setData(generateCandleDataSet(extremes.x, extremes.y));
         ibiChart.setData(combinedData);
         ibiChart.getDescription().setText("IBI Daten");
         initChart(ibiChart);
@@ -112,6 +125,8 @@ public class DataDisplayActivity extends AppCompatActivity
         combinedData.setData(new LineData(createLineDataSet(accData, "Acceleration")));
         extremes = getExtremes(accData);
         combinedData.setData(new BarData(createBarDataSet(adjustEntries(pStressData, mStressData, extremes.x, extremes.y), "Beschleunigung in G")));
+        if(markerData.size() > 0)
+            combinedData.setData(generateCandleDataSet(extremes.x, extremes.y));
         accChart.setData(combinedData);
         accChart.getDescription().setText("Beschleunigung - g");
         initChart(accChart);
@@ -459,7 +474,7 @@ public class DataDisplayActivity extends AppCompatActivity
             {
                 String[] line = it.next();
                 float stamp = (float)Double.parseDouble(line[0]);
-                for(int i = 1; i <= 7; i++)
+                for(int i = 1; i <= 8; i++)
                 {
                     if(line[i].length() > 0)
                     {
@@ -477,6 +492,7 @@ public class DataDisplayActivity extends AppCompatActivity
                             } break;
                             case 6: pStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
                             case 7: mStressData.add(new BarEntry(stamp, (float)Integer.valueOf(line[i]))); break;
+                            case 8: markerData.add(stamp); break;
                         }
                     }
                 }
@@ -484,7 +500,9 @@ public class DataDisplayActivity extends AppCompatActivity
             }
 
             //Um Daten anpassen zu können, alle Graphen bei 0 bis zum höchsten X Wert darstellen
-            highest_x_value = Math.max(Math.max(Math.max(Math.max((BVPData.size() > 0 ? BVPData.get(BVPData.size()-1).getX() : 0), (EDAData.size() > 0 ? EDAData.get(EDAData.size()-1).getX() : 0)), (IBIData.size() > 0 ? IBIData.get(IBIData.size()-1).getX() : 0)), (tempData.size() > 0 ? tempData.get(tempData.size()-1).getX() : 0)), (accData.size() > 0 ? accData.get(accData.size()-1).getX() : 0));//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
+            highest_x_value = Math.max(Math.max(Math.max(Math.max((BVPData.size() > 0 ? BVPData.get(BVPData.size()-1).getX() : 0), (EDAData.size() > 0 ? EDAData.get(EDAData.size()-1).getX() : 0)), (IBIData.size() > 0 ? IBIData.get(IBIData.size()-1).getX() : 0)), (tempData.size() > 0 ? tempData.get(tempData.size()-1).getX() : 0)), (accData.size() > 0 ? accData.get(accData.size()-1).getX() : 0));
+
+//            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
 //  Alternativ to setMin/Max auf der X Achse Punkte hinzufügen um alle Graphen im Gleichen Bereich darzustellen
 //            EDAData.add(new Entry(max, EDAData.get(EDAData.size()-1).getY()));
 //            IBIData.add(new Entry(max, IBIData.get(IBIData.size()-1).getY()));
@@ -535,6 +553,28 @@ public class DataDisplayActivity extends AppCompatActivity
         set.setDrawIcons(true);
         set.setBarBorderWidth(0.75f);
         return set;
+    }
+
+    private CandleData generateCandleDataSet(float max, float min)
+    {
+        CandleData d = new CandleData();
+        float length = max - min;
+
+        ArrayList<CandleEntry> entries = new ArrayList<CandleEntry>();
+
+        for(int it = 0; it < markerData.size(); it++)
+        {
+            entries.add(new CandleEntry(markerData.get(it), max, min, length/3*2+min, length/3+min, 3));
+        }
+
+        CandleDataSet set = new CandleDataSet(entries, "Candle Dataset");
+        set.setDecreasingColor(Color.rgb(245, 124, 0));
+        set.setShadowColor(Color.rgb(245, 124, 0));
+        set.setDrawValues(false);
+        set.setBarSpace(0.35f);
+        d.addDataSet(set);
+
+        return d;
     }
 
     @Override

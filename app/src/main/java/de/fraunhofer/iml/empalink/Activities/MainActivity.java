@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        checkPermissions();
-        //show(); //TODO nur zum testen die drüber auch
+        //checkPermissions();
+        show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -461,7 +461,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if(recording)
         {
             session.addBVP(bvp, timestamp);
-            if(updated_pulse == 0)
+
+            //Peaks berechnen und speichern
+            /*if(updated_pulse == 0)
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
             else if(!between_updated && timestamp >= updated_pulse-(V.MED_PULSE_RANGE/2))
             {
@@ -475,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
                 updated_pulse = timestamp+V.MED_PULSE_RANGE;
                 updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp, true)*100f)/100f);
-            }
+            }*/
         }
     }
 
@@ -500,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
         updateLabel(ibi_value, "" + Math.round(ibi*1000f)/1000f);
+        updateLabel(bpm_value, "" + Math.round((60/ibi)*100f)/100f);
         if(recording)
             session.addIBI(ibi,timestamp);
     }
