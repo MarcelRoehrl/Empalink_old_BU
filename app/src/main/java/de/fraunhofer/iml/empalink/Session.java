@@ -392,6 +392,6 @@ public class Session
         if(accData.size() > 0)
          return accData.get(accData.size()-1).timestamp; //TODO evtl schöner lösen
         else
-            return (double)(System.currentTimeMillis()-starttime)/1000; //TODO passt glaube ich nicht 
+            return (double)(System.currentTimeMillis()-starttime)/1000; //TODO passt glaube ich nicht
     }
 }
