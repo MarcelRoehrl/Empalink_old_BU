@@ -63,7 +63,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.opencsv:opencsv:4.6'
-    implementation 'com.empatica.empalink:empalink:2.2@aar'
+    //implementation 'com.empatica.empalink:empalink:2.2@aar'
+    implementation 'com.empatica.empalink:E4link:1.0.0@aar'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation project(':Jama-1.0.3')

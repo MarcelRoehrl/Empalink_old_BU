@@ -358,6 +358,16 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     @Override
+    public void didFailedScanning(int errorCode) {
+        //TODO neu aus dem SDK ohne Dokumentation...
+    }
+
+    @Override
+    public void bluetoothStateChanged() {
+        //TODO neu aus dem SDK ohne Dokumentation...
+    }
+
+    @Override
     public void didRequestEnableBluetooth() {
         // Request the user to enable Bluetooth
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
