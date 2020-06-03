@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
-                .setMessage("Wie hoch waren die geistigen Anforderungen der Aufgabe?");
+                .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Geistige Anforderungen")
-                .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
+                .setMessage("Wie hoch waren die geistigen Anforderungen der Aufgabe?");
 
         final LayoutInflater inflater = this.getLayoutInflater();
         final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
