@@ -496,11 +496,8 @@ public class DataDisplayActivity extends AppCompatActivity
                         }
                     }
                 }
-                it.hasNext();
+                //it.hasNext();
             }
-
-            //Um Daten anpassen zu können, alle Graphen bei 0 bis zum höchsten X Wert darstellen
-            highest_x_value = Math.max(Math.max(Math.max(Math.max((BVPData.size() > 0 ? BVPData.get(BVPData.size()-1).getX() : 0), (EDAData.size() > 0 ? EDAData.get(EDAData.size()-1).getX() : 0)), (IBIData.size() > 0 ? IBIData.get(IBIData.size()-1).getX() : 0)), (tempData.size() > 0 ? tempData.get(tempData.size()-1).getX() : 0)), (accData.size() > 0 ? accData.get(accData.size()-1).getX() : 0));
 
 //            BVPData.add(new Entry(max, BVPData.get(BVPData.size()-1).getY()));
 //  Alternativ to setMin/Max auf der X Achse Punkte hinzufügen um alle Graphen im Gleichen Bereich darzustellen
@@ -521,7 +518,13 @@ public class DataDisplayActivity extends AppCompatActivity
 //                accData.add(new Entry(0, accData.get(0).getY()));
         }
         catch (Exception e)
-        {}
+        {//Fehler beim lesen der CSV Datei
+            System.out.println("Leseschwäche");
+        }
+
+        //Um Daten anpassen zu können, alle Graphen bei 0 bis zum höchsten X Wert darstellen
+        highest_x_value = Math.max(Math.max(Math.max(Math.max((BVPData.size() > 0 ? BVPData.get(BVPData.size()-1).getX() : 0), (EDAData.size() > 0 ? EDAData.get(EDAData.size()-1).getX() : 0)), (IBIData.size() > 0 ? IBIData.get(IBIData.size()-1).getX() : 0)), (tempData.size() > 0 ? tempData.get(tempData.size()-1).getX() : 0)), (accData.size() > 0 ? accData.get(accData.size()-1).getX() : 0));
+
     }
 
     private LineDataSet createLineDataSet(List<Entry> entries, String name)
