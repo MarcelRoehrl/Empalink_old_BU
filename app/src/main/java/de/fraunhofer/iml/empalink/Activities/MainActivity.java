@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        checkPermissions();
-        //show(); //TODO nur zum testen die drüber auch
+        //checkPermissions();
+        show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -188,8 +188,25 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         }
         else
         {
-            stopAndSaveRecordings();
-            Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
+            androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+            alertBuilder.setTitle("Aufnahme speichern")
+                    .setMessage("Wollen Sie die Aufnahme wirklich beenden und abspeichern?");
+
+            alertBuilder.setPositiveButton("Aufnahme speichern", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    stopAndSaveRecordings();
+                    Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
+                }
+            })
+            .setNegativeButton("Aufnahme fortsetzen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Die Aufnahme wird fortgeführt", Toast.LENGTH_LONG).show();
+                }
+            })
+            .show();
         }
     }
 
