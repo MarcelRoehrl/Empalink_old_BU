@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen die drüber auch
+        checkPermissions();
+        //show(); //TODO nur zum testen die drüber auch
     }
 
     private void checkPermissions()
@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
+                    Toast.makeText(MainActivity.this, "Aufnahme wird gespeicher, bitte warten", Toast.LENGTH_LONG).show();
                     stopAndSaveRecordings();
                     Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
                 }
