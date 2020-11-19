@@ -100,8 +100,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void checkPermissions()
     {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ( Build.VERSION.SDK_INT >= 29 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED))
+        {
+            if (Build.VERSION.SDK_INT < 29)
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+            else
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 2);
         }
         else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
@@ -117,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         if(requestCode == 0)
         {
-            if ( (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) )
+            if ( (grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) )
             {   // all permissions granted
                 show();
                 initEmpaticaDeviceManager();
@@ -125,9 +131,19 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 informAndFinish();
             }
         }
-        if(requestCode == 1)
+        else if(requestCode == 1)
         {
             if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
+            {   // all permissions granted
+                show();
+                initEmpaticaDeviceManager();
+            } else {
+                informAndFinish();
+            }
+        }
+        else if(requestCode == 2)
+        {
+            if ( (grantResults.length >= 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) )
             {   // all permissions granted
                 show();
                 initEmpaticaDeviceManager();
@@ -246,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
                 array.put(0, "gering");
-                array.put(10, "hoch");
+                array.put(20, "hoch");
 
                 return array;
             }
@@ -287,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
                 array.put(0, "gering");
-                array.put(10, "hoch");
+                array.put(20, "hoch");
 
                 return array;
             }

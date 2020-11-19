@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
     defaultConfig {
         applicationId "de.fraunhofer.iml.empalink"
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -52,18 +52,17 @@ android {
 }
 
 dependencies {
-    api 'com.google.android.material:material:1.2.0-alpha03'
+    api 'com.google.android.material:material:1.3.0-alpha03'
     implementation 'com.xw.repo:bubbleseekbar:3.20'
     //implementation 'com.github.stack07142:DiscreteSeekBar:1.0.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.opencsv:opencsv:4.6'
-    //implementation 'com.empatica.empalink:empalink:2.2@aar'
     implementation 'com.empatica.empalink:E4link:1.0.0@aar'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
