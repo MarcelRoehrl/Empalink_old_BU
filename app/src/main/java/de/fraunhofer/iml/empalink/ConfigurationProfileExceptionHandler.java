@@ -2,20 +2,14 @@ package de.fraunhofer.iml.empalink;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Toast;
 
 import com.empatica.empalink.ConfigurationProfileException;
 
-import de.fraunhofer.iml.empalink.Activities.FilechooserActivity;
-import de.fraunhofer.iml.empalink.Activities.MainActivity;
 import de.fraunhofer.iml.empalink.Activities.NoSingleInternetErrorActivity;
 
 public class ConfigurationProfileExceptionHandler implements Thread.UncaughtExceptionHandler {
-    private static final String TAG = "ConfigurationProfileExceptionHandler";
+    private static final String TAG = "CPExceptionHandler";
 
     private Context context;
     private Class<?> nextActivity;
