@@ -18,6 +18,8 @@ public final class V
     public static final String FILENAME_EXTRA = "filename";
     public static final int REQUEST_FILENAME = 5;
 
+    public static final int BUFFER_SIZE = 64 * 1024; //Buffergröße beim reinschreiben in die CSV Datei
+
     static public float calcNormedAcc(float x, float y, float z)
     {
         float inG = (float)(Math.sqrt(x * x + y * y + z * z)/64);

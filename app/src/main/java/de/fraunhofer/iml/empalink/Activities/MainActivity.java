@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
             session = new Session(System.currentTimeMillis(), this);
+            session.startWriter();
             recordButton.setBackground(getDrawable(R.drawable.pause));
             recording = true;
             show();
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         recordButton.setBackground(getDrawable(R.drawable.play));
         hide();
         show();
-        session.save();
+        session.closeWriter();
     }
 
     public void onMarkerClicked(View view)
@@ -273,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                   session.addPStress(slider.getProgress(), session.getLatestTimestamp());
+                   session.addPStress(slider.getProgress());
                 }
             })
             .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                session.addMStress(slider.getProgress(), session.getLatestTimestamp());
+                session.addMStress(slider.getProgress());
             }
         })
                 .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
