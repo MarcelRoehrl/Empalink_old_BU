@@ -10,8 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,7 +29,6 @@ import com.empatica.empalink.config.EmpaSensorType;
 import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
-import com.xw.repo.BubbleSeekBar;
 
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel, captionLabel, batteryLabel;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
     private com.google.android.material.button.MaterialButton showDataButton, backgroundShowDataButton;
-    private com.google.android.material.floatingactionbutton.FloatingActionButton pStressFAB, mStressFAB, markerFAB;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton surveyFAB;
     private ImageButton recordButton;
     private ImageView connection_icon;
     private com.google.android.material.card.MaterialCardView livedata_card;
@@ -83,9 +80,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         connection_icon = findViewById(R.id.connection_icon);
 
         recordButton = findViewById(R.id.recordButton);
-        pStressFAB = findViewById(R.id.pStressFAB);
-        mStressFAB = findViewById(R.id.mStressFAB);
-        markerFAB  = findViewById(R.id.markerFAB);
+        surveyFAB = findViewById(R.id.surveyFAB);
         showDataButton = findViewById(R.id.showDataButton);
         backgroundShowDataButton = findViewById(R.id.backgroundShowDataButton);
 
@@ -93,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        checkPermissions();
-        //show(); //TODO nur zum testen die drüber auch
+        //checkPermissions();
+        show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
     }
 
     private void checkPermissions()
@@ -237,16 +232,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         session.closeWriter();
     }
 
-    public void onMarkerClicked(View view)
+    public void onSurveyClicked(View view)
     {
         vibrate();
-        session.addMarker();
-        Toast.makeText(MainActivity.this, "Markierung wurde gesetzt", Toast.LENGTH_LONG).show();
-    }
-
-    public void onPStressClicked(View view)
-    {
-        androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        startActivityForResult(new Intent(this, SurveyActivity.class), 0);
+        /*androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
                 .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
 
@@ -282,47 +272,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 public void onClick(DialogInterface dialog, int which) {
                 }
             })
-            .show();
-    }
-
-    public void onMStressClicked(View view)
-    {
-        androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        alertBuilder.setTitle("Geistige Anforderungen")
-                .setMessage("Wie hoch waren die geistigen Anforderungen der Aufgabe?");
-
-        final LayoutInflater inflater = this.getLayoutInflater();
-        final View ratingSlider = inflater.inflate(R.layout.rating_slider, null);
-        alertBuilder.setView(ratingSlider);
-
-        final BubbleSeekBar slider = ratingSlider.findViewById(R.id.slider);
-        slider.setThumbColor(ContextCompat.getColor(this, R.color.mental_blue));
-        slider.setSecondTrackColor(ContextCompat.getColor(this, R.color.mental_blue));
-        slider.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                array.clear();
-                array.put(0, "gering");
-                array.put(20, "hoch");
-
-                return array;
-            }
-        });
-
-        alertBuilder.setPositiveButton("Eintragen", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                session.addMStress(slider.getProgress());
-            }
-        })
-                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
+            .show();*/
     }
 
     private void vibrate()
@@ -609,9 +559,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
                 if(recording) {
-                    pStressFAB.show();
-                    mStressFAB.show();
-                    markerFAB.show();
+                    surveyFAB.show();
                 }
             }
         });
@@ -626,9 +574,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 backgroundShowDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
-                pStressFAB.hide();
-                mStressFAB.hide();
-                markerFAB.hide();
+                surveyFAB.hide();
                 updateLabel(batteryLabel,null);
             }
         });

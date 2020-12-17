@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@id/status_card">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/markerFAB"
+            android:id="@+id/surveyFAB"
             app:borderWidth="-1dp"
             android:backgroundTint="@color/marker_color"
             android:layout_width="wrap_content"
@@ -88,9 +88,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             app:fabCustomSize="80dp"
-            android:onClick="onMarkerClicked"
+            android:onClick="onSurveyClicked"
             android:elevation="5dp"/>
 
         <ImageView
@@ -98,18 +98,18 @@
             android:layout_width="0dp"
             android:layout_margin="10dp"
             android:gravity="center"
-            app:layout_constraintLeft_toLeftOf="@+id/markerFAB"
-            app:layout_constraintRight_toRightOf="@+id/markerFAB"
-            app:layout_constraintTop_toTopOf="@+id/markerFAB"
-            app:layout_constraintBottom_toBottomOf="@+id/markerFAB"
-            android:src="@drawable/marker"
+            app:layout_constraintLeft_toLeftOf="@+id/surveyFAB"
+            app:layout_constraintRight_toRightOf="@+id/surveyFAB"
+            app:layout_constraintTop_toTopOf="@+id/surveyFAB"
+            app:layout_constraintBottom_toBottomOf="@+id/surveyFAB"
+            android:src="@drawable/survey"
             android:elevation="15dp"/>
 
         <ImageButton
             android:id="@+id/recordButton"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/markerFAB"
+            app:layout_constraintTop_toBottomOf="@id/surveyFAB"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -117,59 +117,6 @@
             app:layout_constraintDimensionRatio="1:1"
             android:background="@drawable/play"
             android:onClick="onRecordClicked"/>
-
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/pStressFAB"
-            app:borderWidth="-1dp"
-            android:backgroundTint="@color/physical_red"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabCustomSize="80dp"
-            app:layout_constraintBottom_toTopOf="@+id/recordButton"
-            app:layout_constraintTop_toTopOf="@+id/recordButton"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="16dp"
-            android:onClick="onPStressClicked"
-            android:elevation="5dp"/>
-
-        <ImageView
-            android:layout_height="0dp"
-            android:layout_width="0dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            app:layout_constraintLeft_toLeftOf="@+id/pStressFAB"
-            app:layout_constraintRight_toRightOf="@+id/pStressFAB"
-            app:layout_constraintTop_toTopOf="@+id/pStressFAB"
-            app:layout_constraintBottom_toBottomOf="@+id/pStressFAB"
-            android:src="@drawable/physical"
-            android:elevation="15dp"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/mStressFAB"
-            app:borderWidth="-1dp"
-            android:backgroundTint="@color/mental_blue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabCustomSize="80dp"
-            app:layout_constraintBottom_toTopOf="@+id/recordButton"
-            app:layout_constraintTop_toTopOf="@+id/recordButton"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="16dp"
-            android:onClick="onMStressClicked"
-            android:elevation="5dp"/>
-
-        <ImageView
-            android:layout_height="0dp"
-            android:layout_width="0dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:src="@drawable/mental"
-            app:layout_constraintLeft_toLeftOf="@+id/mStressFAB"
-            app:layout_constraintRight_toRightOf="@+id/mStressFAB"
-            app:layout_constraintTop_toTopOf="@+id/mStressFAB"
-            app:layout_constraintBottom_toBottomOf="@+id/mStressFAB"
-            android:elevation="15dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

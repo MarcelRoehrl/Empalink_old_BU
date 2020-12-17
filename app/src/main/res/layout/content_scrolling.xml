@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activities.SurveyActivity"
+    tools:showIn="@layout/activity_survey">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie schwierig sind Deine Arbeitsaufgaben, die Du gerade erledigst?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie hoch sind die geistigen Anforderungen während Deiner Arbeitsaufgaben?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie hoch sind die körperlichen Anforderungen während Deiner Arbeitsaufgaben?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie hoch ist das Tempo, mit dem die einzelnen Schritte Deiner Arbeitsaufgaben aufeinander folgen?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie erfolgreich führst Du die geforderten Arbeitsaufgaben Deiner Ansicht nach durch?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie sehr musst Du Dich anstrengen, um Deine Leistung zu erreichen?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="Wie verunsichert, entmutigt, gereizt und verärgert bist Du?" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/slider7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bsb_thumb_color="#6200EE"
+        app:bsb_second_track_color="#6200EE"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_track_size="2dp"
+        app:bsb_thumb_radius="10dp"
+        app:bsb_thumb_radius_on_dragging="12dp"
+        app:bsb_section_count="20"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_show_section_text="false"
+        app:bsb_hide_bubble="true"
+        app:bsb_track_color="@color/background_bar"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_gravity="right"
+        android:text="Fragebogen abgeben"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
