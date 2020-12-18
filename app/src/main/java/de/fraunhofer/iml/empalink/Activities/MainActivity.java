@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
+        checkPermissions();
+        //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
     }
 
     private void checkPermissions()
