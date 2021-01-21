@@ -50,6 +50,4 @@
         app:fabCustomSize="50dp"
         app:tint="#FFFFFF"/>
 
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -12,6 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import de.fraunhofer.iml.empalink.R;
 
@@ -32,9 +34,7 @@ public class SurveyActivity extends AppCompatActivity
         FloatingActionButton closeFAB = findViewById(R.id.closeFAB);
         closeFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                finish();
-            }
+            public void onClick(View view) {finish();}
         });
 
         slider1 = findViewById(R.id.slider1);
@@ -126,5 +126,13 @@ public class SurveyActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    public void onSubmit(View view)
+    {
+        RadioGroup rg1 = findViewById(R.id.rg1);
+        int test = rg1.getCheckedRadioButtonId();
+        RadioButton b = (RadioButton)findViewById(test);
+        String selectedRbText = b.getText().toString();
     }
 }
