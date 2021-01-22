@@ -102,4 +102,11 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="o1">Fühle mich aktiv und vital; aufmerksam; vollkommen wach</string>
+    <string name="o2">Bin voll da, jedoch nicht auf dem Höhepunkt; kann mich konzentrieren</string>
+    <string name="o3">Entspannt; wach; nicht voll aufmerksam; ansprechbar</string>
+    <string name="o4">Etwas dösig; nicht auf dem Höhepunkt; etwas schlapp</string>
+    <string name="o5">Dösig; verliere das Interesse, wach zu bleiben; verlangsamt</string>
+    <string name="o6">Schläfrig; möchte mich hinlegen; kämpfe gegen den Schlaf; benebelt</string>
+    <string name="o7">Fast träumend; schlafe bald ein; kein Bemühen mehr, wach zu bleiben</string>
 </resources>

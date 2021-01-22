@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final String EMPATICA_API_KEY = "bdc9dcd5c8134b1893b9cd34d8a6b15a";
 
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
+    private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
+    private static final int REQUEST_SURVEY = 3;
 
     private double updated_pulse = 0;
 
@@ -88,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        //checkPermissions();
-        show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
+        checkPermissions();
+        //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
     }
 
     private void checkPermissions()
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onSurveyClicked(View view)
     {
         vibrate();
-        startActivityForResult(new Intent(this, SurveyActivity.class), 0);
+        startActivityForResult(new Intent(this, SurveyActivity.class), REQUEST_SURVEY);
         /*androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
                 .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
@@ -374,6 +375,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             String test = data.getStringExtra(V.FILENAME_EXTRA);
             startActivity(intent);
         }
+        else if(requestCode == REQUEST_SURVEY && resultCode == RESULT_OK)
+        {
+            String survey = data.getStringExtra("result");
+            session.addSurvey(survey);
+            Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 

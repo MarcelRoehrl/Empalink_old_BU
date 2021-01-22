@@ -1,5 +1,7 @@
 package de.fraunhofer.iml.empalink.Activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -20,10 +22,12 @@ import de.fraunhofer.iml.empalink.R;
 public class SurveyActivity extends AppCompatActivity
 {
     private BubbleSeekBar slider1, slider2, slider3, slider4, slider5, slider6, slider7;
+    private long startStamp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        startStamp = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -130,9 +134,90 @@ public class SurveyActivity extends AppCompatActivity
 
     public void onSubmit(View view)
     {
-        RadioGroup rg1 = findViewById(R.id.rg1);
-        int test = rg1.getCheckedRadioButtonId();
-        RadioButton b = (RadioButton)findViewById(test);
-        String selectedRbText = b.getText().toString();
+        String survey = startStamp + "";
+        int id;
+
+        survey += ";" + slider1.getProgress() + ";" + slider2.getProgress() + ";" + slider3.getProgress() + ";" + slider4.getProgress() + ";" + slider5.getProgress() + ";" + slider6.getProgress() + ";" + slider7.getProgress();
+
+        id = ((RadioGroup)findViewById( R.id.rg1 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg2 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg3 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg4 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg5 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg6 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg7 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg8 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg9 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg10 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg11 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg12 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg13 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg14 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg15 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg16 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg17 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg18 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg19 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rg20 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+
+        id = ((RadioGroup)findViewById( R.id.rgi1 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi2 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi3 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi4 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi5 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi6 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        id = ((RadioGroup)findViewById( R.id.rgi7 )).getCheckedRadioButtonId();
+        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+
+        id = ((RadioGroup)findViewById( R.id.rgo )).getCheckedRadioButtonId();
+        String oAns = "" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        String oAnsNumber = "-1";
+        if(oAns.equals(getResources().getString(R.string.o1)))
+            oAnsNumber = "0";
+        else if(oAns.equals(getResources().getString(R.string.o2)))
+            oAnsNumber = "1";
+        else if(oAns.equals(getResources().getString(R.string.o3)))
+            oAnsNumber = "2";
+        else if(oAns.equals(getResources().getString(R.string.o4)))
+            oAnsNumber = "3";
+        else if(oAns.equals(getResources().getString(R.string.o5)))
+            oAnsNumber = "4";
+        else if(oAns.equals(getResources().getString(R.string.o6)))
+            oAnsNumber = "5";
+        else if(oAns.equals(getResources().getString(R.string.o7)))
+            oAnsNumber = "6";
+
+        survey += ";" + oAnsNumber;
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result", survey);
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

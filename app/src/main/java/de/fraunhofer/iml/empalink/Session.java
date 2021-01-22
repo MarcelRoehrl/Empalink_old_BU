@@ -34,7 +34,7 @@ public class Session
         try {
             writer = new FileWriter(filePath, true);
             bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);
-            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers");
+            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys");
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,42 +75,47 @@ public class Session
 
     public void addAcc(int x, int y, int z, double timestamp)
     {
-        writeLine(timestamp,",,,,"+x+";"+y+";"+z+",,,");
+        writeLine(timestamp,",,,,"+x+";"+y+";"+z+",,,,");
     }
 
     public void addBVP(float bvp, double timestamp)
     {
-        writeLine(timestamp,bvp+",,,,,,,");
+        writeLine(timestamp,bvp+",,,,,,,,");
     }
 
     public void addEDA(float gsr, double timestamp)
     {
-        writeLine(timestamp,","+gsr+",,,,,,");
+        writeLine(timestamp,","+gsr+",,,,,,,");
     }
 
     public void addIBI(float ibi, double timestamp)
     {
-        writeLine(timestamp,",,"+ibi+",,,,,");
+        writeLine(timestamp,",,"+ibi+",,,,,,");
     }
 
     public void addTemp(float temp, double timestamp)
     {
-        writeLine(timestamp,",,,"+temp+",,,,");
+        writeLine(timestamp,",,,"+temp+",,,,,");
+    }
+
+    public void addSurvey(String survey)
+    {
+        writeLine(",,,,,,,,"+survey);
     }
 
     public void addPStress(int stress)
     {
-        writeLine(",,,,,"+stress+",,");
+        writeLine(",,,,,"+stress+",,,");
     }
 
     public void addMStress(int stress)
     {
-        writeLine(",,,,,,"+stress+",");
+        writeLine(",,,,,,"+stress+",,");
     }
 
     public void addMarker()
     {
-        writeLine(",,,,,,,X");
+        writeLine(",,,,,,,X,");
     }
 
     public Double getCurrentTimestamp()

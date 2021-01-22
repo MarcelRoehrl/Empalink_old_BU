@@ -1805,37 +1805,37 @@
             android:orientation="vertical">
 
             <RadioButton
-                android:text="Fühle mich aktiv und vital; aufmerksam; vollkommen wach"
+                android:text="@string/o1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Bin voll da, jedoch nicht auf dem Höhepunkt; kann mich konzentrieren"
+                android:text="@string/o2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Entspannt; wach; nicht voll aufmerksam; ansprechbar"
+                android:text="@string/o3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Etwas dösig; nicht auf dem Höhepunkt; etwas schlapp"
+                android:text="@string/o4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Dösig; verliere das Interesse, wach zu bleiben; verlangsamt"
+                android:text="@string/o5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Schläfrig; möchte mich hinlegen; kämpfe gegen den Schlaf; benebelt"
+                android:text="@string/o6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <RadioButton
-                android:text="Fast träumend; schlafe bald ein; kein Bemühen mehr, wach zu bleiben"
+                android:text="@string/o7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </RadioGroup>
