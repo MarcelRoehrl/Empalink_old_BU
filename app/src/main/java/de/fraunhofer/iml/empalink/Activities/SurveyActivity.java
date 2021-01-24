@@ -18,16 +18,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.V;
 
 public class SurveyActivity extends AppCompatActivity
 {
     private BubbleSeekBar slider1, slider2, slider3, slider4, slider5, slider6, slider7;
-    private long startStamp = 0;
+    private double startStamp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        startStamp = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -40,6 +40,8 @@ public class SurveyActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {finish();}
         });
+        
+        startStamp = getIntent().getDoubleExtra(V.FILENAME_EXTRA, System.currentTimeMillis());
 
         slider1 = findViewById(R.id.slider1);
         slider2 = findViewById(R.id.slider2);

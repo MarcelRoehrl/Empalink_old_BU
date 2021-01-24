@@ -236,7 +236,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onSurveyClicked(View view)
     {
         vibrate();
-        startActivityForResult(new Intent(this, SurveyActivity.class), REQUEST_SURVEY);
+        Intent surveyIntent = new Intent(this, SurveyActivity.class);
+        surveyIntent.putExtra(V.TIMESTAMP_EXTRA, session.getCurrentTimestamp());
+        startActivityForResult(surveyIntent, REQUEST_SURVEY);
         /*androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
                 .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
