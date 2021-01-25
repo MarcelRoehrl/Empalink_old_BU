@@ -40,7 +40,7 @@ public class SurveyActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {finish();}
         });
-        
+
         startStamp = getIntent().getDoubleExtra(V.TIMESTAMP_EXTRA, System.currentTimeMillis());
 
         slider1 = findViewById(R.id.slider1);
