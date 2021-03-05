@@ -30,10 +30,11 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
+import de.fraunhofer.iml.empalink.Polar;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
 import de.fraunhofer.iml.empalink.V;
-import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
@@ -49,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private EmpaDeviceManager deviceManager = null;
 
-    private TextView statusLabel, captionLabel, batteryLabel;
+    private Polar polar;
+
+    private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
     private com.google.android.material.button.MaterialButton showDataButton, backgroundShowDataButton;
     private com.google.android.material.floatingactionbutton.FloatingActionButton surveyFAB;
     private ImageButton recordButton;
-    private ImageView connection_icon;
+    private ImageView connection_icon_empatica;
     private com.google.android.material.card.MaterialCardView livedata_card;
     private Session session;
     private boolean recording = false;
@@ -69,16 +72,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        statusLabel = findViewById(R.id.status);
+        livedata_card = findViewById(R.id.livedata_card);
         eda_value = findViewById(R.id.eda_value);
         ibi_value = findViewById(R.id.ibi_value);
         bpm_value = findViewById(R.id.bpm_value);
         acc_value = findViewById(R.id.acc_value);
         temp_value = findViewById(R.id.temp_value);
-        batteryLabel = findViewById(R.id.battery);
-        captionLabel = findViewById(R.id.caption);
-        livedata_card = findViewById(R.id.livedata_card);
-        connection_icon = findViewById(R.id.connection_icon);
+
+        statusLabel_empatica = findViewById(R.id.status_empatica);
+        batteryLabel_empatica = findViewById(R.id.battery_empatica);
+        captionLabel_empatica = findViewById(R.id.caption_empatica);
+        connection_icon_empatica = findViewById(R.id.connection_icon_empatica);
 
         recordButton = findViewById(R.id.recordButton);
         surveyFAB = findViewById(R.id.surveyFAB);
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
         else {
-            initEmpaticaDeviceManager();
+            startScanning();
         }
     }
 
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             if ( (grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) )
             {   // all permissions granted
                 show();
-                initEmpaticaDeviceManager();
+                startScanning();
             } else {
                 informAndFinish();
             }
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
             {   // all permissions granted
                 show();
-                initEmpaticaDeviceManager();
+                startScanning();
             } else {
                 informAndFinish();
             }
@@ -142,11 +146,18 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             if ( (grantResults.length >= 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) )
             {   // all permissions granted
                 show();
-                initEmpaticaDeviceManager();
+                startScanning();
             } else {
                 informAndFinish();
             }
         }
+    }
+
+    private void startScanning()
+    {
+        initEmpaticaDeviceManager();
+        polar = new Polar(this, this, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
+        polar.startScanning();
     }
 
     public void informAndFinish()
@@ -307,6 +318,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.stopScanning();
         }
+        if (polar != null)
+            polar.onPause();
     }
 
     @Override
@@ -315,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.cleanUp();
         }
+        if (polar != null)
+            polar.onDestroy();
     }
 
     @Override
@@ -324,6 +339,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null && wasReady && !connected) {
             deviceManager.startScanning();
         }
+        if (polar != null)
+            polar.onResume();
     }
 
     @Override
@@ -337,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             try {
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
-                updateLabel(captionLabel, "mit " + deviceName);
+                updateLabel(captionLabel_empatica, "mit " + deviceName);
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 Toast.makeText(MainActivity.this, "Sorry, you can't connect to this device", Toast.LENGTH_SHORT).show();
@@ -366,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // The user chose not to enable Bluetooth
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            updateLabel(statusLabel, "Bitte bluetooth aktivieren und die App neu starten um sich mit einer E4 verbinden zu können");
+            updateLabel(statusLabel_empatica, "Bitte bluetooth aktivieren und die App neu starten um sich mit einer E4 verbinden zu können");
             //TODO Listener auf bluetooth setzen um beim aktivieren weiter zu suchen
             return;
         }
@@ -398,8 +415,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
-            updateLabel(statusLabel, "Bereit");
-            updateLabel(captionLabel, "E4 bitte einschalten");
+            updateLabel(statusLabel_empatica, "Bereit");
+            updateLabel(captionLabel_empatica, "E4 bitte einschalten");
             try {// Start scanning
                 deviceManager.startScanning();
                 hide();
@@ -407,35 +424,35 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 // The device manager has established a connection
             } catch (Exception e)
             {//Keine Verbindung, versuche es erneut
-                updateLabel(statusLabel, "Keine Internetverbindung");
+                updateLabel(statusLabel_empatica, "Keine Internetverbindung");
                 initEmpaticaDeviceManager();
             }
         }
         else if (status == EmpaStatus.CONNECTED)
         {
-            updateLabel(statusLabel, "Verbunden");
+            updateLabel(statusLabel_empatica, "Verbunden");
             show();
             wasConnected = true;
             connected = true;
-            connection_icon.setImageDrawable(getDrawable(R.drawable.connected));
+            connection_icon_empatica.setImageDrawable(getDrawable(R.drawable.connected));
         }
         else if (status == EmpaStatus.DISCONNECTED)
         {// The device manager disconnected from a device
-            connection_icon.setImageDrawable(getDrawable(R.drawable.disconnected));
+            connection_icon_empatica.setImageDrawable(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
                 if(recording)
                     stopAndSaveRecordings();
                 connected = false;
-                updateLabel(statusLabel, "Verbindung getrennt");
-                updateLabel(captionLabel, "E4 bitte erneut einschalten");
+                updateLabel(statusLabel_empatica, "Verbindung getrennt");
+                updateLabel(captionLabel_empatica, "E4 bitte erneut einschalten");
                 deviceManager.startScanning();
             }
             hide();
         }
         else if (status == EmpaStatus.CONNECTING)
         {
-            updateLabel(statusLabel, "Verbinde");
+            updateLabel(statusLabel_empatica, "Verbinde");
         }
     }
 
@@ -491,10 +508,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                batteryLabel.setVisibility(View.VISIBLE);
+                batteryLabel_empatica.setVisibility(View.VISIBLE);
             }
         });
-        updateLabel(batteryLabel, "  Akku: " + String.format("%.0f %%", battery * 100));
+        updateLabel(batteryLabel_empatica, "  Akku: " + String.format("%.0f %%", battery * 100));
     }
 
     @Override
@@ -520,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     // Update a label with some text, making sure this is run in the UI thread
-    private void updateLabel(final TextView label, final String text) {
+    public void updateLabel(final TextView label, final String text) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -585,7 +602,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
                 surveyFAB.hide();
-                updateLabel(batteryLabel,null);
+                updateLabel(batteryLabel_empatica,null);
             }
         });
     }

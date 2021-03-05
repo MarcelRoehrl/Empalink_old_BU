@@ -26,17 +26,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".Activities.SurveyActivity"
             android:label="@string/title_activity_survey"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".Activities.NoSingleInternetErrorActivity"></activity>
-        <activity android:name=".Activities.FilechooserActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".Activities.NoSingleInternetErrorActivity" />
+
+        <activity android:name=".Activities.FilechooserActivity" />
+
         <activity android:name=".Activities.DataDisplayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activities.MainActivity"
             android:screenOrientation="portrait">
@@ -46,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

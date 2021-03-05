@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.CoupleChartGestureListener;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.TextDrawable;
@@ -181,7 +180,7 @@ public class DataDisplayActivity extends AppCompatActivity
             bvp[j] = data.get(j).getY();
         }
 
-        AMPDAlgo algo = new AMPDAlgo(bvp);
+        /*AMPDAlgo algo = new AMPDAlgo(bvp);
 
         try {
             long startime = System.currentTimeMillis();
@@ -210,7 +209,7 @@ public class DataDisplayActivity extends AppCompatActivity
         } catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
 
         bvpChip.setText(""+Math.round(pulse));
     }

@@ -9,9 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 
-import de.fraunhofer.iml.empalink.AMPDAlgorithm.AMPDAlgo;
 import de.fraunhofer.iml.empalink.SensorObjects.Acceleration;
 import de.fraunhofer.iml.empalink.SensorObjects.BVP;
 import de.fraunhofer.iml.empalink.SensorObjects.EDA;
@@ -56,7 +54,7 @@ public class Session_with_arrays
 
     public double getLatestPulse(double updated_pulse, boolean save)
     {
-        double pulse = 0;
+        double pulse = 0;/*
 
         LinkedList<BVP> data = new LinkedList<BVP>();
         int it = BVPData.size()-1;
@@ -96,7 +94,7 @@ public class Session_with_arrays
             pulse = V.calcMedPulse(V.calcPulse(peaks_times));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return pulse;
     }
 
