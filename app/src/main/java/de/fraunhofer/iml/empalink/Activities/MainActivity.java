@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private ImageView connection_icon_empatica;
     private com.google.android.material.card.MaterialCardView livedata_card;
     private Session session;
-    private boolean recording = false;
     private boolean wasConnected = false;
     private boolean wasReady = false;
     private boolean connected = false;
@@ -92,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         vibrator = (Vibrator)getSystemService(this.VIBRATOR_SERVICE);
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
+
+        session = new Session(this);
 
         checkPermissions();
         //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void startScanning()
     {
         initEmpaticaDeviceManager();
-        polar = new Polar(this, this, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
+        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
         polar.startScanning();
     }
 
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onDisconnectClicked(View view)
     {
-        if(recording)
+        if(session.recording)
             stopAndSaveRecordings();
 
         if (deviceManager != null) {
@@ -201,13 +202,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onRecordClicked(View view)
     {
         vibrate();
-        if(!recording)
+        if(!session.recording)
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            session = new Session(System.currentTimeMillis(), this);
+            session.setStarttime(System.currentTimeMillis());
             session.startWriter();
             recordButton.setBackground(getDrawable(R.drawable.pause));
-            recording = true;
+            session.recording = true;
             show();
         }
         else
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private void stopAndSaveRecordings()
     {
-        recording = false;
+        session.recording = false;
         recordButton.setBackground(getDrawable(R.drawable.play));
         hide();
         show();
@@ -441,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             connection_icon_empatica.setImageDrawable(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
-                if(recording)
+                if(session.recording)
                     stopAndSaveRecordings();
                 connected = false;
                 updateLabel(statusLabel_empatica, "Verbindung getrennt");
@@ -462,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         String vals = ""+Math.round(val*100f)/100f;
         updateLabel(acc_value, vals);
 
-        if(recording)
+        if(session.recording)
             session.addAcc(x,y,z,timestamp);
     }
 
@@ -480,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        if(recording)
+        if(session.recording)
         {
             session.addBVP(bvp, timestamp);
 
@@ -517,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         updateLabel(eda_value, "" + Math.round(gsr*1000f)/1000f);
-        if(recording)
+        if(session.recording)
             session.addEDA(gsr,timestamp);
     }
 
@@ -525,14 +526,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void didReceiveIBI(float ibi, double timestamp) {
         updateLabel(ibi_value, "" + Math.round(ibi*1000f)/1000f);
         updateLabel(bpm_value, "" + Math.round((60/ibi)*100f)/100f);
-        if(recording)
+        if(session.recording)
             session.addIBI(ibi,timestamp);
     }
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
         updateLabel(temp_value, "" + temp);
-        if(recording)
+        if(session.recording)
             session.addTemp(temp,timestamp);
     }
 
@@ -585,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 showDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.VISIBLE);
                 recordButton.setVisibility(View.VISIBLE);
-                if(recording) {
+                if(session.recording) {
                     surveyFAB.show();
                 }
             }

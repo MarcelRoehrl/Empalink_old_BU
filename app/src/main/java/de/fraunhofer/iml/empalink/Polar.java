@@ -20,10 +20,12 @@ import polar.com.sdk.api.PolarBleApi;
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.PolarBleApiDefaultImpl;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
+import polar.com.sdk.api.model.PolarAccelerometerData;
 import polar.com.sdk.api.model.PolarDeviceInfo;
 import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarHrData;
 import polar.com.sdk.api.model.PolarOhrData;
+import polar.com.sdk.api.model.PolarOhrPPIData;
 import polar.com.sdk.api.model.PolarSensorSetting;
 
 import static polar.com.sdk.api.model.PolarOhrData.OHR_DATA_TYPE.PPG3_AMBIENT1;
@@ -34,16 +36,19 @@ public class Polar
     private Context context;
     private Activity activity;
     private PolarBleApi api;
-    private Disposable scanDisposable;
+    private Disposable scanDisposable, accDisposable, ppgDisposable, ppiDisposable;
     private String DEVICE_ID = "";
     private TextView statusLabel, captionLabel, batteryLabel;
 
+    private Session session;
+
     private Disposable ecgDisposable;
 
-    public Polar(Context context, Activity activity, TextView statusLabel, TextView captionLabel, TextView batteryLabel)
+    public Polar(Context context, Activity activity, Session session, TextView statusLabel, TextView captionLabel, TextView batteryLabel)
     {
         this.context = context;
         this.activity = activity;
+        this.session = session;
         this.statusLabel = statusLabel;
         this.captionLabel = captionLabel;
         this.batteryLabel = batteryLabel;
@@ -74,7 +79,7 @@ public class Polar
                 DEVICE_ID = polarDeviceInfo.deviceId;
 
                 updateLabel(statusLabel, "Verbinde");
-                updateLabel(captionLabel, "mit " + DEVICE_ID);
+                updateLabel(captionLabel, "mit Polar - " + DEVICE_ID);
             }
 
             @Override
@@ -85,6 +90,9 @@ public class Polar
                 updateLabel(captionLabel, "suche " + DEVICE_ID);
 
                 ecgDisposable = null;
+                accDisposable = null;
+                ppgDisposable = null;
+                ppiDisposable = null;
 
                 try {
                     api.connectToDevice(DEVICE_ID);
@@ -111,6 +119,9 @@ public class Polar
                                             polarEcgData -> {
                                                 for (Integer microVolts : polarEcgData.samples) {
                                                     Log.d(TAG, "    yV: " + microVolts);
+
+                                                    if(session.recording)
+                                                        session.addPolarECG(""+microVolts, polarEcgData.timeStamp);
                                                 }
                                             },
                                             throwable -> Log.e(TAG, "" + throwable),
@@ -120,6 +131,88 @@ public class Polar
                             // NOTE stops streaming if it is "running"
                             ecgDisposable.dispose();
                             ecgDisposable = null;
+                        }
+                    }
+
+                    if(feature.name().equals("ACC"))
+                    {
+                        if (accDisposable == null) {
+                            accDisposable = api.requestStreamSettings(DEVICE_ID, PolarBleApi.DeviceStreamingFeature.ACC)
+                                    .toFlowable()
+                                    .flatMap((Function<PolarSensorSetting, Publisher<PolarAccelerometerData>>) settings -> {
+                                        PolarSensorSetting sensorSetting = settings.maxSettings();
+                                        return api.startAccStreaming(DEVICE_ID, sensorSetting);
+                                    }).observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            polarAccelerometerData -> {
+                                                for (PolarAccelerometerData.PolarAccelerometerDataSample data : polarAccelerometerData.samples) {
+                                                    Log.d(TAG, "    x: " + data.x + " y: " + data.y + " z: " + data.z);
+
+                                                    if(session.recording)
+                                                        session.addPolarACC(data.x+";"+data.y+";"+data.z, polarAccelerometerData.timeStamp);
+                                                }
+                                            },
+                                            throwable -> Log.e(TAG, "" + throwable),
+                                            () -> Log.d(TAG, "complete")
+                                    );
+                        } else {
+                            // NOTE dispose will stop streaming if it is "running"
+                            accDisposable.dispose();
+                            accDisposable = null;
+                        }
+                    }
+
+                    if(feature.name().equals("PPG"))
+                    {
+                        if (ppgDisposable == null) {
+                            ppgDisposable = api.requestStreamSettings(DEVICE_ID, PolarBleApi.DeviceStreamingFeature.PPG)
+                                    .toFlowable()
+                                    .flatMap((Function<PolarSensorSetting, Publisher<PolarOhrData>>) polarPPGSettings -> api.startOhrStreaming(DEVICE_ID, polarPPGSettings.maxSettings()))
+                                    .subscribe(
+                                            polarOhrPPGData -> {
+                                                if (polarOhrPPGData.type == PPG3_AMBIENT1) {
+                                                    for (PolarOhrData.PolarOhrSample data : polarOhrPPGData.samples) {
+                                                        Log.d(TAG, "    ppg0: " + data.channelSamples.get(0)
+                                                                + " ppg1: " + data.channelSamples.get(1)
+                                                                + " ppg2: " + data.channelSamples.get(2)
+                                                                + " ambient: " + data.channelSamples.get(3)
+                                                                + " timestamp: " + polarOhrPPGData.timeStamp);
+
+                                                        if(session.recording)
+                                                            session.addPolarPPG(data.channelSamples.get(0)+";"+data.channelSamples.get(1)+";"+data.channelSamples.get(2)+";"+data.channelSamples.get(3), polarOhrPPGData.timeStamp);
+                                                    }
+                                                }
+                                            },
+                                            throwable -> Log.e(TAG, "" + throwable.getLocalizedMessage()),
+                                            () -> Log.d(TAG, "complete")
+                                    );
+                        } else {
+                            ppgDisposable.dispose();
+                            ppgDisposable = null;
+                        }
+                    }
+
+                    if(feature.name().equals("PPI"))
+                    {
+                        if (ppiDisposable == null) {
+                            ppiDisposable = api.startOhrPPIStreaming(DEVICE_ID)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            ppiData -> {
+                                                for (PolarOhrPPIData.PolarOhrPPISample sample : ppiData.samples) {
+                                                    Log.d(TAG, "    ppi: " + sample.ppi
+                                                            + " blocker: " + sample.blockerBit + " errorEstimate: " + sample.errorEstimate);
+
+                                                    if(session.recording)
+                                                        session.addPolarPPI(sample.ppi+";"+sample.blockerBit+";"+sample.errorEstimate, ppiData.timeStamp);
+                                                }
+                                            },
+                                            throwable -> Log.e(TAG, "" + throwable.getLocalizedMessage()),
+                                            () -> Log.d(TAG, "complete")
+                                    );
+                        } else {
+                            ppiDisposable.dispose();
+                            ppiDisposable = null;
                         }
                     }
                 }
