@@ -20,28 +20,18 @@ public class Session
 
     public boolean recording = false;
 
-    public Session(long starttime, Context context)
+    public Session()
+    {
+    }
+
+    public void startWriter(long starttime, Context context)
     {
         this.starttime = starttime;
 
         File internal_storage = new File(context.getResources().getString(R.string.path));
         internal_storage.mkdirs();
-
         filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
-    }
 
-    public Session(Context context)
-    {
-        this(-1, context);
-    }
-
-    public void setStarttime(long starttime)
-    {
-        this.starttime = starttime;
-    }
-
-    public void startWriter()
-    {
         try {
             writer = new FileWriter(filePath, true);
             bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);

@@ -6,8 +6,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
@@ -17,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,8 +38,9 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.io.IOException;
+
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
-import de.fraunhofer.iml.empalink.Polar;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
 import de.fraunhofer.iml.empalink.V;
@@ -48,9 +57,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private Vibrator vibrator;
 
+    private MediaPlayer alarmPlayer;
     private EmpaDeviceManager deviceManager = null;
-
-    private Polar polar;
 
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
@@ -58,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private com.google.android.material.floatingactionbutton.FloatingActionButton surveyFAB;
     private ImageButton recordButton;
     private ImageView connection_icon_empatica;
-    private com.google.android.material.card.MaterialCardView livedata_card;
+    private com.google.android.material.card.MaterialCardView livedata_card, status_card_empatica;
     private Session session;
     private boolean wasConnected = false;
     private boolean wasReady = false;
@@ -72,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         setContentView(R.layout.activity_main);
 
         livedata_card = findViewById(R.id.livedata_card);
+        status_card_empatica = findViewById(R.id.status_card_empatica);
         eda_value = findViewById(R.id.eda_value);
         ibi_value = findViewById(R.id.ibi_value);
         bpm_value = findViewById(R.id.bpm_value);
@@ -92,7 +101,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
-        session = new Session(this);
+        session = new Session();
+
+        initMediaPlayer();
 
         checkPermissions();
         //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
@@ -157,8 +168,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void startScanning()
     {
         initEmpaticaDeviceManager();
-        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
-        polar.startScanning();
+    }
+
+    private void initMediaPlayer()
+    {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        alarmPlayer = MediaPlayer.create(this, notification);
+        alarmPlayer.setLooping(true);
     }
 
     public void informAndFinish()
@@ -201,12 +217,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onRecordClicked(View view)
     {
-        vibrate();
+        vibrate(false);
         if(!session.recording)
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            session.setStarttime(System.currentTimeMillis());
-            session.startWriter();
+            session.startWriter(System.currentTimeMillis(), this);
             recordButton.setBackground(getDrawable(R.drawable.pause));
             session.recording = true;
             show();
@@ -221,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    Toast.makeText(MainActivity.this, "Aufnahme wird gespeicher, bitte warten", Toast.LENGTH_LONG).show();
                     stopAndSaveRecordings();
                     Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
                 }
@@ -247,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onSurveyClicked(View view)
     {
-        vibrate();
+        vibrate(false);
         Intent surveyIntent = new Intent(this, SurveyActivity.class);
         surveyIntent.putExtra(V.TIMESTAMP_EXTRA, session.getCurrentTimestamp());
         startActivityForResult(surveyIntent, REQUEST_SURVEY);
@@ -290,13 +304,19 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             .show();*/
     }
 
-    private void vibrate()
+    private void vibrate(boolean alarm)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            if(alarm)
+                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            else
+                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             //deprecated in API 26
-            vibrator.vibrate(200);
+            if(alarm)
+                vibrator.vibrate(200);
+            else
+                vibrator.vibrate(500);
         }
     }
 
@@ -319,8 +339,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.stopScanning();
         }
-        if (polar != null)
-            polar.onPause();
     }
 
     @Override
@@ -329,8 +347,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.cleanUp();
         }
-        if (polar != null)
-            polar.onDestroy();
     }
 
     @Override
@@ -340,8 +356,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null && wasReady && !connected) {
             deviceManager.startScanning();
         }
-        if (polar != null)
-            polar.onResume();
     }
 
     @Override
@@ -442,18 +456,28 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             connection_icon_empatica.setImageDrawable(getDrawable(R.drawable.disconnected));
             if(wasConnected)
             {
-                if(session.recording)
-                    stopAndSaveRecordings();
                 connected = false;
                 updateLabel(statusLabel_empatica, "Verbindung getrennt");
                 updateLabel(captionLabel_empatica, "E4 bitte erneut einschalten");
                 deviceManager.startScanning();
             }
-            hide();
+            if(session.recording)
+            {//Unerwünschter Verbindungsverlust
+                alarmPlayer.start();
+                status_card_empatica.setBackgroundColor(Color.parseColor("#E53935"));
+            }
+            else
+                hide();
         }
         else if (status == EmpaStatus.CONNECTING)
         {
             updateLabel(statusLabel_empatica, "Verbinde");
+            if(alarmPlayer.isPlaying())
+            {
+                alarmPlayer.stop();
+                initMediaPlayer();
+                status_card_empatica.setBackgroundColor(Color.WHITE);
+            }
         }
     }
 
