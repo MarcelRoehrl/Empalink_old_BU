@@ -3,19 +3,18 @@ package de.fraunhofer.iml.empalink.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.xw.repo.BubbleSeekBar;
+import android.util.SparseArray;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.xw.repo.BubbleSeekBar;
 
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.V;

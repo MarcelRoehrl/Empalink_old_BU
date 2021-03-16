@@ -10,11 +10,9 @@ import org.reactivestreams.Publisher;
 import java.util.Set;
 import java.util.UUID;
 
-import de.fraunhofer.iml.empalink.Activities.MainActivity;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
 import polar.com.sdk.api.PolarBleApi;
 import polar.com.sdk.api.PolarBleApiCallback;

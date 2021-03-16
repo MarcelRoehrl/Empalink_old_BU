@@ -1,9 +1,9 @@
 package de.fraunhofer.iml.empalink.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import de.fraunhofer.iml.empalink.R;
 
