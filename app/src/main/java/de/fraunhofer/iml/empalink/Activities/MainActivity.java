@@ -230,9 +230,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    checkAlarmPlayer();
                     stopAndSaveRecordings();
                     Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
+                    checkAlarmPlayer();
                 }
             })
             .setNegativeButton("Aufnahme fortsetzen", new DialogInterface.OnClickListener() {
@@ -478,6 +478,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             alarmPlayer.stop();
             initMediaPlayer();
             status_card_empatica.setBackgroundColor(Color.WHITE);
+            if(!session.recording)
+                hide();
         }
     }
 
