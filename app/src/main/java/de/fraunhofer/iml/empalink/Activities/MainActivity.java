@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
+                    checkAlarmPlayer();
                     stopAndSaveRecordings();
                     Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
                 }
@@ -466,12 +467,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         else if (status == EmpaStatus.CONNECTING)
         {
             updateLabel(statusLabel_empatica, "Verbinde");
-            if(alarmPlayer.isPlaying())
-            {
-                alarmPlayer.stop();
-                initMediaPlayer();
-                status_card_empatica.setBackgroundColor(Color.WHITE);
-            }
+            checkAlarmPlayer();
+        }
+    }
+
+    private void checkAlarmPlayer()
+    {
+        if(alarmPlayer.isPlaying())
+        {
+            alarmPlayer.stop();
+            initMediaPlayer();
+            status_card_empatica.setBackgroundColor(Color.WHITE);
         }
     }
 
