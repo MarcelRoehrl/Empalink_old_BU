@@ -12,6 +12,7 @@
     <string name="temp_label">Temperature</string>
     <string name="battery_label">Battery</string>
     <string name="title_activity_survey">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
     <string name="o1">Fühle mich aktiv und vital; aufmerksam; vollkommen wach</string>
     <string name="o2">Bin voll da, jedoch nicht auf dem Höhepunkt; kann mich konzentrieren</string>
     <string name="o3">Entspannt; wach; nicht voll aufmerksam; ansprechbar</string>
