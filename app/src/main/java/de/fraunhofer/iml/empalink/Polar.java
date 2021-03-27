@@ -57,6 +57,9 @@ public class Polar
 
         api.setApiLogger(s -> Log.d("API Logger", s));
 
+        updateLabel(statusLabel, "Bereit");
+        updateLabel(captionLabel, "Polar bitte einschalten");
+
         api.setApiCallback(new PolarBleApiCallback() {
             @Override
             public void blePowerStateChanged(boolean powered) {

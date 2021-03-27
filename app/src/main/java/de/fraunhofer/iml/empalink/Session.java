@@ -12,6 +12,7 @@ public class Session
 {
     private long starttime;
     private long startStamp = -1;
+    private long polarAdd = 946700000000000000L; //weil Polar vom 01.01.2000 zählt
 
     private FileWriter writer;
     private BufferedWriter bufferedWriter;
@@ -52,12 +53,21 @@ public class Session
         }
     }
 
-    public void writeLine(double timestamp, String line)
+    public void writeLine(double timestamp, String line, boolean empatica)
     {
-        if(startStamp == -1)
-            startStamp = (long)(timestamp*100000);
+        if(startStamp == -1) {
+            if(empatica)
+                startStamp = (long) (timestamp * 100000);
+            //else
+             //   startStamp = (long)((timestamp+polarAdd)*100000);
+        }
         try {
-            bufferedWriter.write((double)((long)(timestamp*100000)-startStamp)/100000+","+line);
+            if(empatica)
+                bufferedWriter.write((double)((long)(timestamp*100000)-startStamp)/100000+","+line);
+            else
+                bufferedWriter.write(timestamp+","+line);
+            double test = (double)((double)((timestamp+polarAdd)*100000)-startStamp)/100000;
+
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,27 +86,27 @@ public class Session
 
     public void addAcc(int x, int y, int z, double timestamp)
     {
-        writeLine(timestamp,",,,,"+x+";"+y+";"+z+",,,,,,,,");
+        writeLine(timestamp,",,,,"+x+";"+y+";"+z+",,,,,,,,", true);
     }
 
     public void addBVP(float bvp, double timestamp)
     {
-        writeLine(timestamp,bvp+",,,,,,,,,,,,");
+        writeLine(timestamp,bvp+",,,,,,,,,,,,", true);
     }
 
     public void addEDA(float gsr, double timestamp)
     {
-        writeLine(timestamp,","+gsr+",,,,,,,,,,,");
+        writeLine(timestamp,","+gsr+",,,,,,,,,,,", true);
     }
 
     public void addIBI(float ibi, double timestamp)
     {
-        writeLine(timestamp,",,"+ibi+",,,,,,,,,,");
+        writeLine(timestamp,",,"+ibi+",,,,,,,,,,", true);
     }
 
     public void addTemp(float temp, double timestamp)
     {
-        writeLine(timestamp,",,,"+temp+",,,,,,,,,");
+        writeLine(timestamp,",,,"+temp+",,,,,,,,,", true);
     }
 
     public void addSurvey(String survey)
@@ -121,22 +131,22 @@ public class Session
 
     public void addPolarPPG(String ppg, double timestamp)
     {
-        writeLine(timestamp, ",,,,,,,,,"+ppg+",,,");
+        writeLine(timestamp, ",,,,,,,,,"+ppg+",,,", false);
     }
 
     public void addPolarPPI(String ppi, double timestamp)
     {
-        writeLine(timestamp, ",,,,,,,,,,"+ppi+",,");
+        writeLine(timestamp, ",,,,,,,,,,"+ppi+",,", false);
     }
 
     public void addPolarACC(String acc, double timestamp)
     {
-        writeLine(timestamp, ",,,,,,,,,,,"+acc+",");
+        writeLine(timestamp, ",,,,,,,,,,,"+acc+",", false);
     }
 
     public void addPolarECG(String ecg, double timestamp)
     {
-        writeLine(timestamp, ",,,,,,,,,,,,"+ecg);
+        writeLine(timestamp, ",,,,,,,,,,,,"+ecg, false);
     }
 
 
