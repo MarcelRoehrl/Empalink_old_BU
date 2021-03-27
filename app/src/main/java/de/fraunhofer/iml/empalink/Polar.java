@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.reactivestreams.Publisher;
 
+import java.util.Calendar;
 import java.util.Set;
 import java.util.UUID;
 
@@ -205,7 +206,7 @@ public class Polar
                                                             + " blocker: " + sample.blockerBit + " errorEstimate: " + sample.errorEstimate);
 
                                                     if(session.recording)
-                                                        session.addPolarPPI(sample.ppi+";"+sample.blockerBit+";"+sample.errorEstimate, ppiData.timeStamp);
+                                                        session.addPolarPPI(sample.ppi+";"+sample.blockerBit+";"+sample.errorEstimate); //OH1 PPI timestamp always 0 (hardware issue)
                                                 }
                                             },
                                             throwable -> Log.e(TAG, "" + throwable.getLocalizedMessage()),
@@ -240,6 +241,17 @@ public class Polar
             public void polarFtpFeatureReady(String s) {
             }
         });
+    }
+
+    public void updateDate()
+    {
+        if(DEVICE_ID.length() > 0)
+        {
+            Calendar time = Calendar.getInstance();
+            time.setTimeInMillis(System.currentTimeMillis());
+
+            api.setLocalTime(DEVICE_ID, time);
+        }
     }
 
     public void startScanning()

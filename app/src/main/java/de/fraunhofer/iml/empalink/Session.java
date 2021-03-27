@@ -12,7 +12,8 @@ public class Session
 {
     private long starttime;
     private long startStamp = -1;
-    private long polarAdd = 946700000000000000L; //weil Polar vom 01.01.2000 zählt
+    private long polarStart = -1;
+    private long polarAdd = 0;
 
     private FileWriter writer;
     private BufferedWriter bufferedWriter;
@@ -20,10 +21,6 @@ public class Session
     private String filePath;
 
     public boolean recording = false;
-
-    public Session()
-    {
-    }
 
     public void startWriter(long starttime, Context context)
     {
@@ -36,11 +33,13 @@ public class Session
         try {
             writer = new FileWriter(filePath, true);
             bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);
-            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys,Polar PPG,Polar PPI,Polar ACC,Polar ECG");
+            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys,Polar PPG,Polar PPI,Polar ACC,Polar ECG,"+starttime);
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        recording = true;
     }
 
     public void closeWriter()
@@ -55,18 +54,17 @@ public class Session
 
     public void writeLine(double timestamp, String line, boolean empatica)
     {
-        if(startStamp == -1) {
+        if(startStamp == -1 || polarStart == -1) {
             if(empatica)
                 startStamp = (long) (timestamp * 100000);
-            //else
-             //   startStamp = (long)((timestamp+polarAdd)*100000);
+            else
+                polarStart = (long)timestamp;
         }
         try {
             if(empatica)
                 bufferedWriter.write((double)((long)(timestamp*100000)-startStamp)/100000+","+line);
             else
-                bufferedWriter.write(timestamp+","+line);
-            double test = (double)((double)((timestamp+polarAdd)*100000)-startStamp)/100000;
+                bufferedWriter.write((double)((long)(timestamp-polarStart))/1000000000+","+line);
 
             bufferedWriter.newLine();
         } catch (IOException e) {
@@ -134,9 +132,9 @@ public class Session
         writeLine(timestamp, ",,,,,,,,,"+ppg+",,,", false);
     }
 
-    public void addPolarPPI(String ppi, double timestamp)
+    public void addPolarPPI(String ppi)
     {
-        writeLine(timestamp, ",,,,,,,,,,"+ppi+",,", false);
+        writeLine(",,,,,,,,,,"+ppi+",,");
     }
 
     public void addPolarACC(String acc, double timestamp)

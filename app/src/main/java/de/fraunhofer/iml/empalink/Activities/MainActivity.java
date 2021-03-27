@@ -35,6 +35,7 @@ import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
+import de.fraunhofer.iml.empalink.Polar;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
 import de.fraunhofer.iml.empalink.V;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private MediaPlayer alarmPlayer;
     private EmpaDeviceManager deviceManager = null;
+
+    private Polar polar;
 
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
@@ -162,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void startScanning()
     {
         initEmpaticaDeviceManager();
+        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
+        polar.startScanning();
     }
 
     private void initMediaPlayer()
@@ -215,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if(!session.recording)
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            session.startWriter(System.currentTimeMillis(), this);
+            long starttime = System.currentTimeMillis();
+            session.startWriter(starttime, this);
             recordButton.setBackground(getDrawable(R.drawable.pause));
-            session.recording = true;
             show();
         }
         else
@@ -334,6 +339,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.stopScanning();
         }
+        if (polar != null)
+            polar.onPause();
     }
 
     @Override
@@ -342,6 +349,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null) {
             deviceManager.cleanUp();
         }
+        if (polar != null)
+            polar.onDestroy();
     }
 
     @Override
@@ -351,6 +360,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if (deviceManager != null && wasReady && !connected) {
             deviceManager.startScanning();
         }
+        if (polar != null)
+            polar.onResume();
     }
 
     @Override
