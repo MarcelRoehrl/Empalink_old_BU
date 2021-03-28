@@ -2,6 +2,7 @@ package de.fraunhofer.iml.empalink.Activities;
 
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -74,7 +75,13 @@ public class DataDisplayActivity extends AppCompatActivity
         mStressData = new ArrayList<BarEntry>();
         markerData = new ArrayList<Float>();
 
-        filePath = getApplicationContext().getResources().getString(R.string.path)+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
+        String temppath;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            temppath = getApplicationContext().getFilesDir().getPath();
+        else
+            temppath = getApplicationContext().getResources().getString(R.string.path);
+
+        filePath = temppath+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 

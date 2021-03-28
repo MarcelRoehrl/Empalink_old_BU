@@ -1,6 +1,7 @@
 package de.fraunhofer.iml.empalink;
 
 import android.content.Context;
+import android.os.Build;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,9 +27,16 @@ public class Session
     {
         this.starttime = starttime;
 
-        File internal_storage = new File(context.getResources().getString(R.string.path));
-        internal_storage.mkdirs();
-        filePath = context.getResources().getString(R.string.path)+ File.separator + new Date(starttime).toString() + ".csv";
+        String temppath;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            temppath = context.getFilesDir().getPath();
+        else {
+            File internal_storage = new File(context.getResources().getString(R.string.path));
+            internal_storage.mkdirs();
+            temppath = context.getResources().getString(R.string.path);
+        }
+
+        filePath = temppath + File.separator + new Date(starttime).toString() + ".csv";
 
         try {
             writer = new FileWriter(filePath, true);
@@ -54,12 +62,11 @@ public class Session
 
     public void writeLine(double timestamp, String line, boolean empatica)
     {
-        if(startStamp == -1 || polarStart == -1) {
-            if(empatica)
+        if(empatica && startStamp == -1)
                 startStamp = (long) (timestamp * 100000);
-            else
-                polarStart = (long)timestamp;
-        }
+        else if(!empatica && polarStart == -1)
+            polarStart = (long)timestamp;
+
         try {
             if(empatica)
                 bufferedWriter.write((double)((long)(timestamp*100000)-startStamp)/100000+","+line);
