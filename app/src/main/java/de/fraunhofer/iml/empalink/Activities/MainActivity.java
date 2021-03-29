@@ -34,6 +34,10 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URLConnection;
+
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 import de.fraunhofer.iml.empalink.Polar;
 import de.fraunhofer.iml.empalink.R;
@@ -101,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         session = new Session();
 
         initMediaPlayer();
+
+        hide();
 
         checkPermissions();
         //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
@@ -412,8 +418,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             Intent intent = new Intent(this, DataDisplayActivity.class);
             intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
-            String test = data.getStringExtra(V.FILENAME_EXTRA);
             startActivity(intent);
+            /*String temppath;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                temppath = getApplicationContext().getFilesDir().getPath();
+            else
+                temppath = getApplicationContext().getResources().getString(R.string.path);
+
+            String filename = data.getStringExtra(V.FILENAME_EXTRA);
+            temppath += File.separator + filename;
+
+            shareFile(new File(temppath));*/
         }
         else if(requestCode == REQUEST_SURVEY && resultCode == RESULT_OK)
         {
@@ -423,6 +438,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void shareFile(File file) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        sendIntent.setType("text/csv");
+        startActivity(sendIntent);
+        //startActivity(Intent.createChooser(sendIntent, "Aufnahme teilen via.."));
     }
 
     @Override
@@ -440,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             updateLabel(captionLabel_empatica, "E4 bitte einschalten");
             try {// Start scanning
                 deviceManager.startScanning();
-                hide();
+                show(); //TODO hide() wenn nur Empatica drin ist
                 wasReady = true;
                 // The device manager has established a connection
             } catch (Exception e)

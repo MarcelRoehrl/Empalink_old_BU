@@ -32,7 +32,6 @@ import static polar.com.sdk.api.model.PolarOhrData.OHR_DATA_TYPE.PPG3_AMBIENT1;
 public class Polar
 {
     private static final String TAG = "Polar";
-    private Context context;
     private Activity activity;
     private PolarBleApi api;
     private Disposable scanDisposable, accDisposable, ppgDisposable, ppiDisposable;
@@ -45,7 +44,6 @@ public class Polar
 
     public Polar(Context context, Activity activity, Session session, TextView statusLabel, TextView captionLabel, TextView batteryLabel)
     {
-        this.context = context;
         this.activity = activity;
         this.session = session;
         this.statusLabel = statusLabel;

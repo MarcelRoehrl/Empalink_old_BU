@@ -81,7 +81,7 @@ public class DataDisplayActivity extends AppCompatActivity
         else
             temppath = getApplicationContext().getResources().getString(R.string.path);
 
-        filePath = temppath+ File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
+        filePath = temppath + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 
