@@ -37,6 +37,7 @@ import com.empatica.empalink.delegate.EmpaStatusDelegate;
 import java.io.File;
 import java.net.URI;
 import java.net.URLConnection;
+import java.util.Date;
 
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 import de.fraunhofer.iml.empalink.Polar;
@@ -205,7 +206,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
+        //TODO sharetest
+        Uri csv = Uri.fromFile(new File(getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv"));
+        Intent sharingIntent = new Intent();
+        sharingIntent.setAction(Intent.ACTION_SEND);
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, csv) ;
+        sharingIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sharingIntent, "share file with"));
+
+        //startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)

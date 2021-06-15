@@ -1,7 +1,9 @@
 package de.fraunhofer.iml.empalink.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -84,8 +86,6 @@ public class DataDisplayActivity extends AppCompatActivity
         filePath = temppath + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
-
-        //calcPulse(); //TODO zum testen
 
         CombinedData combinedData = new CombinedData();
         combinedData.setData(new LineData(createLineDataSet(BVPData, "BVP")));
