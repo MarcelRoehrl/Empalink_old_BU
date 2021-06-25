@@ -2,6 +2,9 @@ package de.fraunhofer.iml.empalink;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -11,6 +14,7 @@ import java.util.Calendar;
 import java.util.Set;
 import java.util.UUID;
 
+import de.fraunhofer.iml.empalink.Activities.MainActivity;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -42,7 +46,7 @@ public class Polar
 
     private Disposable ecgDisposable;
 
-    public Polar(Context context, Activity activity, Session session, TextView statusLabel, TextView captionLabel, TextView batteryLabel)
+    public Polar(Context context, Activity activity, Session session, TextView statusLabel, TextView captionLabel, TextView batteryLabel, com.google.android.material.card.MaterialCardView status_card_polar)
     {
         this.activity = activity;
         this.session = session;
@@ -80,6 +84,8 @@ public class Polar
 
                 updateLabel(statusLabel, "Verbinde");
                 updateLabel(captionLabel, "mit Polar - " + DEVICE_ID);
+
+                ((MainActivity)activity).checkAlarmPlayer(false, true);
             }
 
             @Override
@@ -93,6 +99,11 @@ public class Polar
                 accDisposable = null;
                 ppgDisposable = null;
                 ppiDisposable = null;
+
+                if(session.recording) {
+                    ((MainActivity)activity).startAlarmPlayer();
+                    status_card_polar.setBackgroundColor(Color.parseColor("#E53935"));
+                }
 
                 try {
                     api.connectToDevice(DEVICE_ID);

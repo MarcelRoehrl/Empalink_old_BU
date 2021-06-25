@@ -1,12 +1,16 @@
 package de.fraunhofer.iml.empalink;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Date;
 
 public class Session
@@ -18,29 +22,32 @@ public class Session
 
     private FileWriter writer;
     private BufferedWriter bufferedWriter;
+    private OutputStream outputStream;
 
     private String filePath;
 
     public boolean recording = false;
 
-    public void startWriter(long starttime, Context context)
+    public void startWriter(long starttime, Context context, Uri uri)
     {
         this.starttime = starttime;
 
-        String temppath;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            temppath = context.getFilesDir().getPath();
-        else {
-            File internal_storage = new File(context.getResources().getString(R.string.path));
-            internal_storage.mkdirs();
-            temppath = context.getResources().getString(R.string.path);
-        }
-
-        filePath = temppath + File.separator + new Date(starttime).toString() + ".csv";
-
         try {
-            writer = new FileWriter(filePath, true);
-            bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            {
+                outputStream = context.getContentResolver().openOutputStream(uri);
+                bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream), V.BUFFER_SIZE);
+                //temppath = context.getFilesDir().getPath();
+            }
+            else {
+                File internal_storage = new File(context.getResources().getString(R.string.path));
+                internal_storage.mkdirs();
+                String temppath = context.getResources().getString(R.string.path);
+                filePath = temppath + File.separator + new Date(starttime).toString() + ".csv";
+                writer = new FileWriter(filePath, true);
+                bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);
+            }
+
             bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys,Polar PPG,Polar PPI,Polar ACC,Polar ECG,"+starttime);
             bufferedWriter.newLine();
         } catch (IOException e) {
@@ -53,8 +60,15 @@ public class Session
     public void closeWriter()
     {
         try {
+            starttime = 0;
+            startStamp = -1;
+            polarStart = -1;
+            polarAdd = 0;
             bufferedWriter.close();
-            writer.close();
+            if(writer != null)
+                writer.close();
+            if(outputStream != null)
+                outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

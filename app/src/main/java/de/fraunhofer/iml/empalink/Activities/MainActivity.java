@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
     private static final int REQUEST_CREATE_CSV = 4;
+    private static final int REQUEST_LOAD_CSV = 79;
 
     private double updated_pulse = 0;
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private com.google.android.material.floatingactionbutton.FloatingActionButton surveyFAB;
     private ImageButton recordButton;
     private ImageView connection_icon_empatica;
-    private com.google.android.material.card.MaterialCardView livedata_card, status_card_empatica;
+    private com.google.android.material.card.MaterialCardView livedata_card, status_card_empatica, status_card_polar;
     private Session session;
     private boolean wasConnected = false;
     private boolean wasReady = false;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         livedata_card = findViewById(R.id.livedata_card);
         status_card_empatica = findViewById(R.id.status_card_empatica);
+        status_card_polar = findViewById(R.id.status_card_polar);
         eda_value = findViewById(R.id.eda_value);
         ibi_value = findViewById(R.id.ibi_value);
         bpm_value = findViewById(R.id.bpm_value);
@@ -187,11 +189,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void startScanning()
     {
         initEmpaticaDeviceManager();
-        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar));
+        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar), status_card_polar);
         polar.startScanning();
     }
 
-    private void initMediaPlayer()
+    public void initMediaPlayer()
     {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         alarmPlayer = MediaPlayer.create(this, notification);
@@ -221,9 +223,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        shareFile(null);
-
-        //startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            startActivityForResult(intent, REQUEST_LOAD_CSV);
+        }
+        else
+            startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)
@@ -243,11 +251,21 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         vibrate(false);
         if(!session.recording)
         {
-            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            long starttime = System.currentTimeMillis();
-            session.startWriter(starttime, this);
-            recordButton.setBackground(getDrawable(R.drawable.pause));
-            show();
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            {
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType("text/csv");
+                intent.putExtra(Intent.EXTRA_TITLE, new Date(System.currentTimeMillis()).toString());
+                startActivityForResult(intent, REQUEST_CREATE_CSV);
+            }
+            else
+            {
+                Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
+                long starttime = System.currentTimeMillis();
+                session.startWriter(starttime, this, null);
+                recordButton.setBackground(getDrawable(R.drawable.pause));
+                show();
+            }
         }
         else
         {
@@ -261,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 {
                     stopAndSaveRecordings();
                     Toast.makeText(MainActivity.this, "Aufnahme beendet und gespeichert", Toast.LENGTH_LONG).show();
-                    checkAlarmPlayer();
+                    checkAlarmPlayer(true, true);
                 }
             })
             .setNegativeButton("Aufnahme fortsetzen", new DialogInterface.OnClickListener() {
@@ -437,16 +455,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             Intent intent = new Intent(this, DataDisplayActivity.class);
             intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
             startActivity(intent);
-            /*String temppath;
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                temppath = getApplicationContext().getFilesDir().getPath();
-            else
-                temppath = getApplicationContext().getResources().getString(R.string.path);
-
-            String filename = data.getStringExtra(V.FILENAME_EXTRA);
-            temppath += File.separator + filename;
-
-            shareFile(new File(temppath));*/
         }
         else if(requestCode == REQUEST_SURVEY && resultCode == RESULT_OK)
         {
@@ -454,9 +462,15 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
         }
-        else if(requestCode == REQUEST_CREATE_CSV)
+        else if(requestCode == REQUEST_CREATE_CSV && resultCode == RESULT_OK)
         {
             Uri uri = data.getData();
+            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
+            long starttime = System.currentTimeMillis();
+            session.startWriter(starttime, this, uri);
+            recordButton.setBackground(getDrawable(R.drawable.pause));
+            show();
+            /*Datei kopieren
             String inPath = getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv";
             try {
                 OutputStream outputStream = getContentResolver().openOutputStream(uri);
@@ -475,18 +489,16 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 bufferedReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+        }
+        else if(requestCode == REQUEST_LOAD_CSV && resultCode == RESULT_OK)
+        {
+            Intent intent = new Intent(this, DataDisplayActivity.class);
+            intent.putExtra(V.FILENAME_EXTRA, data.getData().toString());
+            startActivity(intent);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void shareFile(File file) {
-        file = new File(getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv");
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType("text/csv");
-        intent.putExtra(Intent.EXTRA_TITLE, file.getName());
-        startActivityForResult(intent, REQUEST_CREATE_CSV);
     }
 
     @Override
@@ -533,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             }
             if(session.recording)
             {//Unerwünschter Verbindungsverlust
-                alarmPlayer.start();
+                startAlarmPlayer();
                 status_card_empatica.setBackgroundColor(Color.parseColor("#E53935"));
             }
             else
@@ -542,17 +554,25 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         else if (status == EmpaStatus.CONNECTING)
         {
             updateLabel(statusLabel_empatica, "Verbinde");
-            checkAlarmPlayer();
+            checkAlarmPlayer(true, false);
         }
     }
 
-    private void checkAlarmPlayer()
+    public void startAlarmPlayer()
+    {
+        alarmPlayer.start();
+    }
+
+    public void checkAlarmPlayer(boolean empatica, boolean polar)
     {
         if(alarmPlayer.isPlaying())
         {
             alarmPlayer.stop();
             initMediaPlayer();
-            status_card_empatica.setBackgroundColor(Color.WHITE);
+            if(empatica)
+                status_card_empatica.setBackgroundColor(Color.WHITE);
+            if(polar)
+                status_card_polar.setBackgroundColor(Color.WHITE);
             if(!session.recording)
                 hide();
         }

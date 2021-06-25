@@ -1,6 +1,5 @@
 package de.fraunhofer.iml.empalink.Activities;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.net.Uri;
@@ -26,8 +25,12 @@ import com.google.android.material.chip.Chip;
 import com.opencsv.CSVReader;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -77,13 +80,10 @@ public class DataDisplayActivity extends AppCompatActivity
         mStressData = new ArrayList<BarEntry>();
         markerData = new ArrayList<Float>();
 
-        String temppath;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            temppath = getApplicationContext().getFilesDir().getPath();
+            filePath = getIntent().getStringExtra(V.FILENAME_EXTRA);//temppath = getApplicationContext().getFilesDir().getPath();
         else
-            temppath = getApplicationContext().getResources().getString(R.string.path);
-
-        filePath = temppath + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
+            filePath = getApplicationContext().getResources().getString(R.string.path) + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 
@@ -472,7 +472,15 @@ public class DataDisplayActivity extends AppCompatActivity
     public void load()
     {
         try {
-            CSVReader reader = new CSVReader(new BufferedReader(new FileReader(filePath))); //MIN SDK 26 -> new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
+            CSVReader reader;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            {
+                InputStream inputStream = getContentResolver().openInputStream(Uri.parse(filePath));
+                reader = new CSVReader(new BufferedReader(new InputStreamReader(inputStream)));
+            }
+            else
+                reader = new CSVReader(new BufferedReader(new FileReader(filePath))); //MIN SDK 26 -> new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
+
             reader.skip(2);
 
             Iterator<String[]> it = reader.iterator();
