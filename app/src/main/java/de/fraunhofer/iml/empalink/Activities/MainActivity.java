@@ -12,8 +12,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,11 +35,23 @@ import com.empatica.empalink.config.EmpaSensorType;
 import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
+import com.google.protobuf.DescriptorProtos;
+import com.opencsv.CSVReader;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.Iterator;
 
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 import de.fraunhofer.iml.empalink.Polar;
@@ -52,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
+    private static final int REQUEST_CREATE_CSV = 4;
 
     private double updated_pulse = 0;
 
@@ -206,13 +221,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        //TODO sharetest
-        Uri csv = Uri.fromFile(new File(getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv"));
-        Intent sharingIntent = new Intent();
-        sharingIntent.setAction(Intent.ACTION_SEND);
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, csv) ;
-        sharingIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sharingIntent, "share file with"));
+        shareFile(null);
 
         //startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
@@ -445,17 +454,39 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
         }
+        else if(requestCode == REQUEST_CREATE_CSV)
+        {
+            Uri uri = data.getData();
+            String inPath = getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv";
+            try {
+                OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(inPath));
+
+                String line = bufferedReader.readLine();
+                while(line != null) {
+                    bufferedWriter.write(line);
+                    bufferedWriter.newLine();
+                    line = bufferedReader.readLine();
+                }
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void shareFile(File file) {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-        sendIntent.setType("text/csv");
-        startActivity(sendIntent);
-        //startActivity(Intent.createChooser(sendIntent, "Aufnahme teilen via.."));
+        file = new File(getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv");
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, file.getName());
+        startActivityForResult(intent, REQUEST_CREATE_CSV);
     }
 
     @Override
