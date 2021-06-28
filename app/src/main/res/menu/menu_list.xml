@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:id="@+id/item_show"
+            android:title="Anzeigen"
+            android:visible="true"/>
+        <item
+            android:id="@+id/item_move"
+            android:title="Verschieben"
+            android:visible="true"/>
+        <item
+            android:id="@+id/item_delete"
+            android:title="Löschen"
+            android:visible="true"/>
+    </menu>

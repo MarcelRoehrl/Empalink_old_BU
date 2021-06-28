@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
-    private static final int REQUEST_CREATE_CSV = 4;
     private static final int REQUEST_LOAD_CSV = 79;
 
     private double updated_pulse = 0;
@@ -125,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         initMediaPlayer();
 
         hide();
+        show();
 
         checkPermissions();
         //show(); //TODO nur zum testen, entweder show zum testen oder checkPermissions für die runtime
@@ -223,15 +223,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("*/*");
+            intent.setType("*failcommenthereremove/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             startActivityForResult(intent, REQUEST_LOAD_CSV);
-        }
-        else
-            startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
+        }*/
+        startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)
@@ -251,21 +250,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         vibrate(false);
         if(!session.recording)
         {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            {
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.setType("text/csv");
-                intent.putExtra(Intent.EXTRA_TITLE, new Date(System.currentTimeMillis()).toString());
-                startActivityForResult(intent, REQUEST_CREATE_CSV);
-            }
-            else
-            {
-                Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-                long starttime = System.currentTimeMillis();
-                session.startWriter(starttime, this, null);
-                recordButton.setBackground(getDrawable(R.drawable.pause));
-                show();
-            }
+            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
+            long starttime = System.currentTimeMillis();
+            session.startWriter(starttime, this);
+            recordButton.setBackground(getDrawable(R.drawable.pause));
+            show();
         }
         else
         {
@@ -462,41 +451,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
         }
-        else if(requestCode == REQUEST_CREATE_CSV && resultCode == RESULT_OK)
-        {
-            Uri uri = data.getData();
-            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            long starttime = System.currentTimeMillis();
-            session.startWriter(starttime, this, uri);
-            recordButton.setBackground(getDrawable(R.drawable.pause));
-            show();
-            /*Datei kopieren
-            String inPath = getApplicationContext().getFilesDir().getPath() + File.separator + "test.csv";
-            try {
-                OutputStream outputStream = getContentResolver().openOutputStream(uri);
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(inPath));
-
-                String line = bufferedReader.readLine();
-                while(line != null) {
-                    bufferedWriter.write(line);
-                    bufferedWriter.newLine();
-                    line = bufferedReader.readLine();
-                }
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-        }
-        else if(requestCode == REQUEST_LOAD_CSV && resultCode == RESULT_OK)
+        /*else if(requestCode == REQUEST_LOAD_CSV && resultCode == RESULT_OK)
         {
             Intent intent = new Intent(this, DataDisplayActivity.class);
             intent.putExtra(V.FILENAME_EXTRA, data.getData().toString());
             startActivity(intent);
-        }
+        }*/
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -548,8 +508,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 startAlarmPlayer();
                 status_card_empatica.setBackgroundColor(Color.parseColor("#E53935"));
             }
-            else
-                hide();
         }
         else if (status == EmpaStatus.CONNECTING)
         {

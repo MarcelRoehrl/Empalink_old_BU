@@ -80,10 +80,12 @@ public class DataDisplayActivity extends AppCompatActivity
         mStressData = new ArrayList<BarEntry>();
         markerData = new ArrayList<Float>();
 
+        String temppath;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            filePath = getIntent().getStringExtra(V.FILENAME_EXTRA);//temppath = getApplicationContext().getFilesDir().getPath();
+            temppath = getApplicationContext().getFilesDir().getPath();//filePath = getIntent().getStringExtra(V.FILENAME_EXTRA);
         else
-            filePath = getApplicationContext().getResources().getString(R.string.path) + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
+            temppath = getApplicationContext().getResources().getString(R.string.path);
+        filePath = temppath + File.separator + getIntent().getStringExtra(V.FILENAME_EXTRA);
 
         load();
 
@@ -473,13 +475,13 @@ public class DataDisplayActivity extends AppCompatActivity
     {
         try {
             CSVReader reader;
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
             {
                 InputStream inputStream = getContentResolver().openInputStream(Uri.parse(filePath));
                 reader = new CSVReader(new BufferedReader(new InputStreamReader(inputStream)));
             }
-            else
-                reader = new CSVReader(new BufferedReader(new FileReader(filePath))); //MIN SDK 26 -> new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
+            else*/
+            reader = new CSVReader(new BufferedReader(new FileReader(filePath))); //MIN SDK 26 -> new CSVReader(Files.newBufferedReader(Paths.get(filePath)));
 
             reader.skip(2);
 
