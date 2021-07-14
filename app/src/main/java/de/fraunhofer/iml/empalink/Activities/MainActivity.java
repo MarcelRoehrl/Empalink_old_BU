@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
-    private static final int REQUEST_LOAD_CSV = 79;
 
     private double updated_pulse = 0;
 
@@ -223,13 +222,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("*failcommenthereremove/*");
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-            startActivityForResult(intent, REQUEST_LOAD_CSV);
-        }*/
         startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
     }
 
@@ -397,11 +389,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
-        // Check if the discovered device can be used with your API key. If allowed is always false,
-        // the device is not linked with your API key. Please check your developer area at
-        // https://www.empatica.com/connect/developer.php
         if (allowed) {
             // Stop scanning. The first allowed device will do.
+            //if(deviceName == gewünscht) stopscan und try das unten
             deviceManager.stopScanning();
             try {
                 // Connect to the device
@@ -451,12 +441,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
         }
-        /*else if(requestCode == REQUEST_LOAD_CSV && resultCode == RESULT_OK)
-        {
-            Intent intent = new Intent(this, DataDisplayActivity.class);
-            intent.putExtra(V.FILENAME_EXTRA, data.getData().toString());
-            startActivity(intent);
-        }*/
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -563,23 +547,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         if(session.recording)
         {
             session.addBVP(bvp, timestamp);
-
-            //Peaks berechnen und speichern
-            /*if(updated_pulse == 0)
-                updated_pulse = timestamp+V.MED_PULSE_RANGE;
-            else if(!between_updated && timestamp >= updated_pulse-(V.MED_PULSE_RANGE/2))
-            {
-                between_updated = true;
-                double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
-                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp, false)*100f)/100f);
-            }
-            else if(timestamp >= updated_pulse)
-            {
-                between_updated = false;
-                double temp = updated_pulse-V.MED_PULSE_RANGE-V.MED_PULSE_OVERLAP;
-                updated_pulse = timestamp+V.MED_PULSE_RANGE;
-                updateLabel(bpm_value, "" + Math.round(session.getLatestPulse(temp, true)*100f)/100f);
-            }*/
         }
     }
 
