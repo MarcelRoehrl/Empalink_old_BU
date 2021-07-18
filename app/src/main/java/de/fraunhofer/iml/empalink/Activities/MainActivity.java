@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         if (allowed) {
-            String prefE4 = prefs.getString("e4", "");
+            String prefE4 = prefs.getString("e4", "0Fehler");
             if(bluetoothDevice.serialNumber.equals(prefE4.substring(1)))
             {
                 wrong_wristband_showed = false;
@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didUpdateStatus(EmpaStatus status) {
-        String prefE4 = prefs.getString("e4", "");
+        String prefE4 = prefs.getString("e4", "0Fehler");
 
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
