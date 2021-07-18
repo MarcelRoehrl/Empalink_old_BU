@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import de.fraunhofer.iml.empalink.R;
+import de.fraunhofer.iml.empalink.SettingsActivity;
 import de.fraunhofer.iml.empalink.V;
 
 public class FilechooserActivity extends ListActivity
@@ -167,5 +168,14 @@ public class FilechooserActivity extends ListActivity
             }
             Toast.makeText(this, "Aufnahme wurde verschoben", Toast.LENGTH_LONG).show();
         }
+        else if(requestCode == V.REQUEST_SETTINGS && resultCode == V.SETTINGS_CHANGED)
+        {
+            setResult(V.SETTINGS_CHANGED);
+            finish();
+        }
+    }
+
+    public void onSettingsClicked(View view) {
+        startActivityForResult(new Intent(this, SettingsActivity.class), V.REQUEST_SETTINGS);
     }
 }

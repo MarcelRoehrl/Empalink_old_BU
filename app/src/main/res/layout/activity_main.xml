@@ -181,8 +181,6 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/livedata_card"
-        android:clickable="true"
-        android:onClick="onSettingsClicked"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

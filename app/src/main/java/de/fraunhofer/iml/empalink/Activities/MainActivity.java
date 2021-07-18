@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
     public static final int REQUEST_FILENAME = 5;
-    public static final int REQUEST_SETTINGS = 6;
 
     private double updated_pulse = 0;
 
@@ -142,32 +141,24 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        if(requestCode == 0)
-        {
-            if ( (grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) )
-            {   // all permissions granted
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0) {
+            if ((grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {   // all permissions granted
                 show();
                 startScanning();
             } else {
                 informAndFinish();
             }
-        }
-        else if(requestCode == 1)
-        {
-            if( (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) )
-            {   // all permissions granted
+        } else if (requestCode == 1) {
+            if ((grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {   // all permissions granted
                 show();
                 startScanning();
             } else {
                 informAndFinish();
             }
-        }
-        else if(requestCode == 2)
-        {
-            if ( (grantResults.length >= 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) )
-            {   // all permissions granted
+        } else if (requestCode == 2) {
+            if ((grantResults.length >= 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED)) {   // all permissions granted
                 show();
                 startScanning();
             } else {
@@ -429,22 +420,24 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             //TODO Listener auf bluetooth setzen um beim aktivieren weiter zu suchen
             return;
         }
-        else if(requestCode == REQUEST_FILENAME && resultCode == RESULT_OK)
+        else if(requestCode == REQUEST_FILENAME)
         {
-            Intent intent = new Intent(this, DataDisplayActivity.class);
-            intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
-            startActivity(intent);
+            if(resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, DataDisplayActivity.class);
+                intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
+                startActivity(intent);
+            }
+            else if(resultCode == V.SETTINGS_CHANGED){
+                int pid = android.os.Process.myPid();
+                android.os.Process.killProcess(pid);
+                System.exit(0);
+            }
         }
         else if(requestCode == REQUEST_SURVEY && resultCode == RESULT_OK)
         {
             String survey = data.getStringExtra("result");
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
-        }
-        else if(requestCode == REQUEST_SETTINGS && resultCode == V.SETTINGS_CHANGED) {
-            int pid = android.os.Process.myPid();
-            android.os.Process.killProcess(pid);
-            System.exit(0);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -658,9 +651,5 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 updateLabel(batteryLabel_empatica,null);
             }
         });
-    }
-
-    public void onSettingsClicked(View view) {
-        startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS);
     }
 }
