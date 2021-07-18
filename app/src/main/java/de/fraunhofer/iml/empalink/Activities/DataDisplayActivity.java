@@ -2,7 +2,6 @@ package de.fraunhofer.iml.empalink.Activities;
 
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -25,12 +24,8 @@ import com.google.android.material.chip.Chip;
 import com.opencsv.CSVReader;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;

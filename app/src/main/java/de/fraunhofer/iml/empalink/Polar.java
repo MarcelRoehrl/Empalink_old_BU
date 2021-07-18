@@ -3,9 +3,8 @@ package de.fraunhofer.iml.empalink;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import org.reactivestreams.Publisher;
@@ -53,6 +52,8 @@ public class Polar
         this.statusLabel = statusLabel;
         this.captionLabel = captionLabel;
         this.batteryLabel = batteryLabel;
+
+        status_card_polar.setVisibility(View.VISIBLE);
 
         api = PolarBleApiDefaultImpl.defaultImplementation(context, PolarBleApi.ALL_FEATURES);
 

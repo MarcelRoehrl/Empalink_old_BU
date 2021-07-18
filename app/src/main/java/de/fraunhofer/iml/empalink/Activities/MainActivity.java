@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -12,10 +13,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.empatica.empalink.ConnectionNotAllowedException;
 import com.empatica.empalink.EmpaDeviceManager;
@@ -35,28 +35,12 @@ import com.empatica.empalink.config.EmpaSensorType;
 import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
-import com.google.protobuf.DescriptorProtos;
-import com.opencsv.CSVReader;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.net.URLConnection;
-import java.util.Date;
-import java.util.Iterator;
 
 import de.fraunhofer.iml.empalink.ConfigurationProfileExceptionHandler;
 import de.fraunhofer.iml.empalink.Polar;
 import de.fraunhofer.iml.empalink.R;
 import de.fraunhofer.iml.empalink.Session;
+import de.fraunhofer.iml.empalink.SettingsActivity;
 import de.fraunhofer.iml.empalink.V;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
@@ -66,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
+    public static final int REQUEST_FILENAME = 5;
+    public static final int REQUEST_SETTINGS = 6;
 
     private double updated_pulse = 0;
 
@@ -73,8 +59,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private MediaPlayer alarmPlayer;
     private EmpaDeviceManager deviceManager = null;
+    private SharedPreferences prefs;
 
     private Polar polar;
+    private boolean enable_polar;
 
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
@@ -87,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private boolean wasConnected = false;
     private boolean wasReady = false;
     private boolean connected = false;
-    private boolean between_updated = false;
+    private boolean wrong_wristband_showed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         vibrator = (Vibrator)getSystemService(this.VIBRATOR_SERVICE);
 
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        enable_polar = prefs.getBoolean("polar", true);
 
         session = new Session();
 
@@ -188,8 +179,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void startScanning()
     {
         initEmpaticaDeviceManager();
-        polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar), status_card_polar);
-        polar.startScanning();
+        if(enable_polar) {
+            polar = new Polar(this, this, session, findViewById(R.id.status_polar), findViewById(R.id.caption_polar), findViewById(R.id.battery_polar), status_card_polar);
+            polar.startScanning();
+        }
     }
 
     public void initMediaPlayer()
@@ -222,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     public void onShowDataClicked(View view)
     {
-        startActivityForResult(new Intent(this, FilechooserActivity.class), V.REQUEST_FILENAME);
+        startActivityForResult(new Intent(this, FilechooserActivity.class), REQUEST_FILENAME);
     }
 
     public void onDisconnectClicked(View view)
@@ -390,16 +383,23 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         if (allowed) {
-            // Stop scanning. The first allowed device will do.
-            //if(deviceName == gewünscht) stopscan und try das unten
-            deviceManager.stopScanning();
-            try {
-                // Connect to the device
-                deviceManager.connectDevice(bluetoothDevice);
-                updateLabel(captionLabel_empatica, "mit " + deviceName);
-            } catch (ConnectionNotAllowedException e) {
-                // This should happen only if you try to connect when allowed == false.
-                Toast.makeText(MainActivity.this, "Sorry, you can't connect to this device", Toast.LENGTH_SHORT).show();
+            String prefE4 = prefs.getString("e4", "");
+            if(bluetoothDevice.serialNumber.equals(prefE4.substring(1)))
+            {
+                wrong_wristband_showed = false;
+                deviceManager.stopScanning();
+                try {
+                    // Connect to the device
+                    deviceManager.connectDevice(bluetoothDevice);
+                    updateLabel(captionLabel_empatica, "mit Armband #"+ prefE4.charAt(0) +" ("+ bluetoothDevice.serialNumber +")");
+                } catch (ConnectionNotAllowedException e) {
+                    // This should happen only if you try to connect when allowed == false.
+                    Toast.makeText(MainActivity.this, "Sorry, you can't connect to this device", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else if(!wrong_wristband_showed) {
+                wrong_wristband_showed = true;
+                Toast.makeText(MainActivity.this, "Es wurde ein anderes Armband gefunden, bitte Armband #"+ prefE4.charAt(0)+ " einschalten", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             //TODO Listener auf bluetooth setzen um beim aktivieren weiter zu suchen
             return;
         }
-        else if(requestCode == V.REQUEST_FILENAME && resultCode == RESULT_OK)
+        else if(requestCode == REQUEST_FILENAME && resultCode == RESULT_OK)
         {
             Intent intent = new Intent(this, DataDisplayActivity.class);
             intent.putExtra(V.FILENAME_EXTRA, data.getStringExtra(V.FILENAME_EXTRA));
@@ -440,6 +440,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             String survey = data.getStringExtra("result");
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
+        }
+        else if(requestCode == REQUEST_SETTINGS && resultCode == V.SETTINGS_CHANGED) {
+            int pid = android.os.Process.myPid();
+            android.os.Process.killProcess(pid);
+            System.exit(0);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -453,11 +458,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didUpdateStatus(EmpaStatus status) {
+        String prefE4 = prefs.getString("e4", "");
 
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
             updateLabel(statusLabel_empatica, "Bereit");
-            updateLabel(captionLabel_empatica, "E4 bitte einschalten");
+            updateLabel(captionLabel_empatica, "Bitte Armband #"+prefE4.charAt(0)+"\n("+prefE4.substring(1)+") einschalten");
             try {// Start scanning
                 deviceManager.startScanning();
                 show(); //TODO hide() wenn nur Empatica drin ist
@@ -484,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             {
                 connected = false;
                 updateLabel(statusLabel_empatica, "Verbindung getrennt");
-                updateLabel(captionLabel_empatica, "E4 bitte erneut einschalten");
+                updateLabel(captionLabel_empatica, "Armband #"+prefE4.charAt(0)+"("+prefE4.substring(1)+")\nbitte erneut einschalten");
                 deviceManager.startScanning();
             }
             if(session.recording)
@@ -652,5 +658,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 updateLabel(batteryLabel_empatica,null);
             }
         });
+    }
+
+    public void onSettingsClicked(View view) {
+        startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS);
     }
 }

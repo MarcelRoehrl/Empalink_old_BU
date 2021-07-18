@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Empatica">
+
+        <ListPreference
+            app:defaultValue="1A0146F"
+            app:entries="@array/e4_entries"
+            app:entryValues="@array/e4_values"
+            app:key="e4"
+            app:title="Empatica Armband"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Polar">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="polar"
+            app:summaryOff="Polar OH1 Armgurte deaktiviert"
+            app:summaryOn="Polar OH1 Armgurte aktiviert"
+            app:title="Polar Armgurt" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

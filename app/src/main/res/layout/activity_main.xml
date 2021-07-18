@@ -8,7 +8,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/status_card_polar"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -181,6 +181,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/livedata_card"
+        android:clickable="true"
+        android:onClick="onSettingsClicked"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -16,7 +16,8 @@ public final class V
     public static final double TIMEFRAME_TOLERANCE = 0.25; //Zeit (in sek) die vallie und peak auseinanderliegen dürfen
 
     public static final String FILENAME_EXTRA = "filename";
-    public static final int REQUEST_FILENAME = 5;
+
+    public static final int SETTINGS_CHANGED = 44;
 
     public static final int BUFFER_SIZE = 64 * 1024; //Buffergröße beim reinschreiben in die CSV Datei
 
