@@ -66,6 +66,7 @@ dependencies {
     implementation 'com.empatica.empalink:E4link:1.0.0@aar'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     implementation files('libs/polar-ble-sdk.aar')
     implementation files('libs/polar-protobuf-release.aar')
