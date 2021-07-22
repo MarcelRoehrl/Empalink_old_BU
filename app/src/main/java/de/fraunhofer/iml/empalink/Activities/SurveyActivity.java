@@ -3,6 +3,7 @@ package de.fraunhofer.iml.empalink.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.RadioButton;
@@ -29,16 +30,8 @@ public class SurveyActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        CollapsingToolbarLayout toolBarLayout = findViewById(R.id.toolbar_layout);
-        toolBarLayout.setTitle("Fragebogen");
 
-        FloatingActionButton closeFAB = findViewById(R.id.closeFAB);
-        closeFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {finish();}
-        });
+        setActionbarTitle("1");
 
         startStamp = getIntent().getDoubleExtra(V.TIMESTAMP_EXTRA, System.currentTimeMillis());
 
@@ -126,6 +119,10 @@ public class SurveyActivity extends AppCompatActivity
                 return array;
             }
         });
+    }
+
+    private void setActionbarTitle(String s) {
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Fragebogen (Seite "+s+"/5)" + "</font>"));
     }
 
     @Override
@@ -220,5 +217,29 @@ public class SurveyActivity extends AppCompatActivity
         returnIntent.putExtra("result", survey);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    public void onPage1(View view) {
+        findViewById(R.id.page1).setVisibility(View.GONE);
+        setActionbarTitle("2");
+        findViewById(R.id.page2).setVisibility(View.VISIBLE);
+    }
+
+    public void onPage2(View view) {
+        findViewById(R.id.page2).setVisibility(View.GONE);
+        setActionbarTitle("3");
+        findViewById(R.id.page3).setVisibility(View.VISIBLE);
+    }
+
+    public void onPage3(View view) {
+        findViewById(R.id.page3).setVisibility(View.GONE);
+        setActionbarTitle("4");
+        findViewById(R.id.page4).setVisibility(View.VISIBLE);
+    }
+
+    public void onPage4(View view) {
+        findViewById(R.id.page4).setVisibility(View.GONE);
+        setActionbarTitle("5");
+        findViewById(R.id.page5).setVisibility(View.VISIBLE);
     }
 }

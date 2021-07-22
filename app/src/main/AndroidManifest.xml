@@ -33,8 +33,7 @@
         </activity>
         <activity
             android:name=".Activities.SurveyActivity"
-            android:label="@string/title_activity_survey"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.DayNight" />
         <activity android:name=".Activities.NoSingleInternetErrorActivity" />
         <activity
             android:name=".Activities.FilechooserActivity">
