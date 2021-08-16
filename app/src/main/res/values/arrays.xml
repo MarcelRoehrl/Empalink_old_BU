@@ -6,7 +6,7 @@
         <item>Armband #3 (A01B56)</item>
         <item>Armband #4 (A02BFC)</item>
         <item>Armband #5 (A03014)</item>
-        <item>Armband #6 (???)</item>
+        <item>Armband #6 (A0318D)</item>
     </string-array>
 
     <string-array name="e4_values">
@@ -15,6 +15,6 @@
         <item>3A01B56</item>
         <item>4A02BFC</item>
         <item>5A03014</item>
-        <item>6A01234</item>
+        <item>6A0318D</item>
     </string-array>
 </resources>
