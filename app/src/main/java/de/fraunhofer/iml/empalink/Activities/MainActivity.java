@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         final androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Keine Berechtigung")
-                .setMessage("Bitte Berechtigungen erteilen, da sonst eine Verbindung zu der E4 und die Aufzeichnung der Daten nicht möglich ist");
+                .setMessage("Bitte Berechtigungen erteilen und den Standortzugriff auf 'Immer zulassen' einstellen");
 
         alertBuilder.setNegativeButton("App beenden", new DialogInterface.OnClickListener() {
             @Override
