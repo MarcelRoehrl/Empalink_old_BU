@@ -33,7 +33,7 @@
         </activity>
         <activity
             android:name=".Activities.SurveyActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight" />
+            android:theme="@style/Theme.MaterialComponents.DayNight"/>
         <activity android:name=".Activities.NoSingleInternetErrorActivity" />
         <activity
             android:name=".Activities.FilechooserActivity">
@@ -45,10 +45,10 @@
         </activity>
         <activity
             android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

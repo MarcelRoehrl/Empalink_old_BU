@@ -2,7 +2,13 @@ package de.fraunhofer.iml.empalink.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +19,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
@@ -24,6 +32,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
@@ -62,6 +72,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private Polar polar;
     private boolean enable_polar;
+
+    private NotificationManagerCompat notificationManager;
+    private NotificationCompat.Builder nfbuilder;
+    private Handler nfHandler;
+    private Runnable nfRunnable;
 
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
@@ -111,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         session = new Session();
 
         initMediaPlayer();
+
+        prepareNotifications();
 
         hide();
         show();
@@ -167,6 +184,16 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         }
     }
 
+    private void stopNFHandler()
+    {
+        if(nfHandler != null) {
+            nfHandler.removeCallbacks(nfRunnable);
+            nfHandler.removeCallbacksAndMessages(null);  // redundant, for safety reasons
+        }
+        notificationManager.cancelAll();
+    }
+
+
     private void startScanning()
     {
         initEmpaticaDeviceManager();
@@ -204,9 +231,53 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         }).show();
     }
 
-    public void onShowDataClicked(View view)
-    {
+    public void onShowDataClicked(View view) {
         startActivityForResult(new Intent(this, FilechooserActivity.class), REQUEST_FILENAME);
+    }
+
+    private void prepareNotifications() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "survey notifications";
+            String description = "all notifications for upcoming surveys";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("22", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        nfbuilder = new NotificationCompat.Builder(this, "22")
+                .setSmallIcon(R.drawable.survey_black)
+                .setContentTitle("Bitte den Fragebogen ausfüllen")
+                .setContentText("Hier drücken um zu dem Fragebogen zu gelangen")
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true);
+
+        notificationManager = NotificationManagerCompat.from(this);
+
+        nfHandler = new Handler(Looper.getMainLooper()); //run on main UI
+        nfRunnable = new Runnable() {
+            @Override
+            public void run() {
+                fireNotification();
+                vibrate(true);
+                nfHandler.postDelayed(nfRunnable, V.SURVEY_REMINDER);
+            }
+        };
+    }
+
+    private void fireNotification()
+    {
+        Intent curIntent = getIntent();
+        curIntent.putExtra("startSurvey", true);
+        PendingIntent surveyPendingIntent = PendingIntent.getActivity(this, 0, curIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        nfbuilder.setContentIntent(surveyPendingIntent);
+
+        notificationManager.notify(123, nfbuilder.build());
     }
 
     public void onDisconnectClicked(View view)
@@ -224,13 +295,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onRecordClicked(View view)
     {
         vibrate(false);
-        if(!session.recording)
-        {
+        if(!session.recording) {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
             long starttime = System.currentTimeMillis();
             session.startWriter(starttime, this);
             recordButton.setBackground(getDrawable(R.drawable.pause));
             show();
+
+            nfHandler.postDelayed(nfRunnable, V.SURVEY_TIMEFRAME);
         }
         else
         {
@@ -264,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         hide();
         show();
         session.closeWriter();
+        stopNFHandler();
     }
 
     public void onSurveyClicked(View view)
@@ -272,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         Intent surveyIntent = new Intent(this, SurveyActivity.class);
         surveyIntent.putExtra(V.TIMESTAMP_EXTRA, session.getCurrentTimestamp());
         startActivityForResult(surveyIntent, REQUEST_SURVEY);
+        stopNFHandler();
         /*androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
                 .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
@@ -315,13 +389,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if(alarm)
-                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                vibrator.vibrate(VibrationEffect.createWaveform(new long[] { 10, 1000, 300, 600, 300, 1000 }, -1));
             else
                 vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             //deprecated in API 26
             if(alarm)
-                vibrator.vibrate(200);
+                vibrator.vibrate(new long[] { 10, 1000, 300, 600, 300, 1000 }, -1);
             else
                 vibrator.vibrate(500);
         }
@@ -369,6 +443,18 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         }
         if (polar != null)
             polar.onResume();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Bundle extras = intent.getExtras();
+        if (extras != null && extras.getBoolean("startSurvey"))
+        {
+            getIntent().removeExtra("startSurvey");
+            onSurveyClicked(null);
+        }
     }
 
     @Override
@@ -438,6 +524,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             String survey = data.getStringExtra("result");
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
+            nfHandler.postDelayed(nfRunnable, V.SURVEY_TIMEFRAME);
+        }
+        else if(requestCode == REQUEST_SURVEY && resultCode != RESULT_OK)
+        {
+            nfHandler.postDelayed(nfRunnable, V.SURVEY_REMINDER);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
