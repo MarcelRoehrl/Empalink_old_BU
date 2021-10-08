@@ -48,8 +48,8 @@ public class SurveyActivity extends AppCompatActivity
             @Override
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
-                array.put(0, "sehr einfach");
-                array.put(20, "sehr schwierig");
+                array.put(0, "einfach");
+                array.put(20, "schwierig");
                 return array;
             }
         });

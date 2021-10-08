@@ -8,12 +8,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private NotificationCompat.Builder nfbuilder;
     private Handler nfHandler;
     private Runnable nfRunnable;
+    private static String CHANNEL_ID = "42";
 
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
@@ -236,21 +240,20 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     }
 
     private void prepareNotifications() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "survey notifications";
             String description = "all notifications for upcoming surveys";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("22", name, importance);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+            channel.enableVibration(true);
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
-        nfbuilder = new NotificationCompat.Builder(this, "22")
+        nfbuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.survey_black)
                 .setContentTitle("Bitte den Fragebogen ausfüllen")
                 .setContentText("Hier drücken um zu dem Fragebogen zu gelangen")
@@ -264,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
                 fireNotification();
-                vibrate(true);
                 nfHandler.postDelayed(nfRunnable, V.SURVEY_REMINDER);
             }
         };
@@ -460,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         if (allowed) {
-            String prefE4 = prefs.getString("e4", "0Fehler");
+            String prefE4 = prefs.getString("e4", "0auswählen");
             if(bluetoothDevice.serialNumber.equals(prefE4.substring(1)))
             {
                 wrong_wristband_showed = false;
@@ -542,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didUpdateStatus(EmpaStatus status) {
-        String prefE4 = prefs.getString("e4", "0Fehler");
+        String prefE4 = prefs.getString("e4", "0auswählen");
 
         if (status == EmpaStatus.READY)
         {// The device manager is ready for use
