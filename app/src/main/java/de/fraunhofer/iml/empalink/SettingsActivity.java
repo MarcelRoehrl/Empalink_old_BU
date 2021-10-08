@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -32,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals("e4") || key.equals("polar")){
+                if (key.equals("e4") || key.equals("polar") || key.equals("reminder") || key.equals("timeframe")){
                     setResult(V.SETTINGS_CHANGED);
                 }
             }
@@ -51,6 +52,17 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

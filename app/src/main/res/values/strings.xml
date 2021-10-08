@@ -20,4 +20,11 @@
     <string name="o5">Dösig; verliere das Interesse, wach zu bleiben; verlangsamt</string>
     <string name="o6">Schläfrig; möchte mich hinlegen; kämpfe gegen den Schlaf; benebelt</string>
     <string name="o7">Fast träumend; schlafe bald ein; kein Bemühen mehr, wach zu bleiben</string>
+    <string name="title_activity_subject_info">SubjectInfoActivity</string>
+    <string name="sim1">Eindeutig Morgentyp</string>
+    <string name="sim2">Eher Morgen- als Abendtyp</string>
+    <string name="sim3">Eher Abend- als Morgentyp</string>
+    <string name="sim4">Eindeutig Abendtyp</string>
+    <string name="sis1">männlich</string>
+    <string name="sis2">weiblich</string>
 </resources>

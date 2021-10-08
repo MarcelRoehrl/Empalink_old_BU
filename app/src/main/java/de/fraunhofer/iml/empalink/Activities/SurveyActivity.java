@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import de.fraunhofer.iml.empalink.V;
 
 public class SurveyActivity extends AppCompatActivity
 {
-    private BubbleSeekBar slider1, slider2, slider3, slider4, slider5, slider6, slider7;
+    private BubbleSeekBar slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8, slider9, slider10, slider11, slider12, slider13, slider14;
     private double startStamp = 0;
 
     @Override
@@ -42,14 +43,21 @@ public class SurveyActivity extends AppCompatActivity
         slider5 = findViewById(R.id.slider5);
         slider6 = findViewById(R.id.slider6);
         slider7 = findViewById(R.id.slider7);
+        slider8 = findViewById(R.id.slider8);
+        slider9 = findViewById(R.id.slider9);
+        slider10 = findViewById(R.id.slider10);
+        slider11 = findViewById(R.id.slider11);
+        slider12 = findViewById(R.id.slider12);
+        slider13 = findViewById(R.id.slider13);
+        slider14 = findViewById(R.id.slider14);
 
         slider1.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @NonNull
             @Override
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
-                array.put(0, "einfach");
-                array.put(20, "schwierig");
+                array.put(0, "gering");
+                array.put(20, "hoch");
                 return array;
             }
         });
@@ -119,15 +127,92 @@ public class SurveyActivity extends AppCompatActivity
                 return array;
             }
         });
+
+        slider8.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider9.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider10.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider11.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider12.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider13.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
+
+        slider14.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+            @NonNull
+            @Override
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+                array.clear();
+                array.put(0, "trifft gar nicht zu");
+                array.put(3, "trifft stark zu");
+                return array;
+            }
+        });
     }
 
     private void setActionbarTitle(String s) {
-        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Fragebogen (Seite "+s+"/5)" + "</font>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Fragebogen (Seite "+s+"/7)" + "</font>"));
     }
 
     @Override
     public void onBackPressed() {
-        finish();
+        Toast.makeText(this, "Bitte füllen Sie den Fragebogen vollständig aus", Toast.LENGTH_LONG).show();
     }
 
     public void onSubmit(View view)
@@ -178,20 +263,7 @@ public class SurveyActivity extends AppCompatActivity
         id = ((RadioGroup)findViewById( R.id.rg20 )).getCheckedRadioButtonId();
         survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
 
-        id = ((RadioGroup)findViewById( R.id.rgi1 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi2 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi3 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi4 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi5 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi6 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
-        id = ((RadioGroup)findViewById( R.id.rgi7 )).getCheckedRadioButtonId();
-        survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
+        survey += ";" + slider8.getProgress() + ";" + slider9.getProgress() + ";" + slider10.getProgress() + ";" + slider11.getProgress() + ";" + slider12.getProgress() + ";" + slider13.getProgress() + ";" + slider14.getProgress();
 
         id = ((RadioGroup)findViewById( R.id.rgo )).getCheckedRadioButtonId();
         String oAns = "" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
@@ -241,5 +313,17 @@ public class SurveyActivity extends AppCompatActivity
         findViewById(R.id.page4).setVisibility(View.GONE);
         setActionbarTitle("5");
         findViewById(R.id.page5).setVisibility(View.VISIBLE);
+    }
+
+    public void onPage5(View view) {
+        findViewById(R.id.page5).setVisibility(View.GONE);
+        setActionbarTitle("6");
+        findViewById(R.id.page6).setVisibility(View.VISIBLE);
+    }
+
+    public void onPage6(View view) {
+        findViewById(R.id.page6).setVisibility(View.GONE);
+        setActionbarTitle("7");
+        findViewById(R.id.page7).setVisibility(View.VISIBLE);
     }
 }

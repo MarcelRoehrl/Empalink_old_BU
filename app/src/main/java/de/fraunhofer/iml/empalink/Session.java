@@ -23,7 +23,7 @@ public class Session
 
     public boolean recording = false;
 
-    public void startWriter(long starttime, Context context)
+    public void startWriter(long starttime, String subjectinfo, Context context)
     {
         this.starttime = starttime;
 
@@ -44,7 +44,7 @@ public class Session
             writer = new FileWriter(filePath, true);
             bufferedWriter = new BufferedWriter(writer, V.BUFFER_SIZE);
 
-            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys,Polar PPG,Polar PPI,Polar ACC,Polar ECG,"+starttime);
+            bufferedWriter.write("timestamp,BVP,EDA,IBI,temperature,acceleration,physical stress,mental stress,markers,surveys,Polar PPG,Polar PPI,Polar ACC,Polar ECG,"+starttime+";"+subjectinfo);
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();

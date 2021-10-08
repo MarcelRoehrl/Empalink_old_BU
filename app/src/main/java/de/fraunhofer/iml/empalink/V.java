@@ -15,8 +15,8 @@ public final class V
     public static final double RISE_TOLERANCE = 0.1; //Toleranz im BVP Wertebereich um zwischen vallie und peak einen Extrempunkt zu entdecken
     public static final double TIMEFRAME_TOLERANCE = 0.25; //Zeit (in sek) die vallie und peak auseinanderliegen dürfen
 
-    public static final int SURVEY_TIMEFRAME = 1800000;
-    public static final int SURVEY_REMINDER = 180000;
+    public static final int SURVEY_TIMEFRAME_DEFAULT = 1800000;
+    public static final int SURVEY_REMINDER_DEFAULT = 180000;
 
     public static final String FILENAME_EXTRA = "filename";
 

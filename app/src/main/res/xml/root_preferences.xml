@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Empatica">
 
@@ -21,6 +22,23 @@
             app:summaryOn="Polar OH1 Armgurte aktiviert"
             app:title="Polar Armgurt" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Fragebogen Benachrichtigungen">
+
+        <EditTextPreference
+            android:defaultValue="30"
+            android:key="timeframe"
+            android:selectAllOnFocus="true"
+            android:title="Zeitabstand zwischen Benachrichtigungen (in Minuten)"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            android:defaultValue="3"
+            android:key="reminder"
+            android:selectAllOnFocus="true"
+            android:title="Zeitabstand der reminder (in Minuten)"
+            app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

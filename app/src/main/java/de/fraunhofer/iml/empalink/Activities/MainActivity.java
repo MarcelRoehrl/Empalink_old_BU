@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 2;
     private static final int REQUEST_SURVEY = 3;
     public static final int REQUEST_FILENAME = 5;
+    public static final int REQUEST_SUBJECT_INFO = 6;
+
+    public int SURVEY_TIMEFRAME = V.SURVEY_TIMEFRAME_DEFAULT;
+    public int SURVEY_REMINDER = V.SURVEY_REMINDER_DEFAULT;
 
     private double updated_pulse = 0;
 
@@ -125,7 +129,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         Thread.setDefaultUncaughtExceptionHandler(new ConfigurationProfileExceptionHandler(this, MainActivity.class));
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        enable_polar = prefs.getBoolean("polar", true);
+        enable_polar = prefs.getBoolean("polar", false);
+        try {
+            SURVEY_TIMEFRAME = Integer.parseInt(prefs.getString("timeframe", ""+(V.SURVEY_TIMEFRAME_DEFAULT/60/1000))) *60*1000;
+            SURVEY_REMINDER = Integer.parseInt(prefs.getString("reminder", ""+(V.SURVEY_REMINDER_DEFAULT/60/1000))) *60*1000;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
         session = new Session();
 
@@ -267,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
                 fireNotification();
-                nfHandler.postDelayed(nfRunnable, V.SURVEY_REMINDER);
+                nfHandler.postDelayed(nfRunnable, SURVEY_REMINDER);
             }
         };
     }
@@ -297,14 +307,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void onRecordClicked(View view)
     {
         vibrate(false);
-        if(!session.recording) {
-            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
-            long starttime = System.currentTimeMillis();
-            session.startWriter(starttime, this);
-            recordButton.setBackground(getDrawable(R.drawable.pause));
-            show();
-
-            nfHandler.postDelayed(nfRunnable, V.SURVEY_TIMEFRAME);
+        if(!session.recording) { //Aufnahme soll gestartet werden
+            startActivityForResult(new Intent(this, SubjectInfoActivity.class), REQUEST_SUBJECT_INFO);
         }
         else
         {
@@ -348,6 +352,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         surveyIntent.putExtra(V.TIMESTAMP_EXTRA, session.getCurrentTimestamp());
         startActivityForResult(surveyIntent, REQUEST_SURVEY);
         stopNFHandler();
+
+
         /*androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
         alertBuilder.setTitle("Körperliche Anforderungen")
                 .setMessage("Wie hoch waren die körperlichen Anforderungen der Aufgabe?");
@@ -462,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         if (allowed) {
-            String prefE4 = prefs.getString("e4", "0auswählen");
+            String prefE4 = prefs.getString("e4", "1A0146F");
             if(bluetoothDevice.serialNumber.equals(prefE4.substring(1)))
             {
                 wrong_wristband_showed = false;
@@ -508,6 +514,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             //TODO Listener auf bluetooth setzen um beim aktivieren weiter zu suchen
             return;
         }
+        else if(requestCode == REQUEST_SUBJECT_INFO && resultCode == RESULT_OK)
+        {
+            Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
+            long starttime = System.currentTimeMillis();
+            String info = data.getStringExtra("result");
+            session.startWriter(starttime, info, this);
+            recordButton.setBackground(getDrawable(R.drawable.pause));
+            show();
+
+            nfHandler.postDelayed(nfRunnable, SURVEY_TIMEFRAME);
+        }
         else if(requestCode == REQUEST_FILENAME)
         {
             if(resultCode == RESULT_OK) {
@@ -526,11 +543,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             String survey = data.getStringExtra("result");
             session.addSurvey(survey);
             Toast.makeText(MainActivity.this, "Fragebogen abgespeichert", Toast.LENGTH_SHORT).show();
-            nfHandler.postDelayed(nfRunnable, V.SURVEY_TIMEFRAME);
+            nfHandler.postDelayed(nfRunnable, SURVEY_TIMEFRAME);
         }
         else if(requestCode == REQUEST_SURVEY && resultCode != RESULT_OK)
         {
-            nfHandler.postDelayed(nfRunnable, V.SURVEY_REMINDER);
+            nfHandler.postDelayed(nfRunnable, SURVEY_REMINDER);
         }
 
         super.onActivityResult(requestCode, resultCode, data);

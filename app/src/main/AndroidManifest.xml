@@ -26,32 +26,44 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+            android:name=".Activities.SubjectInfoActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight">
+        </activity>
+
         <activity
             android:name=".SettingsActivity"
             android:label="Einstellungen"
             android:theme="@style/Theme.AppCompat.Light">
         </activity>
+
         <activity
             android:name=".Activities.SurveyActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.DayNight" />
+
         <activity android:name=".Activities.NoSingleInternetErrorActivity" />
-        <activity
-            android:name=".Activities.FilechooserActivity">
-        </activity>
+
+        <activity android:name=".Activities.FilechooserActivity" />
+
         <activity android:name=".Activities.DataDisplayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
