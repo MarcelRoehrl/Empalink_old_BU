@@ -37,7 +37,7 @@
             android:defaultValue="3"
             android:key="reminder"
             android:selectAllOnFocus="true"
-            android:title="Zeitabstand der reminder (in Minuten)"
+            android:title="Zeitabstand der wiederkehrenden Erinnerungen (in Minuten)"
             app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 

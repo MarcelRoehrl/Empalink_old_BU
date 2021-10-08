@@ -1,6 +1,8 @@
 package de.fraunhofer.iml.empalink.Activities;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -33,12 +35,16 @@ public class FilechooserActivity extends ListActivity
     private String filename;
     private ArrayAdapter<String> adapter;
 
+    public static Context context;
+
     private static final int REQUEST_CREATE_CSV = 79;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filechooser);
+
+        context = this;
 
         ArrayList<String> stringlist = new ArrayList<String>();
 
@@ -100,15 +106,32 @@ public class FilechooserActivity extends ListActivity
                         startActivityForResult(intent, REQUEST_CREATE_CSV);
                         break;
                     case R.id.item_delete:
-                        File fdelete = new File(getPath());
-                        if (fdelete.delete()) {
-                            Toast.makeText(getApplicationContext(), filename+ " wurde gelöscht", Toast.LENGTH_LONG).show();
-                            adapter.remove(filename);
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Aufnahme konnte nicht gelöscht werden", Toast.LENGTH_LONG).show();
-                        }
-                        break;
+                        androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(context);
+                        alertBuilder.setTitle("Aufnahme löschen")
+                                .setMessage("Wollen Sie die Aufnahme '"+filename+"' wirklich löschen?");
+
+                        alertBuilder.setPositiveButton("löschen", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                File fdelete = new File(getPath());
+                                if (fdelete.delete()) {
+                                    Toast.makeText(getApplicationContext(), filename+ " wurde gelöscht", Toast.LENGTH_SHORT).show();
+                                    adapter.remove(filename);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Aufnahme konnte nicht gelöscht werden", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            })
+                                .setNegativeButton("abbrechen  ", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplicationContext(), "Löschvorgang wurde abgebrochen", Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .show();
+                            break;
                 }
                 return true;
             }
