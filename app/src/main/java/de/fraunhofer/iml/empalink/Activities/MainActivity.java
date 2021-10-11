@@ -314,9 +314,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             androidx.appcompat.app.AlertDialog.Builder alertBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
             alertBuilder.setTitle("Aufnahme speichern")
-                    .setMessage("Wollen Sie die Aufnahme wirklich beenden und abspeichern?");
+                    .setMessage("Soll die Aufnahme beendet werden?");
 
-            alertBuilder.setPositiveButton("Aufnahme speichern", new DialogInterface.OnClickListener() {
+            alertBuilder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                     checkAlarmPlayer(true, true);
                 }
             })
-            .setNegativeButton("Aufnahme fortsetzen", new DialogInterface.OnClickListener() {
+            .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Toast.makeText(MainActivity.this, "Die Aufnahme wird fortgeführt", Toast.LENGTH_LONG).show();
