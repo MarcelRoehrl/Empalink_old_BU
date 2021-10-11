@@ -115,39 +115,6 @@
                 app:bsb_hide_bubble="true"
                 app:bsb_track_color="@color/background_bar"/>
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="55dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                style="@style/TextAppearance.MaterialComponents.Body1"
-                android:text="Wie hoch ist das Tempo, mit dem die einzelnen Schritte Deiner Arbeitsaufgaben aufeinander folgen?" />
-
-            <com.xw.repo.BubbleSeekBar
-                android:id="@+id/slider4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:bsb_thumb_color="#6200EE"
-                app:bsb_second_track_color="#6200EE"
-                app:bsb_max="100"
-                app:bsb_min="0"
-                app:bsb_progress="0"
-                app:bsb_track_size="2dp"
-                app:bsb_thumb_radius="10dp"
-                app:bsb_thumb_radius_on_dragging="12dp"
-                app:bsb_section_count="20"
-                app:bsb_section_text_position="below_section_mark"
-                app:bsb_show_section_mark="true"
-                app:bsb_touch_to_seek="true"
-                app:bsb_auto_adjust_section_mark="true"
-                app:bsb_show_thumb_text="true"
-                app:bsb_show_section_text="false"
-                app:bsb_hide_bubble="true"
-                app:bsb_track_color="@color/background_bar"/>
-
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,130 +129,6 @@
 
     <ScrollView
         android:id="@+id/page2"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="Wie erfolgreich führst Du die geforderten Arbeitsaufgaben Deiner Ansicht nach durch?" />
-
-        <com.xw.repo.BubbleSeekBar
-            android:id="@+id/slider5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:bsb_thumb_color="#6200EE"
-            app:bsb_second_track_color="#6200EE"
-            app:bsb_max="100"
-            app:bsb_min="0"
-            app:bsb_progress="0"
-            app:bsb_track_size="2dp"
-            app:bsb_thumb_radius="10dp"
-            app:bsb_thumb_radius_on_dragging="12dp"
-            app:bsb_section_count="20"
-            app:bsb_section_text_position="below_section_mark"
-            app:bsb_show_section_mark="true"
-            app:bsb_touch_to_seek="true"
-            app:bsb_auto_adjust_section_mark="true"
-            app:bsb_show_thumb_text="true"
-            app:bsb_show_section_text="false"
-            app:bsb_hide_bubble="true"
-            app:bsb_track_color="@color/background_bar"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="Wie sehr musst Du Dich anstrengen, um Deine Leistung zu erreichen?" />
-
-        <com.xw.repo.BubbleSeekBar
-            android:id="@+id/slider6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:bsb_thumb_color="#6200EE"
-            app:bsb_second_track_color="#6200EE"
-            app:bsb_max="100"
-            app:bsb_min="0"
-            app:bsb_progress="0"
-            app:bsb_track_size="2dp"
-            app:bsb_thumb_radius="10dp"
-            app:bsb_thumb_radius_on_dragging="12dp"
-            app:bsb_section_count="20"
-            app:bsb_section_text_position="below_section_mark"
-            app:bsb_show_section_mark="true"
-            app:bsb_touch_to_seek="true"
-            app:bsb_auto_adjust_section_mark="true"
-            app:bsb_show_thumb_text="true"
-            app:bsb_show_section_text="false"
-            app:bsb_hide_bubble="true"
-            app:bsb_track_color="@color/background_bar"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="Wie verunsichert, entmutigt, gereizt und verärgert bist Du?" />
-
-        <com.xw.repo.BubbleSeekBar
-            android:id="@+id/slider7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:bsb_thumb_color="#6200EE"
-            app:bsb_second_track_color="#6200EE"
-            app:bsb_max="100"
-            app:bsb_min="0"
-            app:bsb_progress="0"
-            app:bsb_track_size="2dp"
-            app:bsb_thumb_radius="10dp"
-            app:bsb_thumb_radius_on_dragging="12dp"
-            app:bsb_section_count="20"
-            app:bsb_section_text_position="below_section_mark"
-            app:bsb_show_section_mark="true"
-            app:bsb_touch_to_seek="true"
-            app:bsb_auto_adjust_section_mark="true"
-            app:bsb_show_thumb_text="true"
-            app:bsb_show_section_text="false"
-            app:bsb_hide_bubble="true"
-            app:bsb_track_color="@color/background_bar"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:onClick="onPage2"
-            android:layout_gravity="right"
-            android:text="weiter"/>
-
-    </LinearLayout>
-
-    </ScrollView>
-
-    <ScrollView
-        android:id="@+id/page3"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -910,7 +753,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:onClick="onPage3"
+            android:onClick="onPage2"
             android:layout_gravity="right"
             android:text="weiter"/>
 
@@ -919,7 +762,7 @@
     </ScrollView>
 
     <ScrollView
-        android:id="@+id/page4"
+        android:id="@+id/page3"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -1545,7 +1388,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:onClick="onPage4"
+                android:onClick="onPage3"
                 android:layout_gravity="right"
                 android:text="weiter"/>
 
@@ -1554,7 +1397,7 @@
     </ScrollView>
 
     <ScrollView
-        android:id="@+id/page5"
+        android:id="@+id/page4"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -1714,7 +1557,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:onClick="onPage5"
+                android:onClick="onPage4"
                 android:layout_gravity="right"
                 android:text="weiter"/>
 
@@ -1722,7 +1565,7 @@
     </ScrollView>
 
     <ScrollView
-        android:id="@+id/page6"
+        android:id="@+id/page5"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -1849,7 +1692,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:onClick="onPage6"
+                android:onClick="onPage5"
                 android:layout_gravity="right"
                 android:text="weiter"/>
 
@@ -1857,7 +1700,7 @@
     </ScrollView>
 
     <ScrollView
-        android:id="@+id/page7"
+        android:id="@+id/page6"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

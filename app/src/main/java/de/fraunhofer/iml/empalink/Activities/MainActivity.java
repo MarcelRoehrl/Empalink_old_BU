@@ -249,6 +249,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         startActivityForResult(new Intent(this, FilechooserActivity.class), REQUEST_FILENAME);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     private void prepareNotifications() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "survey notifications";

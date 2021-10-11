@@ -23,7 +23,7 @@ import de.fraunhofer.iml.empalink.V;
 
 public class SurveyActivity extends AppCompatActivity
 {
-    private BubbleSeekBar slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8, slider9, slider10, slider11, slider12, slider13, slider14;
+    private BubbleSeekBar slider1, slider2, slider3, slider8, slider9, slider10, slider11, slider12, slider13, slider14;
     private double startStamp = 0;
 
     @Override
@@ -39,10 +39,6 @@ public class SurveyActivity extends AppCompatActivity
         slider1 = findViewById(R.id.slider1);
         slider2 = findViewById(R.id.slider2);
         slider3 = findViewById(R.id.slider3);
-        slider4 = findViewById(R.id.slider4);
-        slider5 = findViewById(R.id.slider5);
-        slider6 = findViewById(R.id.slider6);
-        slider7 = findViewById(R.id.slider7);
         slider8 = findViewById(R.id.slider8);
         slider9 = findViewById(R.id.slider9);
         slider10 = findViewById(R.id.slider10);
@@ -74,50 +70,6 @@ public class SurveyActivity extends AppCompatActivity
         });
 
         slider3.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                array.clear();
-                array.put(0, "gering");
-                array.put(20, "hoch");
-                return array;
-            }
-        });
-
-        slider4.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                array.clear();
-                array.put(0, "gering");
-                array.put(20, "hoch");
-                return array;
-            }
-        });
-
-        slider5.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                array.clear();
-                array.put(0, "gut");
-                array.put(20, "schlecht");
-                return array;
-            }
-        });
-
-        slider6.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @NonNull
-            @Override
-            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-                array.clear();
-                array.put(0, "gering");
-                array.put(20, "hoch");
-                return array;
-            }
-        });
-
-        slider7.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @NonNull
             @Override
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
@@ -207,7 +159,7 @@ public class SurveyActivity extends AppCompatActivity
     }
 
     private void setActionbarTitle(String s) {
-        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Fragebogen (Seite "+s+"/7)" + "</font>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Fragebogen (Seite "+s+"/6)" + "</font>"));
     }
 
     @Override
@@ -220,7 +172,7 @@ public class SurveyActivity extends AppCompatActivity
         String survey = startStamp + "";
         int id;
 
-        survey += ";" + slider1.getProgress() + ";" + slider2.getProgress() + ";" + slider3.getProgress() + ";" + slider4.getProgress() + ";" + slider5.getProgress() + ";" + slider6.getProgress() + ";" + slider7.getProgress();
+        survey += ";" + slider1.getProgress() + ";" + slider2.getProgress() + ";" + slider3.getProgress();
 
         id = ((RadioGroup)findViewById( R.id.rg1 )).getCheckedRadioButtonId();
         survey += ";" + (id == -1 ? -1 : ((RadioButton)findViewById(id)).getText().toString());
@@ -319,11 +271,5 @@ public class SurveyActivity extends AppCompatActivity
         findViewById(R.id.page5).setVisibility(View.GONE);
         setActionbarTitle("6");
         findViewById(R.id.page6).setVisibility(View.VISIBLE);
-    }
-
-    public void onPage6(View view) {
-        findViewById(R.id.page6).setVisibility(View.GONE);
-        setActionbarTitle("7");
-        findViewById(R.id.page7).setVisibility(View.VISIBLE);
     }
 }
