@@ -29,7 +29,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subject_info);
 
         agepicker = findViewById(R.id.age);
-        agepicker.setMinValue(18);
+        agepicker.setMinValue(16);
         agepicker.setMaxValue(80);
         agepicker.setValue(30);
 

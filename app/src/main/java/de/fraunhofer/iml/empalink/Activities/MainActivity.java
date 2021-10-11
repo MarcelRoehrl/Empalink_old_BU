@@ -308,7 +308,10 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         vibrate(false);
         if(!session.recording) { //Aufnahme soll gestartet werden
-            startActivityForResult(new Intent(this, SubjectInfoActivity.class), REQUEST_SUBJECT_INFO);
+            if(connected)
+                startActivityForResult(new Intent(this, SubjectInfoActivity.class), REQUEST_SUBJECT_INFO);
+            else
+                Toast.makeText(MainActivity.this, "Bitte schalten Sie erst das Armband ein", Toast.LENGTH_LONG).show();
         }
         else
         {
