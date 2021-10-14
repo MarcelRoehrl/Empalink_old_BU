@@ -25,7 +25,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
                 style="@style/TextAppearance.MaterialComponents.Body1"
-                android:text="Wie hoch ist der empfundene Stress während Deiner Arbeitsaufgaben?" />
+                android:text="Wie hoch ist Ihr aktuelles Stresslevel" />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider1"
@@ -58,7 +58,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
                 style="@style/TextAppearance.MaterialComponents.Body1"
-                android:text="Wie hoch sind die geistigen Anforderungen während Deiner Arbeitsaufgaben?" />
+                android:text="Wie hoch sind aktuell die geistigen Arbeitsanforderungen?" />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider2"
@@ -91,7 +91,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
                 style="@style/TextAppearance.MaterialComponents.Body1"
-                android:text="Wie hoch sind die körperlichen Anforderungen während Deiner Arbeitsaufgaben?" />
+                android:text="Wie hoch sind aktuell die körperlichen Arbeitsanforderungen?" />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider3"
@@ -1430,7 +1430,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich finde es schwer, mich zu beruhigen" />
+                android:text="Ich finde es schwer, mich zu beruhigen." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider8"
@@ -1463,7 +1463,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich tendiere dazu, überzureagieren" />
+                android:text="Ich tendiere dazu, überzureagieren." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider9"
@@ -1496,7 +1496,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich finde alles anstrengend" />
+                android:text="Ich finde alles anstrengend." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider10"
@@ -1529,7 +1529,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich bemerke das ich mich schnell anstrenge" />
+                android:text="Ich bemerke das ich mich schnell aufrege." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider11"
@@ -1580,19 +1580,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                style="@style/TextAppearance.MaterialComponents.Body1"
-                android:textSize="20dp"
-                android:text="Folgende Aussagen beschreiben Dein Befinden während des Arbeitens:" />
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="12dp"
@@ -1631,7 +1620,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich reagiere ungehalten auf alles was mich davon abhält meine momentane Tätigkeit fortzuführen" />
+                android:text="Ich reagiere ungehalten auf alles was mich davon abhält meine momentane Tätigkeit fortzuführen." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider13"
@@ -1664,7 +1653,7 @@
                 android:layout_marginBottom="12dp"
                 style="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18dp"
-                android:text="Ich finde mich ziemlich empfindlich" />
+                android:text="Ich finde mich ziemlich empfindlich." />
 
             <com.xw.repo.BubbleSeekBar
                 android:id="@+id/slider14"
