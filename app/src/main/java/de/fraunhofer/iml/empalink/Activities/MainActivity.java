@@ -351,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private void stopAndSaveRecordings()
     {
         timer.stop();
-        timer.setBase(SystemClock.elapsedRealtime());
         session.recording = false;
         recordButton.setBackground(getDrawable(R.drawable.play));
         hide();
@@ -533,6 +532,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
             long starttime = System.currentTimeMillis();
+            timer.setBase(SystemClock.elapsedRealtime());
             timer.start();
             String info = data.getStringExtra("result");
             session.startWriter(starttime, info, this);
