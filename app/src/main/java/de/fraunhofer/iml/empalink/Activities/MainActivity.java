@@ -24,9 +24,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private Runnable nfRunnable;
     private static String CHANNEL_ID = "42";
 
+    private Chronometer timer;
     private TextView statusLabel_empatica, captionLabel_empatica, batteryLabel_empatica;
     private TextView eda_value, ibi_value, bpm_value, acc_value, temp_value;
     private com.google.android.material.button.MaterialButton showDataButton, backgroundShowDataButton;
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        timer = findViewById(R.id.timer);
         livedata_card = findViewById(R.id.livedata_card);
         status_card_empatica = findViewById(R.id.status_card_empatica);
         status_card_polar = findViewById(R.id.status_card_polar);
@@ -136,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+
+        timer.setFormat("Arbeitszeit: %s");
 
         session = new Session();
 
@@ -312,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     {
         vibrate(false);
         if(!session.recording) { //Aufnahme soll gestartet werden
-            if(connected)
+            if(connected)//TODO zum testen ohne Empatica hier true || connected
                 startActivityForResult(new Intent(this, SubjectInfoActivity.class), REQUEST_SUBJECT_INFO);
             else
                 Toast.makeText(MainActivity.this, "Bitte schalten Sie erst das Armband ein", Toast.LENGTH_LONG).show();
@@ -344,6 +350,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     private void stopAndSaveRecordings()
     {
+        timer.stop();
+        timer.setBase(SystemClock.elapsedRealtime());
         session.recording = false;
         recordButton.setBackground(getDrawable(R.drawable.play));
         hide();
@@ -525,6 +533,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         {
             Toast.makeText(MainActivity.this, "Aufnahme gestartet", Toast.LENGTH_SHORT).show();
             long starttime = System.currentTimeMillis();
+            timer.start();
             String info = data.getStringExtra("result");
             session.startWriter(starttime, info, this);
             recordButton.setBackground(getDrawable(R.drawable.pause));
@@ -750,6 +759,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 recordButton.setVisibility(View.VISIBLE);
                 if(session.recording) {
                     surveyFAB.show();
+                    timer.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -761,6 +771,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
+                timer.setVisibility(View.GONE);
                 backgroundShowDataButton.setVisibility(View.VISIBLE);
                 livedata_card.setVisibility(View.GONE);
                 recordButton.setVisibility(View.GONE);
